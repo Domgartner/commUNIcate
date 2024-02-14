@@ -1,0 +1,30 @@
+.headCont {
+    border-bottom: 1.5px solid #BBBBBB;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#red {
+    color: red;
+    font-size: 1.2em;
+}
+
+.title {
+    font-size: 2.05em;
+    margin-left: 40px;
+}
+
+.user {
+    display: flex;
+    margin-left: auto;
+}
+
+.userImage {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    image-rendering: optimizeSpeed;
+    object-fit: cover;
+    cursor: pointer;
+}

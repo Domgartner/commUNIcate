@@ -1,0 +1,100 @@
+.navCont {
+    background-color: #F6F6F6;
+    height: 100vh;
+    /* width: 12%; */
+    display: flex;
+    flex-direction: column;
+    top: 0;
+    border-radius: 0 40px 40px 0;
+    border-right: 0.5px solid #afafaf;
+}
+
+.logo {
+    height: 10%;
+    margin-top: 60px;
+    margin-left: 10px;
+    width: 85%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 60px;
+}
+
+.logoImg {
+    padding-left: 10px;
+    cursor: pointer;
+}
+
+.navItem {
+    border-radius: 40px;
+    border: 0.5px solid rgb(161, 161, 161);
+    box-shadow: 3px 6px 9px #b9b9b9;
+    width: 56%;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    padding: 4px;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.navItem:hover {
+    color: rgb(127, 181, 239);
+    background-color: rgb(34, 34, 34);
+}
+
+.navItemPost {
+    width: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
+
+.logoIcon {
+    font-size: 2.5em;
+    /* width: 50px; */
+    display: flex;
+    /* margin-top: -20px; */
+    margin-bottom: 10px;
+}
+
+.logoAdd {
+    font-size: 3.6em;
+    display: flex;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+/* Media queries for responsiveness */
+
+/* For smaller screens */
+@media (max-width: 768px) {
+    .navItem {
+        width: 90%;
+    }
+
+    .navItemPost {
+        width: 90%;
+    }
+
+    .logo {
+        width: 100%;
+        margin-bottom: 30px;
+    }
+}
+
+/* For taller screens */
+@media (min-height: 800px) {
+    .navCont {
+        justify-content: space-between;
+    }
+
+    .navItem {
+        margin-bottom: 0;
+    }
+}
