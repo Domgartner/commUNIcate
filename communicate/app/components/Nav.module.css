@@ -42,7 +42,7 @@
 }
 
 .navItem:hover {
-    color: rgb(127, 181, 239);
+    color: rgb(106, 212, 241);
     background-color: rgb(34, 34, 34);
 }
 
@@ -68,6 +68,22 @@
     display: flex;
     margin-top: 10px;
     cursor: pointer;
+}
+
+.navItem.active {
+    background-color: #18AFF0;
+    position: relative;
+}
+
+.navItem.active::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -27px;
+    transform: translateY(-50%);
+    border-width: 15px; 
+    border-style: solid;
+    border-color: transparent transparent transparent #18AFF0;
 }
 
 /* Media queries for responsiveness */

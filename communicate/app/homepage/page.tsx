@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import NavBar from '../components/SideBar';
 import Header from '../components/Header';
+import BEvent from '../components/BEvent';
 
 export default function HomePage() {
 
@@ -18,10 +19,7 @@ export default function HomePage() {
 
     return (
     <div>
-        welcome to home
-    <button onClick={() => signOut(auth)}> Log Out</button>
-    <NavBar/>
-    <Header/>
+        {/* <BEvent/> */}
     </div>
     )
 
