@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
@@ -29,5 +29,45 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+} */
+
+.container {
+  display: grid;
+  grid-template-columns: 16% 1fr; /* 16% for nav, 1fr for headContent */
+  height: 100vh;
+}
+
+.headContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.headCont {
+  width: 84vw;
+  margin-top: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.content {
+  flex: 1;
+  margin-top: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+@media (max-width: 1045px) {
+  .navCont {
+      display:none;
+  }
+
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .headCont {
+    width: 95vw;
+    margin-left: 20px;
+    margin-right: 20px;
   }
 }
