@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import Header from "./components/Header";
 import NavBar from "./components/SideBar";
 import Friend from "./components/Friend";
+import FriendsPage from "./friends/page";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -12,17 +13,30 @@ export const metadata: Metadata = {
   description: "University connections app",
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
+  
   return (
-    <html lang='en' style={{height: '100%', width: "100%"}}>
+    <html lang="en">
       <body className={inter.className}>
-        {children}
+        {/* {children} */}
+        <div className="container">
+          <div className="navCont">
+            <NavBar/>
+          </div>
+          <div className="headContent">
+            <div className="headCont">
+              <Header/>
+            </div>
+            <div className="content">
+              <FriendsPage/>
+            </div>
+          </div>
+        </div>
       </body>
     </html>
-  )
+  );
 }
