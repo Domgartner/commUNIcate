@@ -13,13 +13,14 @@ export const metadata: Metadata = {
   description: "University connections app",
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang='en' style={{height: '100%', width: "100%"}}>
       <body className={inter.className}>
         {children}
         <div className="container">
@@ -41,4 +42,8 @@ export default function RootLayout({
       </body>
     </html>
   );
+}
+      </body>
+    </html>
+  )
 }
