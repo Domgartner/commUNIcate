@@ -13,8 +13,23 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      fontFamily: {
+        sans: ['Montserrat', 'sans-serif'],
+        roboto: ['roboto-serif'],
+      },
+    },
+    colors: {
+      transparent: 'transparent',
+      current: 'currentColor',
+      'olive': '#A6AD8C',
+      'green': '#E9EDC9',
+      'light-green': '#CCD5AE',
+      'cream': '#FEFAE0',
+      'beige': '#FAEDCD',
+      'sand': '#D4A373'
     },
   },
   plugins: [],
 };
 export default config;
+
