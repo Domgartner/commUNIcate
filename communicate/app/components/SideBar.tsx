@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import styles from "./Nav.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faUserGroup, faMessage, faGraduationCap, faSquarePlus } from "@fortawesome/free-solid-svg-icons";
-import { library, config} from '@fortawesome/fontawesome-svg-core'
 import { useRouter } from 'next/navigation';
 // config.autoAddCss = false; /* eslint-disable import/first */
 
