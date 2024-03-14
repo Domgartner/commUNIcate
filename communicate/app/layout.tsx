@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import NavBar from "./components/SideBar";
 import Friend from "./components/Friend";
 import "./globals.css";
+import PageAuthentication from "./components/pageAuthentication";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,6 +34,9 @@ export default function RootLayout({
               <Friend/>
             </div>
           </div>
+        </div>
+        <div>
+          <PageAuthentication />
         </div>
       </body>
     </html>
