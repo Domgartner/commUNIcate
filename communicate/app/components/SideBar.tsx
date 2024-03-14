@@ -28,10 +28,10 @@ export default function NavBar() {
             <div className={styles.logo}>
                 <img src="/logoTest.jpeg" className={styles.logoImg} onClick={() => handleNavItemClick('homepage')}/>
             </div>
-            <div className={`${styles.navItem} ${activeNavItem === 'profile' && styles.active}`} id={styles.profile} onClick={() => handleNavItemClick('profile')}>
+            {/* <div className={`${styles.navItem} ${activeNavItem === 'profile' && styles.active}`} id={styles.profile} onClick={() => handleNavItemClick('profile')}>
                 <FontAwesomeIcon icon={faUser} className={styles.logoIcon}/>
                 <h3>Profile</h3>
-            </div>
+            </div> */}
 
             <div className={`${styles.navItem} ${activeNavItem === 'friends' && styles.active}`} id={styles.friends} onClick={() => handleNavItemClick('friends')}>
                 <FontAwesomeIcon icon={faUserGroup} className={styles.logoIcon}/>
@@ -48,9 +48,9 @@ export default function NavBar() {
                 <h3>Classes</h3>
             </div>
 
-            <div className={styles.navItemPost} id={styles.newPost} onClick={() => handleNavItemClick('new-post')}>
+            {/* <div className={styles.navItemPost} id={styles.newPost} onClick={() => handleNavItemClick('new-post')}>
                 <FontAwesomeIcon icon={faSquarePlus} className={styles.logoAdd}/>
-            </div>
+            </div> */}
         </div>
     );
 }
