@@ -12,29 +12,17 @@ export const metadata: Metadata = {
   description: "University connections app",
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang='en' style={{height: '100%', width: "100%"}}>
       <body className={inter.className}>
         {children}
-        <div className="container">
-          <div className="navCont">
-            <NavBar/>
-          </div>
-          <div className="headContent">
-            <div className="headCont">
-              <Header/>
-            </div>
-            <div className="content">
-              <Friend/>
-            </div>
-          </div>
-        </div>
       </body>
     </html>
-  );
+  )
 }
