@@ -1,36 +1,64 @@
-import styles from "./friend.module.css"
+import styles from "./friend.module.css";
 import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {faPlus, faComments, faTimes } from "@fortawesome/free-solid-svg-icons";
 
-export default function Friend() {
+export default function Friend({ id, name, profilePic, major, year, activeFilter, fetchFriends }) {
     const router = useRouter();
 
-    // NEED TO FIX TO SET activeNavItem IN SIDEBAR TO MESSAGES
     const handleMessageClick = () => {
-        router.push(`messages`);
+        router.push('messages');
+    };
+
+    async function handleAdd(id: string) {
+        try {
+            console.log(id);
+            const response = await fetch(`-- ADD URL HERE -- /?id=${id}`);
+            if (!response.ok) {
+                throw new Error('Failed to add friend');
+            }
+            const responseData = await response.json();
+            console.log('Response Data:', responseData); // Log the response data
+            fetchFriends();
+        } catch (error) {
+            console.error('Error adding friend:', error);
+        }
     }
+    
+    async function handleRemove(id: string) {
+        try {
+            console.log(id);
+            const response = await fetch(`-- ADD URL HERE -- /?id=${id}`);
+            if (!response.ok) {
+                throw new Error('Failed to remove friend');
+            }
+            const responseData = await response.json();
+            console.log('Response Data:', responseData); // Log the response data
+            fetchFriends();
+        } catch (error) {
+            console.error('Error removing friend:', error);
+        }
+    }    
+
     return (
-        <div className={styles.friendContainer}>
+        <div className={styles.friendContainer} key={id}>
             <div className={styles.profilepicCont}>
-                <img src="/profiletest.png" className={styles.userImage} />
+                <img src={profilePic} alt={name} className={styles.userImage} />
             </div>
             <div className={styles.friendInfo}>
                 <div className={styles.mainInfo}>
-                    <h2 className={styles.name}><b>Put Name Here</b></h2>
-                    <p className={styles.major}>Software Engineering (3)</p>
+                    <h2 className={styles.name}><b>{name}</b></h2>
+                    <p className={styles.major}>{major} ({year})</p>
                 </div>
-
                 <div className={styles.clubs}>
-                    {/* Need to map clubs here from db */}
+                    {/* Clubs information */}
                 </div>
-
                 <div className={styles.buttons}>
-                    <p className={styles.add}>Add</p>
-                    <p className={styles.message} onClick={handleMessageClick}>Message</p>
+                    {activeFilter === 'Following' && <p className={styles.remove} onClick={() => handleRemove(id)}><FontAwesomeIcon icon={faTimes} className={styles.icon}/></p>}
+                    {activeFilter === 'Discover' && <p className={styles.add} onClick={() => handleAdd(id)}><FontAwesomeIcon icon={faPlus} className={styles.icon}/></p>}
+                    <p className={styles.message} onClick={handleMessageClick}><FontAwesomeIcon icon={faComments} className={styles.icon}/></p>
                 </div>
-
-                
             </div>
-
         </div>
     );
-};
+}

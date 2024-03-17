@@ -1,5 +1,6 @@
 .friendContainer {
   border: 0.5px solid rgb(184, 184, 184);
+  background-color: rgb(234, 233, 233);
   box-shadow: 2px 4px 6px rgb(0, 0, 0, 0.25);
   border-radius: 10px;
   display: flex;
@@ -10,6 +11,10 @@
   margin: 30px auto;
   position: relative;
   overflow: hidden;
+}
+.friendContainer:hover {
+  box-shadow: 2px 4px 6px rgb(0, 0, 0, 0.4);
+  border: 0.5px solid rgb(169, 169, 169);
 }
 
 .profilepicCont {
@@ -40,29 +45,31 @@
 }
 
 .add,
-.message {
-  border: 0.5px solid;
+.message,
+.remove {
+  /* border: 0.5px solid; */
   padding: 5px 15px;
   border-radius: 10px;
   cursor: pointer;
+
 }
 
-.add {
+/* .add {
   border-color: #faabab;
   background-color: #faabab;
-}
+} */
 .add:hover {
-  border-color: #f17f7f;
-  background-color: #f17f7f;
+  color: #5ec764;
+}
+.icon {
+  font-weight: 900;
+  font-size: 1.4em;
 }
 .message:hover {
-  border-color: #7cc0f2;
-  background-color: #7cc0f2;
+  color: #7cc0f2;
 }
-
-.message {
-  border-color: #bcdbf1;
-  background-color: #bcdbf1;
+.remove:hover {
+  color: #f15959;
 }
 
 /* Media query for smaller screens */

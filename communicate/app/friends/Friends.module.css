@@ -54,6 +54,7 @@
 }
 .active {
     background-color: rgb(252, 120, 120);
+    font-weight: 600;
 }
 .active:hover {
     background-color: rgb(241, 83, 83);
