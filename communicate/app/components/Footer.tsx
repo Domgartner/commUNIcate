@@ -1,5 +1,6 @@
 'use client'
 import { SocialIcon } from 'react-social-icons'
+
 import Line from './line'
 
 const Footer = () => {

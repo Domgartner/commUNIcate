@@ -26,7 +26,10 @@ const config: Config = {
       'light-green': '#CCD5AE',
       'cream': '#FEFAE0',
       'beige': '#FAEDCD',
-      'sand': '#D4A373'
+      'sand': '#D4A373',
+      'dark-blue': '#005aa2',
+      'baby-blue' : '#e5f3ff',
+      'blue' : '#68c9f8'
     },
   },
   plugins: [],

@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang='en' style={{height: '100%', width: "100%"}}>
       <body className={inter.className}>
         {children}
-        <Footer />
+        {/* <Footer /> */}
       </body>
     </html>
   )

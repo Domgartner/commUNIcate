@@ -10,11 +10,14 @@
   },
   "dependencies": {
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@nextui-org/react": "^2.2.10",
     "firebase": "^10.8.0",
     "next": "14.1.0",
     "react": "^18",
     "react-dom": "^18",
     "react-firebase-hooks": "^5.1.1",
+    "react-pro-sidebar": "^1.1.0",
+    "react-responsive-masonry": "^2.2.0",
     "react-social-icons": "^6.15.0"
   },
   "devDependencies": {
