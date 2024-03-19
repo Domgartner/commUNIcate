@@ -15,27 +15,22 @@ export const metadata: Metadata = {
 export default function RootLayout({children,}: Readonly<{ children: React.ReactNode }>) {
   
   return (
-    <html lang='en' style={{height: '100%', width: "100%"}}>
-      <body className={inter.className}>
+    <html lang='en' style={{ height: '100%', width: "100%" }}>
+      <body>
+        <PageAuthentication />
         <div className="container">
-            <div className="navCont">
-              <NavBar/>
+          <div className="navCont">
+            <NavBar />
+          </div>
+          <div className="headContent">
+            <div className="headCont">
+              <Header />
             </div>
-            <div className="headContent">
-              <div className="headCont">
-                <Header/>
-              </div>
-              
-              <div className="content">
-                {children}
-              </div>
+            <div className="content">
+              {children}
             </div>
           </div>
-        
-          <div>
-            <PageAuthentication />
-          </div>
-      
+        </div>
       </body>
     </html>
   );

@@ -13,9 +13,12 @@ export default function Header() {
         setShowDropdown(!showDropdown);
     };
 
-    const handleLogout = () => {
-        // Implement your logout logic here
-        console.log("Logging out...");
+    const handleSignOut = async () => {
+        try {
+            await signOut(auth);
+        } catch (error) {
+            console.error('Error signing out:', error);
+        }
     };
 
     return (
@@ -30,7 +33,7 @@ export default function Header() {
                 <img src="/profiletest.png" className={styles.userImage} />
                 {showDropdown && (
                     <div className={styles.dropdown}>
-                        <p onClick={handleLogout} >Log Out</p>
+                        <p onClick={handleSignOut} >Log Out</p>
                     </div>
                 )}
             </div>

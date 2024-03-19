@@ -17,7 +17,7 @@ export default function SignIn() {
             console.log(res);
             setEmail('');
             setPassword('');
-            router.push('../homepage');
+            router.push('/profile');
         } catch (e){
             console.error(e);
         }
@@ -28,7 +28,7 @@ export default function SignIn() {
             const provider = new OAuthProvider('google.com');
             const authInstance = getAuth();
             await signInWithPopup(authInstance, provider);
-            router.push('../homepage');
+            router.push('/profile');
         } catch (error) {
             console.error(error);
         }

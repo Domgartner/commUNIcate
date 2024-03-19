@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth } from '../firebase/config';
 import { getAuth, signInWithPopup, OAuthProvider } from "firebase/auth";
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 
 export default function SignUp() {
     const [email, setEmail] = useState('');
@@ -11,6 +11,9 @@ export default function SignUp() {
     const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
 
     const [error, setError] = useState('');
+
+    const router = useRouter();
+
 
     const handleSignUp = async () => {
         if (!validateEmail(email)) {
@@ -30,7 +33,7 @@ export default function SignUp() {
             setPassword('');
             setError('')
 
-            router.push('/homepage')
+            router.push('/signup_p2')
 
         } catch (e) {
             console.error(e);
@@ -72,7 +75,7 @@ export default function SignUp() {
             const auth = getAuth();
             await signInWithPopup(auth, provider);
             
-            router.push('/homepage');
+            router.push('/signup_p2');
 
         } catch (error) {
             console.error(error);
@@ -81,7 +84,7 @@ export default function SignUp() {
     };
 
     const handleSignIn = () => {
-        router.push('/sign-in'); // Replace '/signup' with your actual sign-up page route
+        router.push('/sign-in');
     };
 
 

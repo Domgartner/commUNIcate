@@ -1,35 +1,17 @@
 "use client"
 import { useState } from "react";
+import { useContext } from 'react';
+import { UserAuth } from '../context/AuthContext';
 
 export default function SignUpP2() {
 
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
+    const { user } = UserAuth(); // Call UserAuth as a function to get the context value
+    const userUid = user?.uid; // Retrieve the UID from the user object
+    
+    const [name, setName] = useState('');
     const [major, setMajor] = useState('');
-    const [clubs, setClubs] = useState([]);
-    const [bio, setBio] = useState('');
-    const [gender, setGender] = useState('');
+    const [yearOfMajor, setYearOfMajor] = useState('');
     const [image, setImage] = useState(null); // State to store the image file
-
-    const clubOptions = [
-        { id: 1, name: 'Code The Change' },
-        { id: 2, name: 'Zoo' },
-        { id: 3, name: 'Cool Kids Club' },
-    ];
-
-    const handleClubChange = (e) => {
-        const selectedClubs = [...clubs];
-        const clubId = parseInt(e.target.value);
-        if (e.target.checked) {
-            selectedClubs.push(clubId);
-        } else {
-            const index = selectedClubs.indexOf(clubId);
-            if (index > -1) {
-                selectedClubs.splice(index, 1);
-            }
-        }
-        setClubs(selectedClubs);
-    };
 
     const handleImageChange = (e) => {
         // Function to handle image upload
@@ -37,12 +19,23 @@ export default function SignUpP2() {
         setImage(file); // Set the image file to the state
     };
 
+    const handleSubmit = () => {
+        // Function to handle form submission
+        // You can perform any necessary actions here, such as sending data to a server
+        console.log("Submitting form...");
+        console.log("Name:", name);
+        console.log("Major:", major);
+        console.log("Year of Major:", yearOfMajor);
+        console.log("Profile Image:", image);
+    };
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="max-w-md w-full p-6 bg-white rounded-md shadow-md">
                 <h2 className="text-2xl font-semibold text-gray-800 mb-6">Sign Up</h2>
                 <div className="space-y-4">
-                <div>
+                    {/* Profile Image */}
+                    <div>
                         <label htmlFor="image" className="block font-medium text-gray-700">Profile Image</label>
                         <input
                             type="file"
@@ -58,72 +51,46 @@ export default function SignUpP2() {
                             <img src={URL.createObjectURL(image)} alt="Selected" className="mt-2 w-24 h-24 rounded-full object-cover" />
                         </div>
                     )}
-                    {/* First Name */}
+                    {/* Name */}
                     <input
                         type="text"
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                        placeholder="First Name"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                    />
-                    {/* Last Name */}
-                    <input
-                        type="text"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                        placeholder="Last Name"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder="Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                     />
                     {/* Major */}
-                    <input
-                        type="text"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                        placeholder="Major"
+                    <select
+                        className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                         value={major}
                         onChange={(e) => setMajor(e.target.value)}
-                    />
-                    {/* Clubs */}
-                    <div>
-                        <label className="block font-medium text-gray-700">Clubs</label>
-                        {clubOptions.map((club) => (
-                            <div key={club.id} className="mt-1">
-                                <input
-                                    type="checkbox"
-                                    id={`club-${club.id}`}
-                                    value={club.id}
-                                    checked={clubs.includes(club.id)}
-                                    onChange={handleClubChange}
-                                />
-                                <label htmlFor={`club-${club.id}`} className="ml-2">{club.name}</label>
-                            </div>
-                        ))}
-                    </div>
-                    {/* Interests */}
-                    <input
-                        type="text"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                        placeholder="Simple Profile Bio"
-                        value={bio}
-                        onChange={(e) => setBio(e.target.value)}
-                    />
-                    {/* Gender */}
-                    <div>
-                        <label className="block font-medium text-gray-700">Pronouns/Gender</label>
-                        <select
-                            className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                            value={gender}
-                            onChange={(e) => setGender(e.target.value)}
-                        >
-                            <option value="">Select</option>
-                            <option value="He/Him">He/Him</option>
-                            <option value="She/Her">She/Her</option>
-                            <option value="They/Them">They/Them</option>
-                            <option value="Prefer not to say">Prefer not to say</option>
-                        </select>
-                    </div>
+                    >
+                        <option value="">Select Major</option>
+                        <option value="Software Engineering">Software Engineering</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Civil Engineering">Civil Engineering</option>
+                    </select>
+                    {/* Year of Major */}
+                    <select
+                        className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                        value={yearOfMajor}
+                        onChange={(e) => setYearOfMajor(e.target.value)}
+                    >
+                        <option value="">Select Year of Major</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4+">4+</option>
+                    </select>
+                    {/* Finished Button */}
+                    <button
+                        className="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                        onClick={handleSubmit}
+                    >
+                        Done!
+                    </button>
                 </div>
             </div>
         </div>
     );
 }
-
