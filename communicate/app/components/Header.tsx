@@ -1,17 +1,21 @@
 "use client"
-import styles from "./Header.module.css"
+import React, { useState } from "react";
+import styles from "./Header.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faSignOutAlt } from "@fortawesome/free-solid-svg-icons"; // Import the sign-out icon
 import { signOut } from 'firebase/auth'; // Import signOut function
 import { auth } from '../firebase/config';
 
 export default function Header() {
-    const handleSignOut = async () => {
-        try {
-            await signOut(auth);
-        } catch (error) {
-            console.error('Error signing out:', error);
-        }
+    const [showDropdown, setShowDropdown] = useState(false);
+
+    const handleUserClick = () => {
+        setShowDropdown(!showDropdown);
+    };
+
+    const handleLogout = () => {
+        // Implement your logout logic here
+        console.log("Logging out...");
     };
 
     return (
@@ -19,14 +23,17 @@ export default function Header() {
             <div className={styles.bars}>
                 <FontAwesomeIcon icon={faBars} />
             </div>
-            <h1 className={styles.title}>Comm<span id={styles.red}>UNI</span>cate</h1>
-            <div className={styles.user}>
+            <h1 className={styles.title}>
+                Comm<span id={styles.red}>UNI</span>cate
+            </h1>
+            <div className={styles.user} onClick={handleUserClick}>
                 <img src="/profiletest.png" className={styles.userImage} />
-                {/* Placeholder user image */}
-                <div className={styles.logoutButton} onClick={handleSignOut}>
-                    <FontAwesomeIcon icon={faSignOutAlt} />
-                </div>
+                {showDropdown && (
+                    <div className={styles.dropdown}>
+                        <p onClick={handleLogout} >Log Out</p>
+                    </div>
+                )}
             </div>
         </div>
     );
-};
+}

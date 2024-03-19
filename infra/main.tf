@@ -14,7 +14,6 @@ provider "aws" {
 }
 
 locals {
-  auth = "auth"
   register = "register"
   create = "create_event"
   get_events = "get-events"
@@ -26,7 +25,6 @@ locals {
 
   handler_name = "main.handler"
 
-  artifact_auth = "artifact_auth.zip"
   artifact_register = "artifact_register.zip"
   artifact_create = "artifact_create.zip"
   artifact_get_events = "artifact_get_events.zip"
@@ -74,15 +72,6 @@ resource "aws_iam_role_policy_attachment" "lambda_dynamodb" {
 # ------------ policies --------------- #
 
 # -------------- create Lambda functions --------------- #
-resource "aws_lambda_function" "lambda-auth" {
-  role             = aws_iam_role.lambda_exec.arn
-  function_name    = local.auth
-  handler          = local.handler_name
-  filename         = local.artifact_auth
-  source_code_hash = data.archive_file.data_auth_zip.output_base64sha256
-  runtime = "python3.9"
-  timeout = 30
-}
 resource "aws_lambda_function" "lambda-register" {
   role             = aws_iam_role.lambda_exec.arn
   function_name    = local.register
@@ -152,20 +141,9 @@ resource "aws_lambda_function" "lambda-get-friends" {
 
 
 # -------- create function URL for Lambda functions ---------- #
-resource "aws_lambda_function_url" "url-auth" {
-  function_name      = aws_lambda_function.lambda-auth.function_name
-  authorization_type = "NONE"
-  cors {
-    allow_credentials = true
-    allow_origins     = ["*"]
-    allow_methods     = ["GET", "POST", "PUT", "DELETE"]
-    allow_headers     = ["*"]
-    expose_headers    = ["keep-alive", "date"]
-  }
-}
 resource "aws_lambda_function_url" "url-register" {
   function_name      = aws_lambda_function.lambda-register.function_name
-  authorization_type = "NONE"
+  authorization_type = "NONE"   # AWS_IAM for secured access
   cors {
     allow_credentials = true
     allow_origins     = ["*"]
@@ -185,9 +163,6 @@ resource "aws_lambda_function_url" "url-create" {
     expose_headers    = ["keep-alive", "date"]
   }
 }
-
-
-
 resource "aws_lambda_function_url" "url-get-events" {
   function_name      = aws_lambda_function.lambda-get-events.function_name
   authorization_type = "NONE"
@@ -199,8 +174,6 @@ resource "aws_lambda_function_url" "url-get-events" {
     expose_headers    = ["keep-alive", "date"]
   }
 }
-
-
 resource "aws_lambda_function_url" "url-messaging" {
   function_name      = aws_lambda_function.lambda-messaging.function_name
   authorization_type = "NONE"
@@ -212,9 +185,6 @@ resource "aws_lambda_function_url" "url-messaging" {
     expose_headers    = ["keep-alive", "date"]
   }
 }
-
-//comment
-
 resource "aws_lambda_function_url" "url-enroll" {
   function_name      = aws_lambda_function.lambda-enroll.function_name
   authorization_type = "NONE"
@@ -264,7 +234,7 @@ resource "aws_lambda_function_url" "url-get-friends" {
 # -------------------- DynamoDB Table ---------------------- #
 resource "aws_dynamodb_table" "communicate" {
   name           = "communicate"
-  hash_key       = "email"
+  hash_key       = "userID"
   range_key      = "name"
   billing_mode   = "PROVISIONED"
   read_capacity  = 1
@@ -274,7 +244,7 @@ resource "aws_dynamodb_table" "communicate" {
     type = "S"
   }
   attribute {
-    name = "email"
+    name = "userID"
     type = "S"
   }
    attribute {
@@ -282,29 +252,20 @@ resource "aws_dynamodb_table" "communicate" {
     type = "S"
   }
   attribute {
-    name = "minor"
-    type = "S"
-  }
-  attribute {
     name = "year"
     type = "N"
   }
   attribute {
-    name = "gender"
+    name = "friends"
     type = "S"
   }
-#   attribute {
-#     name = "password"
-#     type = "S"
-#   }
+  attribute {
+    name = "profilePic"
+    type = "S"
+  }
   local_secondary_index {
     name               = "major_index"
     range_key          = "major"
-    projection_type    = "ALL"
-  }
-  local_secondary_index {
-    name               = "minor_index"
-    range_key          = "minor"
     projection_type    = "ALL"
   }
   local_secondary_index {
@@ -313,19 +274,39 @@ resource "aws_dynamodb_table" "communicate" {
     projection_type    = "ALL"
   }
   local_secondary_index {
-    name               = "gender_index"
-    range_key          = "gender"
+    name               = "friends_index"
+    range_key          = "friends"
     projection_type    = "ALL"
   }
+  local_secondary_index {
+    name               = "profilePic_index"
+    range_key          = "profilePic"
+    projection_type    = "ALL"
+  }
+#  attribute {
+#     name = "classes"
+#     type = "M"
+#     attribute {
+#       name = "className"
+#       type = "S"
+#     }
+#     attribute {
+#       name = "events"
+#       type = "L"
+#       attribute {
+#         name = "eventName"
+#         type = "S"
+#       }
+#       attribute {
+#         name = "eventInfo"
+#         type = "S"
+#       }
+#     }
+#   }
 }
 # -------------------- DynamoDB Table ---------------------- #
 
 # ------------------- create artifacts --------------------- #
-data "archive_file" "data_auth_zip" {
-  type        = "zip"
-  source_file = "../functions/auth/main.py"  
-  output_path = local.artifact_auth
-}
 data "archive_file" "data_register_zip" {
   type        = "zip"
   source_file = "../functions/register/main.py"         # UPDATE PATH AFTER
@@ -424,9 +405,6 @@ EOF
 # ------------ CloudWatch IAM Policy for pubishing logs ------------- #
 
 # ---------------------- Outputs ---------------------- #
-output "lambda_url_auth" {
-  value = aws_lambda_function_url.url-auth.function_url
-}
 output "lambda_url_register" {
   value = aws_lambda_function_url.url-register.function_url
 }

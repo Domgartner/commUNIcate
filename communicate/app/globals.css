@@ -60,13 +60,11 @@ body {
   .navCont {
       display:none;
   }
-
   .container {
     grid-template-columns: 1fr;
   }
-
   .headCont {
-    width: 95vw;
+    width: 100vw;
     margin-left: 20px;
     margin-right: 20px;
   }
