@@ -2,12 +2,11 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Nav.module.css"
 
-import { faUser, faUserGroup, faMessage, faGraduationCap, faSquarePlus } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faUserGroup, faMessage, faGraduationCap, faHome, faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/navigation';
 import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGripLines } from '@fortawesome/free-solid-svg-icons';
-// config.autoAddCss = false; /* eslint-disable import/first */
 
 export default function NavBar() {
     const router = useRouter();
@@ -33,14 +32,21 @@ export default function NavBar() {
     };
 
     return (
-      <Sidebar className="text-sans bg-gray-800 bg-opacity-50 h-full fixed left-0 right-0 " collapsed={collapsed}>
+      <Sidebar className="text-sans bg-bleh h-full fixed left-0 right-0 " collapsed={collapsed}>
         <button className='flex px-8 text-3xl text-baby-blue pt-8' onClick={handleToggleSidebar}><FontAwesomeIcon icon={faGripLines} /></button>
         <div className="flex flex-col items-star pt-20">
+          <button className='flex flex-row pt-5 pb-4 rounded-xl hover:bg-blue focus:outline-none focus:ring-4 focus:ring-blue-300' id={styles.friends} onClick={() => handleNavItemClick('friends')}>
+            <FontAwesomeIcon icon={faHome} className='text-baby-blue text-md ml-9'/>
+            <h2 className=" text-baby-blue ml-10">Home</h2>
+          </button>
+          <button className='flex flex-row pt-5 pb-4 rounded-xl hover:bg-blue focus:outline-none focus:ring-4 focus:ring-blue-300' id={styles.friends} onClick={() => handleNavItemClick('friends')}>
+            <FontAwesomeIcon icon={faCalendarAlt} className='text-baby-blue text-md ml-9'/>
+            <h2 className=" text-baby-blue ml-10">Manage Events</h2>
+          </button>
           <button className='flex flex-row pt-5 pb-4 rounded-xl hover:bg-blue focus:outline-none focus:ring-4 focus:ring-blue-300' id={styles.friends} onClick={() => handleNavItemClick('friends')}>
             <FontAwesomeIcon icon={faUserGroup} className='text-baby-blue text-md ml-9'/>
             <h2 className=" text-baby-blue ml-10">Friends</h2>
           </button>
-          
           <button className='flex flex-row pt-5 pb-4 rounded-xl hover:bg-blue focus:outline-none focus:ring-4 focus:ring-blue-300' id={styles.messages} onClick={() => handleNavItemClick('messages')}>
             <FontAwesomeIcon icon={faMessage} className='text-baby-blue text-md ml-9'/>
             <h3 className="text-baby-blue ml-11">Messages</h3>

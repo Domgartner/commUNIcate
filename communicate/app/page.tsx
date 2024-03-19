@@ -47,7 +47,7 @@ export default function Home() {
   return (
     <html lang="en">
       <body className="flex flex-row">
-        <div className="flex-1% ">
+        <div className="flex-1% bg-gray-800">
           <NavBar/>
         </div>
         <div className="flex-4 flex-grow flex-col">
@@ -55,15 +55,17 @@ export default function Home() {
             <Header/>
           </div>
           <div className="flex my-2 pl-10">
-            <Field
-            fieldType="text"
-            fieldValue={tag}
-            onChange={setTag}
-            placeholderText="Enter a search tag"
-          />
-
+              <Field
+              fieldType="text"
+              fieldValue={tag}
+              onChange={setTag}
+              placeholderText="Enter a search tag"
+              />
           </div>
           <Line />
+          <div className='flex flex-row py-2 px-12'>
+            <h1 className="font-bold text-3xl pt-2">Upcoming Events</h1>
+          </div>
           <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 mt-5 mx-10">
             {buildPhotoBlocks()}
           </div>

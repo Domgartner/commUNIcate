@@ -27,7 +27,8 @@ const config: Config = {
       'cream': '#FEFAE0',
       'beige': '#FAEDCD',
       'sand': '#D4A373',
-      'dark-blue': '#005aa2',
+      'bleh': '#1F1F1F',
+      'line' : "#9FB4BC",
       'baby-blue' : '#e5f3ff',
       'blue' : '#68c9f8'
     },

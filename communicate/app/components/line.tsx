@@ -2,7 +2,7 @@ const line = () => {
   return (
     <div>
       <div className="px-5 bg-white">
-        <hr className="w-full d" />
+        <hr className="w-full text-line" />
       </div>
     </div>
   );
