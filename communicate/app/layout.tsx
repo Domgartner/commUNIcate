@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import NavBar from "./components/SideBar";
 import Friend from "./components/Friend";
 import "./globals.css";
+import PageAuthentication from "./components/pageAuthentication";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +23,23 @@ export default function RootLayout({
     <html lang='en' style={{height: '100%', width: "100%"}}>
       <body className={inter.className}>
         {children}
+        <div className="container">
+          <div className="navCont">
+            <NavBar/>
+          </div>
+          <div className="headContent">
+            <div className="headCont">
+              <Header/>
+            </div>
+            <div className="content">
+              <Friend/>
+            </div>
+          </div>
+        </div>
+        <div>
+          <PageAuthentication />
+        </div>
       </body>
     </html>
-  )
+  );
 }
