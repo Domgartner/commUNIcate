@@ -5,23 +5,31 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from 'react';
 import Friend from "../components/Friend";
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../firebase/config';
-import { useRouter } from 'next/navigation';
+import ReactLoading from 'react-loading';
+
+
+interface Friend {
+    major: string;
+    name: string;
+    year: string;
+    id: string;
+    profilePic: string;
+}
 
 export default function FriendsPage() {
     const [activeFilter, setActiveFilter] = useState('Following');
-    const [friends, setFriends] = useState([]);
+    const [friends, setFriends] = useState<Friend[]>([]);
     const [searchKeyword, setSearchKeyword] = useState('');
-    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleFilterClick = (filter) => {
+    const handleFilterClick = (filter: any) => {
         setActiveFilter(filter);
     };
 
     async function fetchFriends() {
+        setIsLoading(true);
         try {
-            let url = `-- ADD URL HERE -- /?filter=${activeFilter}`; 
+            let url = `https://6cqznmwlnxzdernedtxllbnisu0phaaf.lambda-url.ca-central-1.on.aws/?filter=${activeFilter}`; 
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error('Failed to fetch friends');
@@ -32,6 +40,8 @@ export default function FriendsPage() {
             setFriends(friendsData);
         } catch (error) {
             console.error('Error fetching friends:', error);
+        } finally {
+            setIsLoading(false);
         }
     }
     
@@ -39,7 +49,7 @@ export default function FriendsPage() {
         fetchFriends();
     }, [activeFilter]); // Trigger fetch on activeFilter change
 
-    const filteredFriends = friends.filter((friend) =>
+    const filteredFriends = friends.filter((friend: Friend) =>
         (friend.name && friend.name.toLowerCase().includes(searchKeyword.toLowerCase())) ||
         (friend.major && friend.major.toLowerCase().includes(searchKeyword.toLowerCase())) ||
         (friend.year && friend.year.toString().includes(searchKeyword.toLowerCase()))
@@ -65,7 +75,16 @@ export default function FriendsPage() {
                 <div className={styles.total}>Total: {filteredFriends.length}</div>
             </div>
             <div className={styles.friendsArea}>
-                {filteredFriends.map((friend, index) => (
+                {isLoading ? (
+                    <div className={styles.loading}>
+                    <ReactLoading type={'spin'} color={'rgba(0, 0, 0, 1)'} height={50} width={50} />
+                    </div>
+                ) : filteredFriends.length === 0 ? (
+                    <div className={styles.noFriendsMessage}>
+                    {activeFilter === 'Following' ? "You have no Friends" : "No Friends to add"}
+                    </div>
+                ) : (
+                    filteredFriends.map((friend, index) => (
                     <Friend
                         key={index}
                         id={friend.id}
@@ -73,10 +92,11 @@ export default function FriendsPage() {
                         profilePic={friend.profilePic}
                         major={friend.major}
                         year={friend.year}
-                        activeFilter = {activeFilter}
-                        fetchFriends = {fetchFriends}
+                        activeFilter={activeFilter}
+                        fetchFriends={fetchFriends}
                     />
-                ))}
+                    ))
+                )}
             </div>
         </div>
     );
