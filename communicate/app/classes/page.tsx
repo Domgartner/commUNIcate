@@ -35,26 +35,22 @@ export default function Classes() {
   const handleClassClick = (className: string) => {
     if (selectedClasses.length < 7 && !selectedClasses.includes(className)) {
       setSelectedClasses([...selectedClasses, className]);
-      setUpcomingItems({ ...upcomingItems, [className]: [] }); // Initialize upcoming items array for the selected class
+      setUpcomingItems({ ...upcomingItems, [className]: [] }); 
       setSelectedClass(className);
     }
   };
 
   const handleClassRemove = () => {
-    // Filter out the selected class from selectedClasses
     const updatedSelectedClasses = selectedClasses.filter(
       (className) => className !== selectedClass
     );
 
-    // Create a copy of upcomingItems and remove the selected class from it
     const updatedUpcomingItems = { ...upcomingItems };
     delete updatedUpcomingItems[selectedClass ? selectedClass : 0];
 
-    // Update the state variables
     setSelectedClasses(updatedSelectedClasses);
     setUpcomingItems(updatedUpcomingItems);
 
-    // Clear the selected class
     setSelectedClass(null);
   };
 
@@ -72,29 +68,27 @@ export default function Classes() {
     });
     setPopupVisible(false);
     setItemInput("");
-    setSelectedDate(null); // Reset selected date after adding the item
+    setSelectedDate(null); 
   };
 
   const handleDeleteItem = (className: string, index: number) => {
     const updatedItems = [...upcomingItems[className]];
-    updatedItems.splice(index, 1); // Remove the item at the specified index
+    updatedItems.splice(index, 1); 
     setUpcomingItems({
       ...upcomingItems,
       [className]: updatedItems,
     });
   };
 
-  // Combine events from all classes into a single array
   const events = Object.values(upcomingItems)
     .reduce((acc, cur) => [...acc, ...cur], [])
     .map((item) => ({
       title: item.title,
       start: item.date,
-      end: item.date, // Assuming each event lasts for one day
+      end: item.date, 
     }));
 
   useEffect(() => {
-    // Whenever upcomingItems or selectedClasses change, update the events array
   }, [upcomingItems, selectedClasses]);
 
   return (
@@ -108,10 +102,10 @@ export default function Classes() {
             <div className="headCont">
               <Header />
             </div>
-            <div className="content">
-              <div className="flex items-center border-b-2 border-gray pb-2">
+            <div className="content pl-5">
+              <div className="flex items-center border-b-2 border-line pb-2">
                 <button
-                  className="plusButton px-8 py-4 text-2xl border-r-2 border-gray"
+                  className="plusButton px-8 py-4 text-2xl border-r-2 border-line hover:bg-green rounded"
                   onClick={handlePlusButtonClick}
                 >
                   +
@@ -119,7 +113,7 @@ export default function Classes() {
                 {selectedClasses.map((className, index) => (
                   <text
                     key={index}
-                    className="textlol px-10 py-4"
+                    className="textlol px-10 py-4 hover:bg-green rounded"
                     onClick={() => handleSelectedClassClick(className)}
                   >
                     {className}
@@ -127,40 +121,46 @@ export default function Classes() {
                 ))}
               </div>
               {isClassListVisible && (
-                <div className="fixed top-0 left-0 flex justify-center items-center w-full h-full bg-gray-500 bg-opacity-50 z-10">
-                  <div className="popupContainer border-4 border-black rounded w-80 h-200 bg-white px-2">
+                <div className="fixed top-0 left-0 flex justify-center items-center w-full h-full bg-cream bg-opacity-70 z-10">
+                  <div className="popupContainer rounded w-80 h-200 bg-green px-2">
                     <div className="popupContent">
                       <div className="flex items-center py-4 border-b-2">
                         <button
-                          className="mr-2 px-4"
+                          className="mr-2 px-4 py-2 hover:bg-light-green rounded"
                           onClick={handlePlusButtonExitClick}
                         >
                           x
                         </button>
                         <p>Software Engineer Class List</p>
                       </div>
-                      <p onClick={() => handleClassClick("ENSF 480")}>
+                      <p
+                        className="hover:bg-light-green rounded"
+                        onClick={() => handleClassClick("ENSF 480")}
+                      >
                         ENSF 480
                       </p>
-                      <p onClick={() => handleClassClick("ENSF 461")}>
+                      <p
+                        className="hover:bg-light-green rounded"
+                        onClick={() => handleClassClick("ENSF 461")}
+                      >
                         ENSF 461
                       </p>
-                      <p onClick={() => handleClassClick("ENSF 462")}>
+                      <p className="hover:bg-light-green rounded" onClick={() => handleClassClick("ENSF 462")}>
                         ENSF 462
                       </p>
-                      <p onClick={() => handleClassClick("ENCM 460")}>
+                      <p className="hover:bg-light-green rounded" onClick={() => handleClassClick("ENCM 460")}>
                         ENCM 460
                       </p>
-                      <p onClick={() => handleClassClick("ENSF 400")}>
+                      <p className="hover:bg-light-green rounded" onClick={() => handleClassClick("ENSF 400")}>
                         ENSF 400
                       </p>
-                      <p onClick={() => handleClassClick("ENSF 444")}>
+                      <p className="hover:bg-light-green rounded" onClick={() => handleClassClick("ENSF 444")}>
                         ENSF 444
                       </p>
-                      <p onClick={() => handleClassClick("SENG 401")}>
+                      <p className="hover:bg-light-green rounded" onClick={() => handleClassClick("SENG 401")}>
                         SENG 401
                       </p>
-                      <p onClick={() => handleClassClick("SENG 438")}>
+                      <p className="hover:bg-light-green rounded" onClick={() => handleClassClick("SENG 438")}>
                         SENG 438
                       </p>
                     </div>
@@ -180,7 +180,7 @@ export default function Classes() {
                         <p className="text-5xl mb-4 py-8">{selectedClass}</p>
                       </div>
                       <div>
-                        <div className="bg-gray-200 p-4 rounded-lg mb-4 h-96 shadow-lg">
+                        <div className="bg-olive bg-opacity-20 p-4 rounded-lg mb-4 h-96 shadow-lg">
                           <div className="pt-0 pb-5 text-center">
                             <h2 className="text-lg">Upcoming</h2>
                           </div>
@@ -197,7 +197,7 @@ export default function Classes() {
                                       onClick={() =>
                                         handleDeleteItem(selectedClass, index)
                                       }
-                                      className="ml-auto bg-green-200 hover:bg-green-300 text-xs text-green-800 py-2 px-2 rounded w-8 shadow-lg"
+                                      className="ml-auto bg-light-green hover:bg-green text-xs py-2 px-2 rounded w-8 shadow-lg"
                                     >
                                       &#x2713;
                                     </button>
@@ -209,7 +209,7 @@ export default function Classes() {
                         </div>
                         <div className="flex justify-center items-center">
                           <button
-                            className="bg-green-200 w-40 h-10 rounded shadow-lg"
+                            className="bg-olive hover:bg-light-green w-40 h-10 rounded shadow-lg"
                             onClick={() => setPopupVisible(true)}
                           >
                             Add
@@ -225,32 +225,31 @@ export default function Classes() {
                     <div style={{ height: 600 }} className="p-8">
                       <Calendar
                         localizer={localizer}
-                        events={events} // Add your events data here if needed
+                        events={events} 
                         startAccessor="start"
                         endAccessor="end"
-                        views={["month"]} // Only show the month view
-                        defaultView="month" // Set the default view to month
+                        views={["month"]} 
+                        defaultView="month" 
                       />
                     </div>
                     <div className="flex justify-end pt-10">
                       <button
-                        className="bg-red-100 rounded w-40 h-10"
+                        className="bg-olive hover:bg-light-green rounded w-40 h-10 shadow"
                         onClick={() => handleClassRemove()}
                       >
                         Remove Class
-                      </button>{" "}
-                      {/*Finish This Part! */}
+                      </button>
                     </div>
                   </div>
                 </div>
               )}
               {isPopupVisible && (
-                <div className="fixed top-0 left-0 flex justify-center items-center w-full h-full bg-gray-500 bg-opacity-50 z-10">
-                  <div className="popupContainer border-4 border-black rounded w-80 h-200 bg-white px-2">
+                <div className="fixed top-0 left-0 flex justify-center items-center w-full h-full bg-cream bg-opacity-70 z-10">
+                  <div className="popupContainer rounded w-80 h-200 bg-green px-2">
                     <div className="popupContent">
                       <div className="flex items-center py-4 border-b-2">
                         <button
-                          className="mr-2 px-4"
+                          className="mr-2 px-4 py-2 hover:bg-light-green rounded"
                           onClick={() => setPopupVisible(false)}
                         >
                           x
@@ -273,7 +272,14 @@ export default function Classes() {
                           }
                           className="border border-gray-300 border-2 rounded-md p-2"
                         />
-                        <button onClick={handleAddUpcomingItem}>Add</button>
+                        <div className="pt-4">
+                          <button
+                            className="bg-olive hover:bg-light-green h-10 w-20 rounded"
+                            onClick={handleAddUpcomingItem}
+                          >
+                            Add
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
