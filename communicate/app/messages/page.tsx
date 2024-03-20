@@ -194,7 +194,7 @@ const handleSendMessage = (e:any)=>{
         return
         }
 
-    axios.put('https://api.chatengine.io/users/',{username,secret},{headers:{"Private-key": '8838c432-ab9c-4c6a-a308-745acdb209ce '}})
+    axios.put('https://api.chatengine.io/users/',{username,secret},{headers:{"Private-key": ' '}})
 
 }
 
@@ -245,7 +245,7 @@ const handleSendMessage = (e:any)=>{
     <div className={styles.container}>
       <ChatEngine className={styles.chat}
         height="calc(100vh - 212px)"
-        projectID="02b0c410-449b-4ec5-9a43-a7c2049cee9b"
+        projectID=""
         userName={username}
         userSecret={secret}
         offset={-4}
