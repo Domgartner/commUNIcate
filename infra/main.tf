@@ -63,8 +63,6 @@ resource "aws_iam_role_policy_attachment" "lambda_SSM" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
   role       = aws_iam_role.lambda_exec.name
 }
-
-# !!!!!!!!! IF WE DECIDE TO USE DYNAMODB !!!!!!!!!!!
 resource "aws_iam_role_policy_attachment" "lambda_dynamodb" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
   role       = aws_iam_role.lambda_exec.name
@@ -303,6 +301,61 @@ resource "aws_dynamodb_table" "communicate" {
 #       }
 #     }
 #   }
+}
+
+
+
+resource "aws_dynamodb_table" "communicate" {
+  name           = "communicate"
+  hash_key       = "className"
+  range_key      = "classNumber"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 1
+  write_capacity = 1
+  attribute {
+    name = "className"
+    type = "S"
+  }
+  attribute {
+    name = "classNumber"
+    type = "S"
+  }
+   attribute {
+    name = "major"
+    type = "S"
+  }
+  attribute {
+    name = "year"
+    type = "N"
+  }
+  attribute {
+    name = "friends"
+    type = "S"
+  }
+  attribute {
+    name = "profilePic"
+    type = "S"
+  }
+  local_secondary_index {
+    name               = "major_index"
+    range_key          = "major"
+    projection_type    = "ALL"
+  }
+  local_secondary_index {
+    name               = "year_index"
+    range_key          = "year"
+    projection_type    = "ALL"
+  }
+  local_secondary_index {
+    name               = "friends_index"
+    range_key          = "friends"
+    projection_type    = "ALL"
+  }
+  local_secondary_index {
+    name               = "profilePic_index"
+    range_key          = "profilePic"
+    projection_type    = "ALL"
+  }
 }
 # -------------------- DynamoDB Table ---------------------- #
 
