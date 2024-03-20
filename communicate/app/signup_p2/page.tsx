@@ -1,10 +1,8 @@
 "use client"
 import { useState } from "react";
-import { useContext } from 'react';
 import { UserAuth } from '../context/AuthContext';
 
 export default function SignUpP2() {
-
     const { user } = UserAuth(); // Call UserAuth as a function to get the context value
     const userUid = user?.uid; // Retrieve the UID from the user object
     
@@ -21,12 +19,49 @@ export default function SignUpP2() {
 
     const handleSubmit = () => {
         // Function to handle form submission
-        // You can perform any necessary actions here, such as sending data to a server
+        // Check if all fields are completed
+        if (name.trim() === '' || major === '' || yearOfMajor === '') {
+            alert("Please fill in all fields before submitting.");
+            return; // Exit early if any field is empty
+        }
+
+        const data = {
+            userID: userUid,
+            name: name,
+            major: major,
+            yearOfMajor: yearOfMajor,
+            // profilePic: image 
+        };
+
+        // If all fields are filled, proceed with submission
         console.log("Submitting form...");
         console.log("Name:", name);
         console.log("Major:", major);
         console.log("Year of Major:", yearOfMajor);
         console.log("Profile Image:", image);
+
+        // Make the HTTP request to the Lambda function
+        fetch('YOUR_LAMBDA_FUNCTION_ENDPOINT', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to submit form');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Form submitted successfully:', data);
+            // Optionally, you can perform any additional actions here
+        })
+        .catch(error => {
+            console.error('Error submitting form:', error);
+            // Optionally, you can handle errors here
+        });
     };
 
     return (
