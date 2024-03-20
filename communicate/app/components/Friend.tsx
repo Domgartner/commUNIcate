@@ -3,17 +3,18 @@ import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faPlus, faComments, faTimes } from "@fortawesome/free-solid-svg-icons";
 
-export default function Friend({ id, name, profilePic, major, year, activeFilter, fetchFriends }) {
+export default function Friend({ id, name, profilePic, major, year, activeFilter, fetchFriends }: { id: string; name: string; profilePic: string; major: string; year: string; activeFilter: string; fetchFriends: () => void }) {
     const router = useRouter();
 
     const handleMessageClick = () => {
+        // router.push(`/messages/${id}`);
         router.push('messages');
     };
 
     async function handleAdd(id: string) {
         try {
             console.log(id);
-            const response = await fetch(`-- ADD URL HERE -- /?id=${id}`);
+            const response = await fetch(`https://4ipfxkifimgtyw2qvjtwyreo340bzkzc.lambda-url.ca-central-1.on.aws/?id=${id}`);
             if (!response.ok) {
                 throw new Error('Failed to add friend');
             }
@@ -28,7 +29,7 @@ export default function Friend({ id, name, profilePic, major, year, activeFilter
     async function handleRemove(id: string) {
         try {
             console.log(id);
-            const response = await fetch(`-- ADD URL HERE -- /?id=${id}`);
+            const response = await fetch(`https://4ipfxkifimgtyw2qvjtwyreo340bzkzc.lambda-url.ca-central-1.on.aws/?id=${id}`);
             if (!response.ok) {
                 throw new Error('Failed to remove friend');
             }
@@ -56,7 +57,7 @@ export default function Friend({ id, name, profilePic, major, year, activeFilter
                 <div className={styles.buttons}>
                     {activeFilter === 'Following' && <p className={styles.remove} onClick={() => handleRemove(id)}><FontAwesomeIcon icon={faTimes} className={styles.icon}/></p>}
                     {activeFilter === 'Discover' && <p className={styles.add} onClick={() => handleAdd(id)}><FontAwesomeIcon icon={faPlus} className={styles.icon}/></p>}
-                    <p className={styles.message} onClick={handleMessageClick}><FontAwesomeIcon icon={faComments} className={styles.icon}/></p>
+                    {activeFilter === 'Following' && <p className={styles.message} onClick={handleMessageClick}><FontAwesomeIcon icon={faComments} className={styles.icon}/></p>}
                 </div>
             </div>
         </div>
