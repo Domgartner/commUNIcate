@@ -17,7 +17,6 @@ export default function RootLayout({children,}: Readonly<{ children: React.React
   return (
     <html lang='en' style={{ height: '100%', width: "100%" }}>
       <body>
-        <PageAuthentication />
         <div className="container">
           <div className="navCont">
             <NavBar />

@@ -1,10 +1,10 @@
 "use client"
 import { useState } from "react";
 import { UserAuth } from '../context/AuthContext';
-
+import { auth } from "../firebase/config";
 export default function SignUpP2() {
-    const { user } = UserAuth(); // Call UserAuth as a function to get the context value
-    const userID = user?.uid; // Retrieve the UID from the user object
+    // const { user } = UserAuth(); // Call UserAuth as a function to get the context value
+    // const userID = user?.uid; // Retrieve the UID from the user object
     
     const [name, setName] = useState('');
     const [major, setMajor] = useState('');
@@ -17,9 +17,10 @@ export default function SignUpP2() {
     //     setImage(file); // Set the image file to the state
     // };
 
-    const handleSubmit = () => {
+    async function handleSubmit() {
         // Function to handle form submission
         // Check if all fields are completed
+        const userID = auth.currentUser ? auth.currentUser.uid : null; // Get userID from currentUser
         if (name.trim() === '' || major === '' || yearOfMajor === '') {
             alert("Please fill in all fields before submitting.");
             return; // Exit early if any field is empty
@@ -39,29 +40,25 @@ export default function SignUpP2() {
         console.log("Major:", major);
         console.log("Year of Major:", yearOfMajor);
         console.log("Profile Image:", image);
-
+        console.log("UID:", userID);
         // Make the HTTP request to the Lambda function
-        fetch('YOUR_LAMBDA_FUNCTION_ENDPOINT', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => {
+        try {
+            const response = await fetch('https://klmp32ova6x6e5mmf5kjp2ym4i0cyrmy.lambda-url.ca-central-1.on.aws/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
             if (!response.ok) {
-                throw new Error('Failed to submit form');
+                throw new Error('Failed to submit user info');
             }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Form submitted successfully:', data);
-            // Optionally, you can perform any additional actions here
-        })
-        .catch(error => {
-            console.error('Error submitting form:', error);
-            // Optionally, you can handle errors here
-        });
+            const responseData = await response.json();
+            console.log('Response Data:', responseData); // Log the response data
+        } catch (error) {
+            console.error('Error submitting user info:', error);
+        }
+         
     };
 
     return (
