@@ -14,7 +14,7 @@ export default function Friend({ id, name, profilePic, major, year, activeFilter
     async function handleAdd(id: string) {
         try {
             console.log(id);
-            const response = await fetch(`https://4ipfxkifimgtyw2qvjtwyreo340bzkzc.lambda-url.ca-central-1.on.aws/?id=${id}`);
+            const response = await fetch(`---LAMBDA---?id=${id}`);
             if (!response.ok) {
                 throw new Error('Failed to add friend');
             }
@@ -29,7 +29,7 @@ export default function Friend({ id, name, profilePic, major, year, activeFilter
     async function handleRemove(id: string) {
         try {
             console.log(id);
-            const response = await fetch(`https://4ipfxkifimgtyw2qvjtwyreo340bzkzc.lambda-url.ca-central-1.on.aws/?id=${id}`);
+            const response = await fetch(`---LAMBDA---?id=${id}`);
             if (!response.ok) {
                 throw new Error('Failed to remove friend');
             }
