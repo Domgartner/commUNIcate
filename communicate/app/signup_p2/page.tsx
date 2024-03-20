@@ -4,18 +4,18 @@ import { UserAuth } from '../context/AuthContext';
 
 export default function SignUpP2() {
     const { user } = UserAuth(); // Call UserAuth as a function to get the context value
-    const userUid = user?.uid; // Retrieve the UID from the user object
+    const userID = user?.uid; // Retrieve the UID from the user object
     
     const [name, setName] = useState('');
     const [major, setMajor] = useState('');
     const [yearOfMajor, setYearOfMajor] = useState('');
     const [image, setImage] = useState(null); // State to store the image file
 
-    const handleImageChange = (e) => {
-        // Function to handle image upload
-        const file = e.target.files[0]; // Get the first file from the selected files
-        setImage(file); // Set the image file to the state
-    };
+    // const handleImageChange = (e) => {
+    //     // Function to handle image upload
+    //     const file = e.target.files[0]; // Get the first file from the selected files
+    //     setImage(file); // Set the image file to the state
+    // };
 
     const handleSubmit = () => {
         // Function to handle form submission
@@ -26,7 +26,7 @@ export default function SignUpP2() {
         }
 
         const data = {
-            userID: userUid,
+            userID: userID,
             name: name,
             major: major,
             yearOfMajor: yearOfMajor,
@@ -76,7 +76,7 @@ export default function SignUpP2() {
                             type="file"
                             id="image"
                             accept="image/*"
-                            onChange={handleImageChange}
+                            // onChange={handleImageChange}
                             className="mt-1"
                         />
                     </div>
