@@ -29,7 +29,7 @@ export default function FriendsPage() {
     async function fetchFriends() {
         setIsLoading(true);
         try {
-            let url = `https://6cqznmwlnxzdernedtxllbnisu0phaaf.lambda-url.ca-central-1.on.aws/?filter=${activeFilter}`; 
+            let url = `--LAMBDA FUNCTION---?filter=${activeFilter}`; 
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error('Failed to fetch friends');
