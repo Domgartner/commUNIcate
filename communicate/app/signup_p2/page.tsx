@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { UserAuth } from '../context/AuthContext';
 import { auth } from "../firebase/config";
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 export default function SignUpP2() {
     // const { user } = UserAuth(); // Call UserAuth as a function to get the context value
     // const userID = user?.uid; // Retrieve the UID from the user object
@@ -11,12 +13,12 @@ export default function SignUpP2() {
     const [yearOfMajor, setYearOfMajor] = useState('');
     const [image, setImage] = useState(null); // State to store the image file
 
-    // const handleImageChange = (e) => {
-    //     // Function to handle image upload
-    //     const file = e.target.files[0]; // Get the first file from the selected files
-    //     setImage(file); // Set the image file to the state
-    // };
-
+    const handleImageChange = (e:any) => {
+        // Function to handle image upload
+        const file = e.target.files[0]; // Get the first file from the selected files
+        setImage(file); // Set the image file to the state
+    };
+    const router = useRouter();
     async function handleSubmit() {
         // Function to handle form submission
         // Check if all fields are completed
@@ -25,7 +27,6 @@ export default function SignUpP2() {
             alert("Please fill in all fields before submitting.");
             return; // Exit early if any field is empty
         }
-
         const data = {
             userID: userID,
             name: name,
@@ -33,7 +34,6 @@ export default function SignUpP2() {
             yearOfMajor: yearOfMajor,
             // profilePic: image 
         };
-
         // If all fields are filled, proceed with submission
         console.log("Submitting form...");
         console.log("Name:", name);
@@ -43,7 +43,7 @@ export default function SignUpP2() {
         console.log("UID:", userID);
         // Make the HTTP request to the Lambda function
         try {
-            const response = await fetch('https://klmp32ova6x6e5mmf5kjp2ym4i0cyrmy.lambda-url.ca-central-1.on.aws/', {
+            const response = await fetch('------- Enter register URL--------', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -55,11 +55,29 @@ export default function SignUpP2() {
             }
             const responseData = await response.json();
             console.log('Response Data:', responseData); // Log the response data
+            createProfile();
         } catch (error) {
             console.error('Error submitting user info:', error);
         }
-         
     };
+
+    const createProfile = async () => {
+        const secret = auth.currentUser ? auth.currentUser.uid : null; // Get userID from currentUser
+        const username = auth.currentUser ? auth.currentUser.email : null; // Get email from currentUser
+        console.log("Name:", name);
+        console.log("pass:", secret);
+        console.log(image);
+        if (name.length === 0) {
+            return;
+        }
+        try {
+            axios.put('https://api.chatengine.io/users/',{username: username, secret: secret},{headers:{"Private-key": 'PUT PRIVATE KEY HERE'}}
+            ).then((r:any) => router.push('/profile'));
+        } catch (error) {
+            console.error('Error creating profile:', error);
+        }
+    };
+    
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -73,7 +91,7 @@ export default function SignUpP2() {
                             type="file"
                             id="image"
                             accept="image/*"
-                            // onChange={handleImageChange}
+                            onChange={(e) => handleImageChange(e)}
                             className="mt-1"
                         />
                     </div>
@@ -101,6 +119,8 @@ export default function SignUpP2() {
                         <option value="Software Engineering">Software Engineering</option>
                         <option value="Mechanical Engineering">Mechanical Engineering</option>
                         <option value="Civil Engineering">Civil Engineering</option>
+                        <option value="Biomedical Engineering">Biomedical Engineering</option>
+                        <option value="Electrical Engineering">Electrical Engineering</option>
                     </select>
                     {/* Year of Major */}
                     <select
@@ -112,7 +132,10 @@ export default function SignUpP2() {
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
-                        <option value="4+">4+</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
                     </select>
                     {/* Finished Button */}
                     <button

@@ -22,6 +22,7 @@ locals {
   get_class = "read-class-info"
   manage_friends = "manage-friends"
   get_friends = "get-friends"
+  manage_class_items = "manage-class-items"
 
   handler_name = "main.handler"
 
@@ -33,6 +34,7 @@ locals {
   artifact_get_class = "artifact_get_class.zip"
   artifact_manage_friends = "artifact_manage_friends.zip"
   artifact_get_friends = "artifact_get_friends.zip"
+  artifact_manage_class_items = "artifact_manage_class_items.zip"
 }
 
 resource "aws_iam_role" "lambda_exec" {
@@ -63,6 +65,8 @@ resource "aws_iam_role_policy_attachment" "lambda_SSM" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
   role       = aws_iam_role.lambda_exec.name
 }
+
+# !!!!!!!!! IF WE DECIDE TO USE DYNAMODB !!!!!!!!!!!
 resource "aws_iam_role_policy_attachment" "lambda_dynamodb" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
   role       = aws_iam_role.lambda_exec.name
@@ -131,7 +135,15 @@ resource "aws_lambda_function" "lambda-get-friends" {
   function_name    = local.get_friends
   handler          = local.handler_name
   filename         = local.artifact_get_friends
-  source_code_hash = data.archive_file.data_manage_friends_zip.output_base64sha256
+  source_code_hash = data.archive_file.data_get_friends_zip.output_base64sha256
+  runtime = "python3.9"
+}
+resource "aws_lambda_function" "lambda-manage-class-items" {
+  role             = aws_iam_role.lambda_exec.arn
+  function_name    = local.manage_class_items
+  handler          = local.handler_name
+  filename         = local.artifact_manage_class_items
+  source_code_hash = data.archive_file.data_manage_class_items_zip.output_base64sha256
   runtime = "python3.9"
 }
 # -------------- create Lambda functions --------------- #
@@ -227,6 +239,17 @@ resource "aws_lambda_function_url" "url-get-friends" {
     expose_headers    = ["keep-alive", "date"]
   }
 }
+resource "aws_lambda_function_url" "url-manage-class-items" {
+  function_name      = aws_lambda_function.lambda-manage-class-items.function_name
+  authorization_type = "NONE"
+  cors {
+    allow_credentials = true
+    allow_origins     = ["*"]
+    allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+    allow_headers     = ["*"]
+    expose_headers    = ["keep-alive", "date"]
+  }
+}
 # -------- create function URL for Lambda functions ---------- #
 
 # -------------------- DynamoDB Table ---------------------- #
@@ -261,6 +284,10 @@ resource "aws_dynamodb_table" "communicate" {
     name = "profilePic"
     type = "S"
   }
+  attribute {
+    name = "classes"
+    type = "S"
+  }
   local_secondary_index {
     name               = "major_index"
     range_key          = "major"
@@ -281,80 +308,22 @@ resource "aws_dynamodb_table" "communicate" {
     range_key          = "profilePic"
     projection_type    = "ALL"
   }
-#  attribute {
-#     name = "classes"
-#     type = "M"
-#     attribute {
-#       name = "className"
-#       type = "S"
-#     }
-#     attribute {
-#       name = "events"
-#       type = "L"
-#       attribute {
-#         name = "eventName"
-#         type = "S"
-#       }
-#       attribute {
-#         name = "eventInfo"
-#         type = "S"
-#       }
-#     }
-#   }
+  local_secondary_index {
+    name               = "classes_index"
+    range_key          = "classes"
+    projection_type    = "ALL"
+  }
 }
 
-
-
-resource "aws_dynamodb_table" "communicate" {
-  name           = "communicate"
-  hash_key       = "className"
-  range_key      = "classNumber"
+resource "aws_dynamodb_table" "communicate-class" {
+  name           = "communicate-class"
+  hash_key       = "userID"
   billing_mode   = "PROVISIONED"
   read_capacity  = 1
   write_capacity = 1
   attribute {
-    name = "className"
+    name = "userID"
     type = "S"
-  }
-  attribute {
-    name = "classNumber"
-    type = "S"
-  }
-   attribute {
-    name = "major"
-    type = "S"
-  }
-  attribute {
-    name = "year"
-    type = "N"
-  }
-  attribute {
-    name = "friends"
-    type = "S"
-  }
-  attribute {
-    name = "profilePic"
-    type = "S"
-  }
-  local_secondary_index {
-    name               = "major_index"
-    range_key          = "major"
-    projection_type    = "ALL"
-  }
-  local_secondary_index {
-    name               = "year_index"
-    range_key          = "year"
-    projection_type    = "ALL"
-  }
-  local_secondary_index {
-    name               = "friends_index"
-    range_key          = "friends"
-    projection_type    = "ALL"
-  }
-  local_secondary_index {
-    name               = "profilePic_index"
-    range_key          = "profilePic"
-    projection_type    = "ALL"
   }
 }
 # -------------------- DynamoDB Table ---------------------- #
@@ -400,6 +369,11 @@ data "archive_file" "data_get_friends_zip" {
   source_file = "../functions/get_friends/main.py"         # UPDATE PATH AFTER
   output_path = local.artifact_get_friends
 }
+data "archive_file" "data_manage_class_items_zip" {
+  type        = "zip"
+  source_file = "../functions/manage_class_Items/main.py"         # UPDATE PATH AFTER
+  output_path = local.artifact_manage_class_items
+}
 # ------------------- create artifacts -------------------- #
 
 # ------------ CloudWatch IAM Policy for pubishing logs ------------- #
@@ -442,12 +416,14 @@ resource "aws_iam_policy" "logs" {
         "dynamodb:PutItem",
         "dynamodb:DeleteItem",
         "dynamodb:GetItem",
+        "dynamodb:UpdateItem",
         "dynamodb:Query"
       ],
       "Resource":[
                 "arn:aws:dynamodb:::table/",
                 "arn:aws:logs:::",
-                "arn:aws:dynamodb:ca-central-1:409601214226:table/communicate"
+                "arn:aws:dynamodb:ca-central-1:409601214226:table/communicate",
+                "arn:aws:dynamodb:ca-central-1:409601214226:table/communicate-class"
                 ],
       "Effect": "Allow"
     }
@@ -481,5 +457,8 @@ output "lambda_url_manage_friends" {
 }
 output "lambda_url_get_friends" {
   value = aws_lambda_function_url.url-get-friends.function_url
+}
+output "lambda_url_manage_class_items" {
+  value = aws_lambda_function_url.url-manage-class-items.function_url
 }
 # ---------------------- Outputs ---------------------- #

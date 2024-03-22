@@ -8,8 +8,7 @@ table = dynamodb.Table('communicate')
 def handler(event, context):
     try:
         filter = event['queryStringParameters']['filter']
-        # user_id = event['queryStringParameters']['userID']  # get the value of the 'userID' query parameter from the event object
-        user_id = "user1"
+        user_id = event['queryStringParameters']['userID']  # get the value of the 'userID' query parameter from the event object
         user_response = table.query(KeyConditionExpression=Key('userID').eq(user_id))  # query the DynamoDB table for the user's details based on userID
         
         # check if the query returned any items
@@ -27,7 +26,7 @@ def handler(event, context):
         # Extract the list of friends from the user's details
         user_friends_str = user_response['Items'][0].get('friends', '')
         user_friends = user_friends_str.split(',')  # Split the string to get individual user IDs
-        if filter == "Following":
+        if filter == "Following" :
             # Query the DynamoDB table to get the details of all the friends
             friends_details = []
             for friend_id in user_friends:

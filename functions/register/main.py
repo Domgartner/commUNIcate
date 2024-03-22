@@ -1,40 +1,46 @@
-import boto3
 import json
+import boto3
 
-# Initialize DynamoDB client
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('communicate')  # Name of your DynamoDB table
+table = dynamodb.Table('communicate')
+table2 = dynamodb.Table('communicate-class')
 
-def lambda_handler(event, context):
-    # Extract data from the event
-    data = json.loads(event['body'])
-    
-    # Extract attributes from the data
-    userID = data['userID']
-    name = data['name']
-    major = data['major']
-    yearOfMajor = data['yearOfMajor']
-    # profilePic = data.get('profilePic', '')  # Check if profilePic is provided
-    
-    # Validation (you may add more validation logic as needed)
-    if not (name and major and yearOfMajor):
+def handler(event, context):
+    try:
+       # Extract data from the event
+        data = json.loads(event['body'])
+        userID = str(data.get('userID', ''))
+        name = str(data.get('name', ''))
+        major = str(data.get('major', ''))
+        yearOfMajor = int(data.get('yearOfMajor', ''))
+
+        # profilePic = data.get('profilePic', '')
+        if not (userID or name or major or yearOfMajor):
+            return {
+                'statusCode': 400,
+                'body': json.dumps({'message': 'Missing required fields'})
+            }
+        
+        Items={'userID': userID,
+                'name': name,
+                'friends': 'LoserNoFriends',
+                'major': major,
+                'profilePic' : "none",
+                'year' :yearOfMajor}
+        response = table.put_item(Item=Items)
+
+         
+        Items2={'userID': userID,
+               'className': 'LoserNoClasses',
+               'items': 'LoserNoItems'}
+
+        response = table2.put_item(Item=Items2)
         return {
-            'statusCode': 400,
-            'body': json.dumps('Missing required fields')
+            'statusCode': 200,
+            'body': json.dumps({'message': 'User added successfully'})
         }
-    
-    # Put item into DynamoDB table
-    response = table.put_item(
-        Item={
-            'userID': userID,  # Assuming you have userUid available in the Lambda context
-            'name': name,
-            'major': major,
-            'year': yearOfMajor,
-            # 'profilePic': profilePic
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': json.dumps({'message': str(e)})
         }
-    )
-    
-    return {
-        'statusCode': 200,
-        'body': json.dumps('Item added to DynamoDB table successfully')
-    }

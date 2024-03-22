@@ -16,7 +16,7 @@ export default function Friend({ id, name, profilePic, major, year, activeFilter
         try {
             const userID = auth.currentUser ? auth.currentUser.uid : null;
             console.log(id);
-            const response = await fetch(`---LAMBDA FUCNTION---?id=${id}&userID=${userID}`);
+            const response = await fetch(`------- Enter manage_friends URL--------?id=${id}&userID=${userID}`);
             if (!response.ok) {
                 throw new Error('Failed to add friend');
             }
@@ -32,7 +32,7 @@ export default function Friend({ id, name, profilePic, major, year, activeFilter
         try {
             const userID = auth.currentUser ? auth.currentUser.uid : null;
             console.log(id);
-            const response = await fetch(`---LAMBDA FUCNTION---?id=${id}&userID=${userID}`);
+            const response = await fetch(`------- Enter manage_friends URL--------?id=${id}&userID=${userID}`);
             if (!response.ok) {
                 throw new Error('Failed to remove friend');
             }

@@ -9,7 +9,7 @@ def handler(event, context):
     try:
         # Parse the query parameters to extract the friend's id
         friendID = event['queryStringParameters']['id']
-        userID = 'user1'  # Assuming the userID is known or retrieved from somewhere
+        userID = event['queryStringParameters']['userID']
         # Query the DynamoDB table to get the user's details
         user_response = table.query(KeyConditionExpression=Key('userID').eq(userID))
         user_friends_str = user_response['Items'][0].get('friends', '')

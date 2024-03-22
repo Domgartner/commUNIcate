@@ -130,7 +130,6 @@
 // }
 
 
-
 "use client" 
 import React, { useState, useEffect, useRef } from 'react';
 import MsgFriend from '../components/msgFriend';
@@ -138,6 +137,7 @@ import styles from './Messages.module.css';
 import ReactLoading from 'react-loading';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
+import { auth } from "../firebase/config";
 // import { Router } from '@/node_modules/next/router';
 
 interface Friend {
@@ -156,99 +156,31 @@ export default function Messages() {
   const [activeFriend, setActiveFriend] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const[username,setUsername]= useState('user1')
-  const[secret,setSecret]= useState('user1')
+  const[username,setUsername]= useState(auth.currentUser ? auth.currentUser.email : null);
+  const[secret,setSecret]= useState(auth.currentUser ? auth.currentUser.uid : null);
 
   const messageContainerRef = useRef<HTMLDivElement>(null);
 
-//   // Function to handle sending a message
-//   const handleSendMessage = async () => {
-//     if (inputMessage.trim() !== '') {
-//       // Add the new message to the messages array
-//       setMessages([...messages, { sender: 'You', text: inputMessage }]);
-//       // Clear the input field after sending the message
-//       setInputMessage('');
-  
-//       // Send the message to the backend server
-//       try {
-//         // await axios.post('http://localhost:5000/send-message', { message: inputMessage });
-//       } catch (error) {
-//         console.error('Error sending message:', error);
-//       }
-  
-//       // Scroll to the bottom of the message container with a slight delay
-//       setTimeout(() => {
-//         messageContainerRef.current?.scrollTo({
-//           top: messageContainerRef.current?.scrollHeight,
-//           behavior: 'smooth'
-//         });
-//       }, 100);
-//     }
-//   };
-  
+  const ChatEngine = dynamic(() =>
+    import("react-chat-engine").then((module) => module.ChatEngine)
+  );
+  const MessageFormSocial = dynamic(() =>
+    import("react-chat-engine").then((module) => module.MessageFormSocial)
+  );
 
-const handleSendMessage = (e:any)=>{ 
-    // https://api.chatengine.io/users/
-    e.preventDefault()
-    if (username.length ===0||secret.length===0){
-        return
-        }
-
-    axios.put('https://api.chatengine.io/users/',{username,secret},{headers:{"Private-key": '8838c432-ab9c-4c6a-a308-745acdb209ce '}})
-
-}
-
-    const ChatEngine = dynamic(() =>
-      import("react-chat-engine").then((module) => module.ChatEngine)
-    );
-    const MessageFormSocial = dynamic(() =>
-      import("react-chat-engine").then((module) => module.MessageFormSocial)
-    );
-
-  async function fetchFriends() {
-    setIsLoading(true);
-    try {
-      let url = `https://r5mgd4nl6op2i6steh7owys4fe0rumzn.lambda-url.ca-central-1.on.aws/?filter=${"Following"}`; 
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error('Failed to fetch friends');
-      }
-      const responseData = await response.json();
-      console.log('Response Data:', responseData);
-      const friendsData = responseData.data || [];
-      setFriends(friendsData);
-      setActiveFriend(friendsData[0].id);
-    } catch (error) {
-      console.error('Error fetching friends:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-  
-  
-  // useEffect(() => {
-  //   fetchFriends();
-  // }, []); 
 
   const filteredFriends = friends.filter((friend: Friend) =>
     (friend.name && friend.name.toLowerCase().includes(searchKeyword.toLowerCase()))
   );  
 
-  const handleFriendClick = (friendId: any) => {
-    setActiveFriend(friendId);
-    console.log('Friend clicked:', friendId);
-    
-  };
-  
-
   return (
     <div className={styles.container}>
       <ChatEngine className={styles.chat}
         height="calc(100vh - 212px)"
-        projectID="02b0c410-449b-4ec5-9a43-a7c2049cee9b"
+        projectID="PUT YOUR PROJECT ID HERE"
         userName={username}
         userSecret={secret}
-        offset={-4}
+        offset={-6}
         renderNewMessageForm={() => <MessageFormSocial />}
       />
     </div>

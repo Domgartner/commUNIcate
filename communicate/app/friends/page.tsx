@@ -31,7 +31,7 @@ export default function FriendsPage() {
         try {
             const userID = auth.currentUser ? auth.currentUser.uid : null; // Get userID from currentUser
             console.log(userID);
-            let url = `---LAMBDA FUNCTION ----?filter=${activeFilter}&userID=${userID}`; 
+            let url = `------- Enter get_friends URL--------?filter=${activeFilter}&userID=${userID}`; 
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error('Failed to fetch friends');
