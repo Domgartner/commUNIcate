@@ -32,7 +32,7 @@ def handler(event, context):
          
         Items2={'userID': userID,
                'className': 'LoserNoClasses',
-               'items': 'LoserNoItems'}
+               'items': []}
 
         response = table2.put_item(Item=Items2)
         return {
