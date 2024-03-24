@@ -11,12 +11,12 @@ import time
 import hashlib
 
 dynamodb_resource = boto3.resource("dynamodb")
-table = dynamodb_resource.Table("")
+table = dynamodb_resource.Table("communicate-events")
 
 client = boto3.client('ssm')
 
 response = client.get_parameters_by_path (
-    Path = '...',
+    Path = '/the-last-show/',
     Recursive=True,
     WithDecryption=True
 )
@@ -31,10 +31,10 @@ def get_public_ip():
     return res.text
 
 def upload_to_cloudinary(filename, resource_type="image", extra_fields={}) :
-    api_key = "..."
-    cloud_name = ".."
-    # need this from paraneter store
-    api_secret = get_keys("...")
+    api_key = "485553813126649"
+    cloud_name = "dp8wdd53c"
+    # need this from parameter store
+    api_secret = get_keys("/the-last-show/cloudinary-key")
     timestamp = int(time.time())
 
     body = {
