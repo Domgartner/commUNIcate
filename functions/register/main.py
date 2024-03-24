@@ -30,9 +30,20 @@ def handler(event, context):
         response = table.put_item(Item=Items)
 
          
-        Items2={'userID': userID,
-               'className': 'LoserNoClasses',
-               'items': 'LoserNoItems'}
+        Items2 = {
+        'userID': userID,
+        'className': 'LoserNoClasses',
+        'items': [
+            # {
+            #     'class': '',
+            #     'date': '',
+            #     'id': '',
+            #     'itemName': ''
+            # }
+        ]
+        }
+
+
 
         response = table2.put_item(Item=Items2)
         return {
