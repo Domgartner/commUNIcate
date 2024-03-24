@@ -32,6 +32,17 @@ export default function Classes() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [enrolledClasses, setEnrolledClasses] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const colors = [
+    "#A6AD8C",
+    "#CCD5AE",
+    "#E9EDC9",
+    "#FEFAE0",
+    "#FAEDCD",
+    "#D4A373",
+    "#b1b2b3",
+  ];
+  const index_class = selectedClasses.indexOf(selectedClass!);
+  const color_class = colors[index_class % colors.length];
 
   const handlePlusButtonClick = () => {
     setClassListVisible(true);
@@ -128,16 +139,6 @@ export default function Classes() {
     end,
     isSelected
   ) => {
-    const colors = [
-      "#A6AD8C",
-      "#CCD5AE",
-      "#E9EDC9",
-      "#FEFAE0",
-      "#FAEDCD",
-      "#D4A373",
-      "#b1b2b3",
-    ];
-
     // Find the index of the class in the selectedClasses array
     const index = selectedClasses.indexOf(event.className);
 
@@ -425,7 +426,12 @@ export default function Classes() {
           <div className="w-1/3 flex px-4">
             <div className="mainContent justify-center items-center w-full">
               <div className="flex justify-center items-center">
-                <p className="text-5xl mb-4 py-8">{selectedClass}</p>
+                <p
+                  className="text-5xl mb-4 py-8"
+                  style={{ borderBottom: `8px solid ${color_class}` }}
+                >
+                  {selectedClass}
+                </p>
               </div>
               <div>
                 <div className="bg-olive bg-opacity-20 p-4 rounded-lg mb-4 h-96 shadow-lg">
