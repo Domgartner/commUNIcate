@@ -379,7 +379,7 @@ export default function Classes() {
       </div>
       {isClassListVisible && (
         <div className="fixed top-0 left-0 flex justify-center items-center w-full h-full bg-cream bg-opacity-70 z-10">
-          <div className="popupContainer rounded w-80 h-200 bg-green px-2">
+          <div className="popupContainer rounded w-80 h-80 overflow-y-auto bg-green px-2">
             <div className="popupContent">
               <div className="flex items-center py-4 border-b-2">
                 <button
