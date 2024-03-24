@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 export default function SignUpP2() {
     // const { user } = UserAuth(); // Call UserAuth as a function to get the context value
     // const userID = user?.uid; // Retrieve the UID from the user object
-    
+    const CHAT_ENG_PK = process.env.NEXT_PUBLIC_CHAT_ENGINE_PK
     const [name, setName] = useState('');
     const [major, setMajor] = useState('');
     const [yearOfMajor, setYearOfMajor] = useState('');
@@ -43,7 +43,7 @@ export default function SignUpP2() {
         console.log("UID:", userID);
         // Make the HTTP request to the Lambda function
         try {
-            const response = await fetch('------- Enter register URL--------', {
+            const response = await fetch('https://e4a7prz7mjly2c2v3zz5hplx3q0hizyw.lambda-url.ca-central-1.on.aws/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -56,6 +56,8 @@ export default function SignUpP2() {
             const responseData = await response.json();
             console.log('Response Data:', responseData); // Log the response data
             createProfile();
+            localStorage.setItem('userID', JSON.stringify(auth.currentUser.uid));
+            localStorage.setItem('email', JSON.stringify(auth.currentUser.email));
         } catch (error) {
             console.error('Error submitting user info:', error);
         }
@@ -71,7 +73,7 @@ export default function SignUpP2() {
             return;
         }
         try {
-            axios.put('https://api.chatengine.io/users/',{username: username, secret: secret},{headers:{"Private-key": 'PUT PRIVATE KEY HERE'}}
+            axios.put('https://api.chatengine.io/users/',{username: username, secret: secret},{headers:{"Private-key": CHAT_ENG_PK}}
             ).then((r:any) => router.push('/profile'));
         } catch (error) {
             console.error('Error creating profile:', error);
