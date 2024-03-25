@@ -30,7 +30,7 @@ export default function SignIn() {
             const provider = new OAuthProvider('google.com');
             const authInstance = getAuth();
             await signInWithPopup(authInstance, provider);
-            router.push('/profile');
+            router.push('/homepage');
         } catch (error) {
             console.error(error);
         }

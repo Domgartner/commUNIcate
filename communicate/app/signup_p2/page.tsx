@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UserAuth } from '../context/AuthContext';
 import { auth } from "../firebase/config";
 import axios from 'axios';
@@ -82,7 +82,7 @@ export default function SignUpP2() {
         }
         try {
             axios.put('https://api.chatengine.io/users/',{username: username, secret: secret},{headers:{"Private-key": 'c618201a-ee8b-480a-9bab-e8679963d52d'}}
-            ).then((r:any) => router.push('/profile'));
+            ).then((r:any) => router.push('/homepage'));
         } catch (error) {
             console.error('Error creating profile:', error);
         }
