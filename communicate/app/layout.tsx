@@ -17,20 +17,20 @@ export default function RootLayout({children,}: Readonly<{ children: React.React
   return (
     <html lang='en' style={{ height: '100%', width: "100%" }}>
       <body>
-        <div className="container">
-          <div className="navCont">
+        {/* <div className="container"> */}
+          {/* <div className="navCont">
             <NavBar />
-          </div>
+          </div> */}
           <div className="headContent">
-            <div className="headCont">
+            {/* <div className="headCont">
               <Header />
-            </div>
+            </div> */}
             <div className="content">
               {children}
             </div>
           </div>
-        </div>
+        {/* </div> */}
       </body>
     </html>
   );
-}
+};

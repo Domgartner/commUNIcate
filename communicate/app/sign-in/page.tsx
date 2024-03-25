@@ -10,6 +10,8 @@ export default function SignIn() {
     const [password, setPassword] = useState('');
     const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
     const router = useRouter()
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
 
     const handleSignIn = async () => {
         try {

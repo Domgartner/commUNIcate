@@ -5,9 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faSignOutAlt } from "@fortawesome/free-solid-svg-icons"; // Import the sign-out icon
 import { signOut } from 'firebase/auth'; // Import signOut function
 import { auth } from '../firebase/config';
+import { useRouter } from 'next/navigation';
 
 export default function Header() {
     const [showDropdown, setShowDropdown] = useState(false);
+    const router = useRouter();
 
     const handleUserClick = () => {
         setShowDropdown(!showDropdown);
@@ -16,6 +18,9 @@ export default function Header() {
     const handleSignOut = async () => {
         try {
             await signOut(auth);
+            localStorage.clear();
+            router.push('/sign-in');
+            console.log("Logged Out");
         } catch (error) {
             console.error('Error signing out:', error);
         }

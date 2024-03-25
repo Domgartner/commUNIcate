@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 export default function SignUpP2() {
     // const { user } = UserAuth(); // Call UserAuth as a function to get the context value
     // const userID = user?.uid; // Retrieve the UID from the user object
-    const CHAT_ENG_PK = process.env.NEXT_PUBLIC_CHAT_ENGINE_PK
+    
     const [name, setName] = useState('');
     const [major, setMajor] = useState('');
     const [yearOfMajor, setYearOfMajor] = useState('');
@@ -41,9 +41,10 @@ export default function SignUpP2() {
         console.log("Year of Major:", yearOfMajor);
         console.log("Profile Image:", image);
         console.log("UID:", userID);
+        console.log("logged in");
         // Make the HTTP request to the Lambda function
         try {
-            const response = await fetch('https://e4a7prz7mjly2c2v3zz5hplx3q0hizyw.lambda-url.ca-central-1.on.aws/', {
+            const response = await fetch('https://c4nfv7nqc3qf7ilrub4awh6nmy0beptt.lambda-url.ca-central-1.on.aws/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -56,11 +57,11 @@ export default function SignUpP2() {
             const responseData = await response.json();
             console.log('Response Data:', responseData); // Log the response data
             createProfile();
-            localStorage.setItem('userID', JSON.stringify(auth.currentUser.uid));
-            localStorage.setItem('email', JSON.stringify(auth.currentUser.email));
         } catch (error) {
             console.error('Error submitting user info:', error);
         }
+
+        
     };
 
     const createProfile = async () => {
@@ -73,7 +74,7 @@ export default function SignUpP2() {
             return;
         }
         try {
-            axios.put('https://api.chatengine.io/users/',{username: username, secret: secret},{headers:{"Private-key": CHAT_ENG_PK}}
+            axios.put('https://api.chatengine.io/users/',{username: username, secret: secret},{headers:{"Private-key": 'c618201a-ee8b-480a-9bab-e8679963d52d'}}
             ).then((r:any) => router.push('/profile'));
         } catch (error) {
             console.error('Error creating profile:', error);

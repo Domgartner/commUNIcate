@@ -17,7 +17,7 @@ export default function SignUp() {
 
     const handleSignUp = async () => {
         if (!validateEmail(email)) {
-            setError('Invalid email format!');
+            setError('Invalid email format! (use your ucalgary.ca email)');
             return;
         }
 
@@ -31,9 +31,11 @@ export default function SignUp() {
             console.log({ res });
             setEmail('');
             setPassword('');
-            setError('')
+            setError('');
 
-            router.push('/signup_p2')
+            router.push('/signup_p2');
+            console.log("logged in");
+
 
         } catch (e) {
             console.error(e);
@@ -43,7 +45,7 @@ export default function SignUp() {
 
     const validateEmail = (email: string) => {
         // Regular expression pattern for email validation
-        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const pattern = /^[a-zA-Z0-9._%+-]+@ucalgary\.ca$/;
         return pattern.test(email);
     }
 
