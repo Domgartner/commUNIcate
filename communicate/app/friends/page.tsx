@@ -9,6 +9,8 @@ import ReactLoading from 'react-loading';
 import { auth } from "../firebase/config";
 import NavBar from "../components/SideBar";
 import Header from "../components/Header";
+import { useRouter } from "next/navigation";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 interface Friend {
     major: string;
@@ -23,6 +25,15 @@ export default function FriendsPage() {
     const [friends, setFriends] = useState<Friend[]>([]);
     const [searchKeyword, setSearchKeyword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [user, loading] = useAuthState(auth);
+    
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push('/sign-in');
+        }
+    }, [user, loading, router]);
 
     const handleFilterClick = (filter: any) => {
         setActiveFilter(filter);

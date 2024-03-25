@@ -4,10 +4,18 @@ import { UserAuth } from '../context/AuthContext';
 import { auth } from "../firebase/config";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { useAuthState } from "react-firebase-hooks/auth";
 export default function SignUpP2() {
-    // const { user } = UserAuth(); // Call UserAuth as a function to get the context value
-    // const userID = user?.uid; // Retrieve the UID from the user object
+    const [user, loading] = useAuthState(auth);
     
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push('/sign-in');
+        }
+    }, [user, loading, router]);
+
     const [name, setName] = useState('');
     const [major, setMajor] = useState('');
     const [yearOfMajor, setYearOfMajor] = useState('');
@@ -18,7 +26,6 @@ export default function SignUpP2() {
         const file = e.target.files[0]; // Get the first file from the selected files
         setImage(file); // Set the image file to the state
     };
-    const router = useRouter();
     async function handleSubmit() {
         // Function to handle form submission
         // Check if all fields are completed

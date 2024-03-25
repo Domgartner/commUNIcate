@@ -10,6 +10,8 @@ import { auth } from "../firebase/config";
 import { Socket } from 'react-chat-engine';
 import NavBar from '../components/SideBar';
 import Header from '../components/Header';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useRouter } from 'next/navigation';
 // import { Router } from '@/node_modules/next/router';
 
 interface Friend {
@@ -21,6 +23,15 @@ interface Friend {
 }
 
 export default function Messages() {
+  const [user, loading] = useAuthState(auth);
+    
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push('/sign-in');
+        }
+    }, [user, loading, router]);
   const [inputMessage, setInputMessage] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
   const [friends, setFriends] = useState([]);

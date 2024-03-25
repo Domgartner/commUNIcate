@@ -6,8 +6,19 @@ import { useEffect, useState } from 'react';
 import { auth } from '../firebase/config';
 import Header from '../components/Header';
 import NavBar from '../components/SideBar';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useRouter } from 'next/navigation';
 
 export default function Profile() {
+    const [user, loading] = useAuthState(auth);
+    
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push('/sign-in');
+        }
+    }, [user, loading, router]);
     const [isChanged, setIsChanged] = useState(false);
     const [year, setYear] = useState(1);
     const [major, setMajor] = useState("");
