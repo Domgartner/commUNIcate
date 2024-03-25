@@ -23,6 +23,7 @@ locals {
   manage_friends = "manage-friends"
   get_friends = "get-friends"
   manage_class_items = "manage-class-items"
+  update_profile = "update-profile"
 
   handler_name = "main.handler"
 
@@ -35,6 +36,7 @@ locals {
   artifact_manage_friends = "artifact_manage_friends.zip"
   artifact_get_friends = "artifact_get_friends.zip"
   artifact_manage_class_items = "artifact_manage_class_items.zip"
+  artifact_update_profile = "artifact_update_profile.zip"
 }
 
 resource "aws_iam_role" "lambda_exec" {
@@ -146,6 +148,14 @@ resource "aws_lambda_function" "lambda-manage-class-items" {
   source_code_hash = data.archive_file.data_manage_class_items_zip.output_base64sha256
   runtime = "python3.9"
 }
+resource "aws_lambda_function" "lambda-update-profile" {
+  role             = aws_iam_role.lambda_exec.arn
+  function_name    = local.update_profile
+  handler          = local.handler_name
+  filename         = local.artifact_update_profile
+  source_code_hash = data.archive_file.data_update_profile_zip.output_base64sha256
+  runtime = "python3.9"
+}
 # -------------- create Lambda functions --------------- #
 
 
@@ -250,69 +260,31 @@ resource "aws_lambda_function_url" "url-manage-class-items" {
     expose_headers    = ["keep-alive", "date"]
   }
 }
+resource "aws_lambda_function_url" "url-update-profile" {
+  function_name      = aws_lambda_function.lambda-update-profile.function_name
+  authorization_type = "NONE"
+  cors {
+    allow_credentials = true
+    allow_origins     = ["*"]
+    allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+    allow_headers     = ["*"]
+    expose_headers    = ["keep-alive", "date"]
+  }
+}
 # -------- create function URL for Lambda functions ---------- #
 
 # -------------------- DynamoDB Table ---------------------- #
 resource "aws_dynamodb_table" "communicate" {
   name           = "communicate"
   hash_key       = "userID"
-  range_key      = "name"
   billing_mode   = "PROVISIONED"
   read_capacity  = 1
   write_capacity = 1
   attribute {
-    name = "name"
-    type = "S"
-  }
-  attribute {
     name = "userID"
     type = "S"
   }
-   attribute {
-    name = "major"
-    type = "S"
-  }
-  attribute {
-    name = "year"
-    type = "N"
-  }
-  attribute {
-    name = "friends"
-    type = "S"
-  }
-  attribute {
-    name = "profilePic"
-    type = "S"
-  }
-  attribute {
-    name = "classes"
-    type = "S"
-  }
-  local_secondary_index {
-    name               = "major_index"
-    range_key          = "major"
-    projection_type    = "ALL"
-  }
-  local_secondary_index {
-    name               = "year_index"
-    range_key          = "year"
-    projection_type    = "ALL"
-  }
-  local_secondary_index {
-    name               = "friends_index"
-    range_key          = "friends"
-    projection_type    = "ALL"
-  }
-  local_secondary_index {
-    name               = "profilePic_index"
-    range_key          = "profilePic"
-    projection_type    = "ALL"
-  }
-  local_secondary_index {
-    name               = "classes_index"
-    range_key          = "classes"
-    projection_type    = "ALL"
-  }
+
 }
 
 resource "aws_dynamodb_table" "communicate-class" {
@@ -373,6 +345,11 @@ data "archive_file" "data_manage_class_items_zip" {
   type        = "zip"
   source_file = "../functions/manage_class_Items/main.py"         # UPDATE PATH AFTER
   output_path = local.artifact_manage_class_items
+}
+data "archive_file" "data_update_profile_zip" {
+  type        = "zip"
+  source_file = "../functions/update_profile/main.py"         # UPDATE PATH AFTER
+  output_path = local.artifact_update_profile
 }
 # ------------------- create artifacts -------------------- #
 
@@ -460,5 +437,8 @@ output "lambda_url_get_friends" {
 }
 output "lambda_url_manage_class_items" {
   value = aws_lambda_function_url.url-manage-class-items.function_url
+}
+output "lambda_url_update_profile" {
+  value = aws_lambda_function_url.url-update-profile.function_url
 }
 # ---------------------- Outputs ---------------------- #
