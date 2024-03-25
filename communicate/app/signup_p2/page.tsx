@@ -4,46 +4,77 @@ import { UserAuth } from '../context/AuthContext';
 import { auth } from "../firebase/config";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { ChangeEvent } from 'react'; // Import ChangeEvent type
+
+
 export default function SignUpP2() {
-    // const { user } = UserAuth(); // Call UserAuth as a function to get the context value
-    // const userID = user?.uid; // Retrieve the UID from the user object
-    
     const [name, setName] = useState('');
     const [major, setMajor] = useState('');
     const [yearOfMajor, setYearOfMajor] = useState('');
     const [image, setImage] = useState(null); // State to store the image file
-
-    const handleImageChange = (e:any) => {
-        // Function to handle image upload
-        const file = e.target.files[0]; // Get the first file from the selected files
-        setImage(file); // Set the image file to the state
-    };
     const router = useRouter();
-    async function handleSubmit() {
-        // Function to handle form submission
-        // Check if all fields are completed
-        const userID = auth.currentUser ? auth.currentUser.uid : null; // Get userID from currentUser
+
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+
+    // const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    //     setText(event.target.value);
+    // };
+
+    const handleFileInputChange = async (event: ChangeEvent<HTMLInputElement>) => {
+        if (!event.target.files || event.target.files.length === 0) {
+            return;
+        }
+        
+        const file = event.target.files[0];
+        // Check if the selected file is an image
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file.');
+            return;
+        }
+
+        // Convert the image to black and white
+        const bitmap = await createImageBitmap(file);
+        const canvas = document.createElement('canvas');
+        canvas.width = bitmap.width;
+        canvas.height = bitmap.height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            console.error('Canvas context is null.');
+            return;
+        }
+        ctx.drawImage(bitmap, 0, 0);
+
+        // Convert the canvas to a data URL and set it as the image URL
+        const imageUrl = canvas.toDataURL();
+        setImageUrl(imageUrl);
+    };
+    const handleSubmit = async () => {
+        // const userID = auth.currentUser ? auth.currentUser.uid : null; // Get userID from currentUser
+        const userID = auth.currentUser?.uid || null;
+
         if (name.trim() === '' || major === '' || yearOfMajor === '') {
             alert("Please fill in all fields before submitting.");
-            return; // Exit early if any field is empty
+            return;
         }
         const data = {
             userID: userID,
             name: name,
             major: major,
             yearOfMajor: yearOfMajor,
-            // profilePic: image 
+            profilePic: imageUrl 
         };
         // If all fields are filled, proceed with submission
         console.log("Submitting form...");
         console.log("Name:", name);
         console.log("Major:", major);
         console.log("Year of Major:", yearOfMajor);
-        console.log("Profile Image:", image);
+        console.log("Profile Image:", imageUrl);
         console.log("UID:", userID);
         // Make the HTTP request to the Lambda function
+        
         try {
-            const response = await fetch('------- Enter register URL--------', {
+            const response = await fetch('https://dj53bv3h7wwy36kdt6frcy3ijm0nxpzi.lambda-url.ca-central-1.on.aws/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -56,6 +87,13 @@ export default function SignUpP2() {
             const responseData = await response.json();
             console.log('Response Data:', responseData); // Log the response data
             createProfile();
+            if (userID) {
+                localStorage.setItem('userID', JSON.stringify(userID));
+                localStorage.setItem('email', JSON.stringify(auth.currentUser?.email));
+                if (responseData.profilePic) {
+                    localStorage.setItem('profilePic', responseData.profilePic);
+                }
+            }
         } catch (error) {
             console.error('Error submitting user info:', error);
         }
@@ -71,7 +109,7 @@ export default function SignUpP2() {
             return;
         }
         try {
-            axios.put('https://api.chatengine.io/users/',{username: username, secret: secret},{headers:{"Private-key": 'PUT PRIVATE KEY HERE'}}
+            axios.put('https://api.chatengine.io/users/',{username: username, secret: secret},{headers:{"Private-key": 'f8885f5c-bff4-411f-b7d6-b3552b765be5'}}
             ).then((r:any) => router.push('/profile'));
         } catch (error) {
             console.error('Error creating profile:', error);
@@ -91,14 +129,14 @@ export default function SignUpP2() {
                             type="file"
                             id="image"
                             accept="image/*"
-                            onChange={(e) => handleImageChange(e)}
+                            onChange={(e) => handleFileInputChange(e)}
                             className="mt-1"
                         />
                     </div>
                     {/* Display the selected image */}
-                    {image && (
+                    {imageUrl && (
                         <div>
-                            <img src={URL.createObjectURL(image)} alt="Selected" className="mt-2 w-24 h-24 rounded-full object-cover" />
+                            <img src={imageUrl} alt="Selected" className="mt-2 w-24 h-24 rounded-full object-cover" />
                         </div>
                     )}
                     {/* Name */}

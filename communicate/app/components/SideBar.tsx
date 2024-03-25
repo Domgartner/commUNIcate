@@ -4,24 +4,29 @@ import styles from "./Nav.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faUserGroup, faMessage, faGraduationCap, faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/navigation';
-// config.autoAddCss = false; /* eslint-disable import/first */
 
 export default function NavBar() {
     const router = useRouter();
     const [activeNavItem, setActiveNavItem] = useState(() => {
-        // Retrieve the activeNavItem from local storage if it exists
-        return localStorage.getItem('activeNavItem') || null;
+        // Check if localStorage is available before accessing it
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('activeNavItem') || 'homepage'; // Provide a default value if null
+        }
+        return 'homepage'; // Provide a default value if localStorage is not available
     });
 
     useEffect(() => {
         // Save the activeNavItem to local storage whenever it changes
-        localStorage.setItem('activeNavItem', activeNavItem);
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('activeNavItem', activeNavItem);
+        }
     }, [activeNavItem]);
     
     const handleNavItemClick = (navItemId: any) => {
         setActiveNavItem(navItemId);
         router.push(`/${navItemId}`);
     };
+
 
     return (
         <div className={styles.navCont}>

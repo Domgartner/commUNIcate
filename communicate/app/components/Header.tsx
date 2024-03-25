@@ -25,6 +25,9 @@ export default function Header() {
         }
     };
 
+    // Fetch imageUrl from local storage if it exists
+    const imageUrl = typeof window !== 'undefined' ? localStorage.getItem('profilePic') : null;
+
     return (
         <div className={styles.headCont}>
             <div className={styles.bars}>
@@ -34,7 +37,12 @@ export default function Header() {
                 Comm<span id={styles.red}>UNI</span>cate
             </h1>
             <div className={styles.user} onClick={handleUserClick}>
-                <img src="/profiletest.png" className={styles.userImage} />
+                {/* Use imageUrl if available, otherwise render a default profile image */}
+                {imageUrl ? (
+                    <img src={imageUrl} className={styles.userImage} />
+                ) : (
+                    <img src="/profiletest.png" className={styles.userImage} />
+                )}
                 {showDropdown && (
                     <div className={styles.dropdown}>
                         <p onClick={handleSignOut} >Log Out</p>
