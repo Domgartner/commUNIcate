@@ -127,7 +127,24 @@ resource "aws_iam_role" "lambda_create_events" {
         }
     ]
   })
+
+  # permission policy document that defines the permissions granted to the role
+  inline_policy {
+    name = "lambda_create_obituary_permissions"
+    policy = jsonencode({
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Action": ["ssm:GetParametersByPath"],
+          "Resource": ["arn:aws:ssm:ca-central-1:869019704283:parameter/the-last-show/*"]
+        },
+      ]
+    })
+  }  
 }
+
+
 
 resource "aws_iam_role" "lambda_update_event" {
   name               = "iam-for-lambda-${local.function_name_3}"

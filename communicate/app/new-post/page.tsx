@@ -24,17 +24,39 @@ export default function NewPost() {
     const [description, setDescription] = useState('');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-    const handleNextStep = () => {
-        setStep(step + 1);
+    const handleSubmit = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('date', date);
+            formData.append('location', location);
+            formData.append('capacity', capacity);
+            formData.append('description', description);
+            tags.forEach((tag, index) => {
+                formData.append(`tags[${index}]`, tag);
+            });
+            if (selectedFile) {
+                formData.append('file', selectedFile);
+            }
+    
+            const response = await fetch('https://tgk4hztzlqjftfj3lfvlj6asou0seqyu.lambda-url.ca-central-1.on.aws/', {
+                method: 'POST',
+                body: formData,
+            });
+    
+            if (response.ok) {
+                // Handle successful response
+                console.log('Form submitted successfully');
+            } else {
+                // Handle error response
+                console.error('Failed to submit form:', response.statusText);
+            }
+            router.push('/');
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
     };
-
-    const handlePreviousStep = () => {
-        setStep(step - 1);
-    };
-
-    const handleSubmit = () => {
-        // Handle form submission
-    };
+    
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files && event.target.files[0];
@@ -167,7 +189,7 @@ export default function NewPost() {
                                 </div>
                             </div>
                             <div className="flex">
-                                <Button buttonText="Submit" onClick={() => router.push('/')} />
+                                <Button buttonText="Submit" onClick={handleSubmit} />
                             </div>
                         </div>
 
