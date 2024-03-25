@@ -45,6 +45,8 @@ export default function Classes() {
         enroll(className);
         setEnrolledClasses([...enrolledClasses, className]);
       }
+      setUpcomingItems({ ...upcomingItems, [className]: [] }); 
+      setSelectedClass(className);
     }
   };
 
@@ -99,7 +101,6 @@ export default function Classes() {
 
   useEffect(() => {
   }, [upcomingItems, selectedClasses]);
-
 
   useEffect(() => {
     if (auth.currentUser) {
@@ -464,9 +465,11 @@ export default function Classes() {
                     </div>
                   </div>
                 </div>
+
               </div>
             </div>
           )}
         </div>
   );
 }
+             
