@@ -23,11 +23,14 @@ const PhotoBlock = ({id, image, title, location, date, description}: PhotoBlockP
       setRsvpLoading(true);
       console.log(userEmail);
       console.log(id);
-      
+
       try {
+        const formData = new FormData();
+        formData.append('user-email', userEmail || '');
+        formData.append('id', id);
           const response = await fetch('https://hlcq5tpwxlvttjbpyp7kbrtgie0owhes.lambda-url.ca-central-1.on.aws/', {
               method: 'POST',
-              body: JSON.stringify({ email: {userEmail}, eventId: {id} })
+              body: formData,
           });
           // Handle response as needed
       } catch (error) {
