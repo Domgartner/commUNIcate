@@ -1,5 +1,7 @@
 "use client"
 import { useState, useEffect, KeyboardEvent  } from 'react';
+import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from 'react-datepicker';
 import Field from "../components/field";
 import Button from "../components/button";
 import Dropdown from '../components/dropdownField'
@@ -28,6 +30,7 @@ export default function NewPost() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const userEmail = auth.currentUser ? auth.currentUser.email : null;
     const userID = auth.currentUser ? auth.currentUser.uid : null;
+    const [startDate, setStartDate] = useState<Date | null>(null);
 
     const handleSubmit = async () => {
         try {
@@ -133,6 +136,12 @@ useEffect(() => {
                                     onChange={setTitle}
                                     placeholderText="Enter your event name"
                                     className='w-60'
+                                    />
+                                    <DatePicker
+                                    selected={startDate} // Pass the selected date value
+                                    onChange={date => setDate(date)} // Function to handle date change
+                                    dateFormat="yyyy-MM-dd" // Specify the date format
+                                    placeholderText="Select Date" // Placeholder text for the input field
                                     />
                                     <Field
                                     labelName="Date"
