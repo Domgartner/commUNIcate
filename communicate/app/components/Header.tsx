@@ -1,8 +1,11 @@
+'use client'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faSignOutAlt } from "@fortawesome/free-solid-svg-icons"; // Import the sign-out icon
+import { faBars, faSignOutAlt, faUser } from "@fortawesome/free-solid-svg-icons"; // Import the sign-out icon
 import { signOut } from 'firebase/auth'; // Import signOut function
 import { auth } from '../firebase/config';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react'
+import Line from "./line";
 
 export default function Header() {
     const [showDropdown, setShowDropdown] = useState(false);
