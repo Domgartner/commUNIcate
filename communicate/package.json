@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@nextui-org/react": "^2.2.10",
     "axios": "^1.6.8",
     "firebase": "^10.8.0",
+    "moment": "^2.30.1",
     "next": "14.1.0",
     "react": "^18",
     "react-big-calendar": "^1.11.2",
@@ -21,11 +23,17 @@
     "react-firebase-hooks": "^5.1.1",
     "react-icons": "^5.0.1",
     "react-loading": "^2.0.3",
+    "react-pro-sidebar": "^1.1.0",
+    "react-responsive-masonry": "^2.2.0",
+    "react-social-icons": "^6.15.0",
+    "react-uuid": "^2.0.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
+    "@types/react-big-calendar": "^1.8.9",
+    "@types/react-datepicker": "^6.2.0",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
     "postcss": "^8",

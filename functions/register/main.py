@@ -1,10 +1,3 @@
-import json
-import boto3
-
-dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('communicate')
-table2 = dynamodb.Table('communicate-class')
-
 def handler(event, context):
     try:
        # Extract data from the event

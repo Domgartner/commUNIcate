@@ -89,9 +89,9 @@
 /* Media queries for responsiveness */
 
 /* For smaller screens */
-@media (max-width: 768px) {
+/* @media (max-width: 820px) {
     .navItem {
-        width: 90%;
+        width: 81%;
     }
 
     .navItemPost {
@@ -102,7 +102,7 @@
         width: 100%;
         margin-bottom: 30px;
     }
-}
+} */
 
 /* For taller screens */
 @media (min-height: 800px) {

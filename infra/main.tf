@@ -14,6 +14,7 @@ provider "aws" {
 }
 
 locals {
+  auth = "auth"
   register = "register"
   create = "create_event"
   get_events = "get-events"
@@ -22,11 +23,10 @@ locals {
   get_class = "read-class-info"
   manage_friends = "manage-friends"
   get_friends = "get-friends"
-  manage_class_items = "manage-class-items"
-  update_profile = "update-profile"
 
   handler_name = "main.handler"
 
+  artifact_auth = "artifact_auth.zip"
   artifact_register = "artifact_register.zip"
   artifact_create = "artifact_create.zip"
   artifact_get_events = "artifact_get_events.zip"
@@ -35,8 +35,6 @@ locals {
   artifact_get_class = "artifact_get_class.zip"
   artifact_manage_friends = "artifact_manage_friends.zip"
   artifact_get_friends = "artifact_get_friends.zip"
-  artifact_manage_class_items = "artifact_manage_class_items.zip"
-  artifact_update_profile = "artifact_update_profile.zip"
 }
 
 resource "aws_iam_role" "lambda_exec" {
@@ -76,6 +74,15 @@ resource "aws_iam_role_policy_attachment" "lambda_dynamodb" {
 # ------------ policies --------------- #
 
 # -------------- create Lambda functions --------------- #
+resource "aws_lambda_function" "lambda-auth" {
+  role             = aws_iam_role.lambda_exec.arn
+  function_name    = local.auth
+  handler          = local.handler_name
+  filename         = local.artifact_auth
+  source_code_hash = data.archive_file.data_auth_zip.output_base64sha256
+  runtime = "python3.9"
+  timeout = 30
+}
 resource "aws_lambda_function" "lambda-register" {
   role             = aws_iam_role.lambda_exec.arn
   function_name    = local.register
@@ -137,23 +144,7 @@ resource "aws_lambda_function" "lambda-get-friends" {
   function_name    = local.get_friends
   handler          = local.handler_name
   filename         = local.artifact_get_friends
-  source_code_hash = data.archive_file.data_get_friends_zip.output_base64sha256
-  runtime = "python3.9"
-}
-resource "aws_lambda_function" "lambda-manage-class-items" {
-  role             = aws_iam_role.lambda_exec.arn
-  function_name    = local.manage_class_items
-  handler          = local.handler_name
-  filename         = local.artifact_manage_class_items
-  source_code_hash = data.archive_file.data_manage_class_items_zip.output_base64sha256
-  runtime = "python3.9"
-}
-resource "aws_lambda_function" "lambda-update-profile" {
-  role             = aws_iam_role.lambda_exec.arn
-  function_name    = local.update_profile
-  handler          = local.handler_name
-  filename         = local.artifact_update_profile
-  source_code_hash = data.archive_file.data_update_profile_zip.output_base64sha256
+  source_code_hash = data.archive_file.data_manage_friends_zip.output_base64sha256
   runtime = "python3.9"
 }
 # -------------- create Lambda functions --------------- #
@@ -161,9 +152,20 @@ resource "aws_lambda_function" "lambda-update-profile" {
 
 
 # -------- create function URL for Lambda functions ---------- #
+resource "aws_lambda_function_url" "url-auth" {
+  function_name      = aws_lambda_function.lambda-auth.function_name
+  authorization_type = "NONE"
+  cors {
+    allow_credentials = true
+    allow_origins     = ["*"]
+    allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+    allow_headers     = ["*"]
+    expose_headers    = ["keep-alive", "date"]
+  }
+}
 resource "aws_lambda_function_url" "url-register" {
   function_name      = aws_lambda_function.lambda-register.function_name
-  authorization_type = "NONE"   # AWS_IAM for secured access
+  authorization_type = "NONE"
   cors {
     allow_credentials = true
     allow_origins     = ["*"]
@@ -183,6 +185,9 @@ resource "aws_lambda_function_url" "url-create" {
     expose_headers    = ["keep-alive", "date"]
   }
 }
+
+
+
 resource "aws_lambda_function_url" "url-get-events" {
   function_name      = aws_lambda_function.lambda-get-events.function_name
   authorization_type = "NONE"
@@ -194,6 +199,8 @@ resource "aws_lambda_function_url" "url-get-events" {
     expose_headers    = ["keep-alive", "date"]
   }
 }
+
+
 resource "aws_lambda_function_url" "url-messaging" {
   function_name      = aws_lambda_function.lambda-messaging.function_name
   authorization_type = "NONE"
@@ -205,6 +212,9 @@ resource "aws_lambda_function_url" "url-messaging" {
     expose_headers    = ["keep-alive", "date"]
   }
 }
+
+//comment
+
 resource "aws_lambda_function_url" "url-enroll" {
   function_name      = aws_lambda_function.lambda-enroll.function_name
   authorization_type = "NONE"
@@ -525,7 +535,8 @@ resource "aws_lambda_permission" "api_gw_update_profile" {
 # -------------------- DynamoDB Table ---------------------- #
 resource "aws_dynamodb_table" "communicate" {
   name           = "communicate"
-  hash_key       = "userID"
+  hash_key       = "email"
+  range_key      = "name"
   billing_mode   = "PROVISIONED"
   read_capacity  = 1
   write_capacity = 1
@@ -534,23 +545,47 @@ resource "aws_dynamodb_table" "communicate" {
     name = "userID"
     type = "S"
   }
-
-}
-
-resource "aws_dynamodb_table" "communicate-class" {
-  name           = "communicate-class"
-  hash_key       = "userID"
-  billing_mode   = "PROVISIONED"
-  read_capacity  = 1
-  write_capacity = 1
   attribute {
-    name = "userID"
+    name = "year"
+    type = "N"
+  }
+  attribute {
+    name = "gender"
     type = "S"
+  }
+#   attribute {
+#     name = "password"
+#     type = "S"
+#   }
+  local_secondary_index {
+    name               = "major_index"
+    range_key          = "major"
+    projection_type    = "ALL"
+  }
+  local_secondary_index {
+    name               = "minor_index"
+    range_key          = "minor"
+    projection_type    = "ALL"
+  }
+  local_secondary_index {
+    name               = "year_index"
+    range_key          = "year"
+    projection_type    = "ALL"
+  }
+  local_secondary_index {
+    name               = "gender_index"
+    range_key          = "gender"
+    projection_type    = "ALL"
   }
 }
 # -------------------- DynamoDB Table ---------------------- #
 
 # ------------------- create artifacts --------------------- #
+data "archive_file" "data_auth_zip" {
+  type        = "zip"
+  source_file = "../functions/auth/main.py"  
+  output_path = local.artifact_auth
+}
 data "archive_file" "data_register_zip" {
   type        = "zip"
   source_dir = "../functions/register/"         # UPDATE PATH AFTER
@@ -643,14 +678,12 @@ resource "aws_iam_policy" "logs" {
         "dynamodb:PutItem",
         "dynamodb:DeleteItem",
         "dynamodb:GetItem",
-        "dynamodb:UpdateItem",
         "dynamodb:Query"
       ],
       "Resource":[
                 "arn:aws:dynamodb:::table/",
                 "arn:aws:logs:::",
-                "arn:aws:dynamodb:ca-central-1:409601214226:table/communicate",
-                "arn:aws:dynamodb:ca-central-1:409601214226:table/communicate-class"
+                "arn:aws:dynamodb:ca-central-1:409601214226:table/communicate"
                 ],
       "Effect": "Allow"
     }
@@ -661,6 +694,9 @@ EOF
 # ------------ CloudWatch IAM Policy for pubishing logs ------------- #
 
 # ---------------------- Outputs ---------------------- #
+output "lambda_url_auth" {
+  value = aws_lambda_function_url.url-auth.function_url
+}
 output "lambda_url_register" {
   value = aws_lambda_function_url.url-register.function_url
 }
@@ -684,11 +720,5 @@ output "lambda_url_manage_friends" {
 }
 output "lambda_url_get_friends" {
   value = aws_lambda_function_url.url-get-friends.function_url
-}
-output "lambda_url_manage_class_items" {
-  value = aws_lambda_function_url.url-manage-class-items.function_url
-}
-output "lambda_url_update_profile" {
-  value = aws_lambda_function_url.url-update-profile.function_url
 }
 # ---------------------- Outputs ---------------------- #

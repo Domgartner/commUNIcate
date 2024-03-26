@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Header from "./components/Header";
-import NavBar from "./components/SideBar";
+import Footer from './components/Footer'
 import "./globals.css";
 import PageAuthentication from "./components/pageAuthentication";
 
@@ -15,21 +14,10 @@ export const metadata: Metadata = {
 export default function RootLayout({children,}: Readonly<{ children: React.ReactNode }>) {
   
   return (
-    <html lang='en' style={{ height: '100%', width: "100%" }}>
-      <body>
-        <div className="container">
-          <div className="navCont">
-            <NavBar />
-          </div>
-          <div className="headContent">
-            <div className="headCont">
-              <Header />
-            </div>
-            <div className="content">
-              {children}
-            </div>
-          </div>
-        </div>
+    <html lang='en' style={{height: '100%', width: "100%"}}>
+      <body className={inter.className}>
+        {children}
+        {/* <Footer /> */}
       </body>
     </html>
   );

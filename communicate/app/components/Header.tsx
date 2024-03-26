@@ -1,6 +1,3 @@
-"use client"
-import React, { useState } from "react";
-import styles from "./Header.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faSignOutAlt } from "@fortawesome/free-solid-svg-icons"; // Import the sign-out icon
 import { signOut } from 'firebase/auth'; // Import signOut function
@@ -26,21 +23,14 @@ export default function Header() {
     };
 
     return (
-        <div className={styles.headCont}>
-            <div className={styles.bars}>
-                <FontAwesomeIcon icon={faBars} />
+            <div className="flex flex-col">
+                <div className="flex flex-row py-2 px-10 justify-between">
+                    <h1 className="text-4xl py-2">Comm<span className="text-olive">UNI</span>cate</h1>
+                    <button className='text-4xl pt-2' onClick={() => router.push('/profile')}>
+                        <FontAwesomeIcon icon={faUser} />
+                    </button>
+                </div>
+                <Line />
             </div>
-            <h1 className={styles.title}>
-                Comm<span id={styles.red}>UNI</span>cate
-            </h1>
-            <div className={styles.user} onClick={handleUserClick}>
-                <img src="/profiletest.png" className={styles.userImage} />
-                {showDropdown && (
-                    <div className={styles.dropdown}>
-                        <p onClick={handleSignOut} >Log Out</p>
-                    </div>
-                )}
-            </div>
-        </div>
     );
 }

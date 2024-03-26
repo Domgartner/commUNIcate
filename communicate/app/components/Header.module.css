@@ -3,7 +3,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px; /* Added padding for better spacing */
 }
 
 #red {
@@ -13,71 +12,34 @@
 
 .title {
     font-size: 2.05em;
-    margin-left: 20px; /* Adjusted margin for better alignment */
+    margin-left: 40px;
 }
 
 .user {
     display: flex;
     margin-left: auto;
-    position: relative;
 }
 
 .userImage {
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    image-rendering: optimizeSpeed;
     object-fit: cover;
     cursor: pointer;
-    margin-right: 10px; /* Added margin for better spacing */
 }
+
 
 .bars {
     display: none;
     font-size: 2em;
+    margin-left: 10px;
     cursor: pointer;
-    margin-right: 10px; /* Added margin for better spacing */
-}
-
-.logoutButton {
-    font-size: 1.5em;
-    color: #555; /* Changed color to make it less prominent */
-    cursor: pointer;
-    transition: color 0.3s; /* Added transition for smoother hover effect */
-}
-
-.logoutButton:hover {
-    color: #333; /* Darken color on hover */
-}
-
-.dropdown {
-    position: absolute;
-    top: calc(100% + 10px);
-    left: -30px;
-    background-color: #333;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    width: fit-content;
-    /* display: none; */
-}
-
-.dropdown p {
-    margin: 0;
-    padding: 5px 10px;
-    cursor: pointer;
-}
-
-.dropdown p:hover {
-    background-color: #555;
 }
 
 @media (max-width: 1045px) {
     .bars {
         display: block;
-    }
-    .headCont {
-        width: 100vw;
     }
 }
 
