@@ -177,7 +177,9 @@ export default function Messages() {
     <div className={styles.container}>
       <ChatEngine className={styles.chat}
         height="calc(100vh - 212px)"
-        projectID="PUT YOUR PROJECT ID HERE"
+        // projectID="d3e2b80c-93f5-427d-a2e2-f05e6ad5bc76"
+        projectID="02b0c410-449b-4ec5-9a43-a7c2049cee9b"
+       
         userName={username}
         userSecret={secret}
         offset={-6}

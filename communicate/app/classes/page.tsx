@@ -109,7 +109,7 @@ export default function Classes() {
 
   async function deleteClassItem(uniqueID: string, itemInput: string, selectedDate: Date | null) {
     try {
-      console.log('deleting class item:', itemInput);
+      console.log('Adding item to class:', itemInput);
       console.log('Selected Date:', selectedDate);
       console.log('ID:', uniqueID);
       console.log('Class:', selectedClass);
@@ -121,7 +121,24 @@ export default function Classes() {
         id: uniqueID,
         itemName: itemInput
     };
-      let url = `------ ENTER manage_class_items URL-------?type=${"delete"}`;
+
+    if (!selectedClass) {
+      throw new Error("Selected class is null or undefined.");
+    }
+
+
+      // const dateString = selectedDate ? selectedDate.toISOString() : "";
+      const queryParams = new URLSearchParams();
+      queryParams.append('userID', userID);
+      queryParams.append('id', uniqueID);
+      // queryParams.append('date',dateString);
+      queryParams.append('itemName',itemInput);
+      queryParams.append('className',selectedClass);
+      queryParams.append('type','delete');
+
+
+      let url = '---ADD MANAGE CLASS ITEMS URL -----?' + queryParams.toString();
+      // let url = `https://ahjyyh4enmm3q7dxpts6wafviy0xqwqy.lambda-url.ca-central-1.on.aws/?type=${"add"}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -154,7 +171,24 @@ export default function Classes() {
         id: uniqueID,
         itemName: itemInput
     };
-      let url = `------ ENTER manage_class_items URL-------?type=${"add"}`;
+
+    if (!selectedClass) {
+      throw new Error("Selected class is null or undefined.");
+  }
+
+
+      const dateString = selectedDate ? selectedDate.toISOString() : "";
+      const queryParams = new URLSearchParams();
+      queryParams.append('userID', userID);
+      queryParams.append('id', uniqueID);
+      queryParams.append('date',dateString);
+      queryParams.append('itemName',itemInput);
+      queryParams.append('className',selectedClass);
+      queryParams.append('type','add');
+
+
+      let url = '---ADD MANAGE CLASS ITEMS URL -----?' + queryParams.toString();
+
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -177,7 +211,11 @@ export default function Classes() {
     try {
       const userID = auth.currentUser ? auth.currentUser.uid : null;
       console.log(userID);
-      let url = `------ ENTER get_class URL-------?userID=${userID}`;
+
+      const queryParams = new URLSearchParams();
+      queryParams.append('userID', userID);
+      let url = '---ADD Read CLASS ITEMS URL -----?' + queryParams.toString();
+
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Failed to fetch classes');
@@ -189,6 +227,8 @@ export default function Classes() {
       let classes = classesString.split(',');
       console.log(classes);
       const items = responseData.data.Items[0]?.items || [];
+      console.log(typeof items); // Check the type of items
+
       const itemDetails = items.map((item: { itemName: any; date: any; id: any; class: any }) => ({
         title: item.itemName,
         date: item.date,
@@ -239,7 +279,19 @@ export default function Classes() {
             class: selectedClass,
             userID: auth.currentUser.uid
         }
-        let url = `------- Enter enroll URL--------?type=${"unenroll"}`;
+        if (!selectedClass) {
+          throw new Error("Selected class is null or undefined.");
+      }
+  
+        
+        const queryParams = new URLSearchParams();
+        queryParams.append('userID', auth.currentUser.uid);
+        queryParams.append('class', selectedClass);
+        queryParams.append('type','unenroll')
+        
+  
+        let url = '---ADD ENROLL API Gateway URL -----?' + queryParams.toString();
+        // let url = `https://htd3uel2yernvl4wim2mjgompy0mdpik.lambda-url.ca-central-1.on.aws/?type=${"unenroll"}`;
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -263,11 +315,22 @@ export default function Classes() {
         console.log("ENROLL FUNCTION CALLED");
         console.log('Enrolling in class:', className);
         console.log('User ID:', auth.currentUser.uid);
+
         const data = {
             class: className,
             userID: auth.currentUser.uid
         }
-        let url = `------- Enter enroll URL--------?type=${"enroll"}`;
+      //   if (!selectedClass) {
+      //     throw new Error("Selected class is null or undefined.");
+      // }
+        const queryParams = new URLSearchParams();
+        queryParams.append('userID', auth.currentUser.uid);
+        queryParams.append('class', className);
+        queryParams.append('type','enroll')
+        
+  
+        let url = '---ADD ENROLL API Gateway URL -----?' + queryParams.toString();
+      
         const response = await fetch(url, {
           method: 'POST',
           headers: {

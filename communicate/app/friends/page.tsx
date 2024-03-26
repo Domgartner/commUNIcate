@@ -31,8 +31,19 @@ export default function FriendsPage() {
         try {
             const userID = auth.currentUser ? auth.currentUser.uid : null; // Get userID from currentUser
             console.log(userID);
-            let url = `------- Enter get_friends URL--------?filter=${activeFilter}&userID=${userID}`; 
-            const response = await fetch(url);
+            
+            const queryParams = new URLSearchParams();
+            queryParams.append('userID', userID);
+            queryParams.append('activeFilter', activeFilter);
+            let url = '---ADD Get Friends API Gateway URL -----??' + queryParams.toString()
+            // const response = await fetch(url);
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
             if (!response.ok) {
                 throw new Error('Failed to fetch friends');
             }

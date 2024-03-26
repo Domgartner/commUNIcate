@@ -24,10 +24,16 @@ def handler(event, context):
 
         if filter == "update" :
             # Query the DynamoDB table to get the details of all the friends
-            data = json.loads(event['body'])
-            name = str(data.get('name', ''))
-            year = int(data.get('year', ''))
-            major = str(data.get('major', ''))
+            # data = json.loads(event['body'])
+            # name = str(data.get('name', ''))
+            # year = int(data.get('year', ''))
+            # major = str(data.get('major', ''))
+            name = event['queryStringParameters']['name']
+            userID = event['queryStringParameters']['userID']
+            type = event['queryStringParameters']['type']
+            year = event['queryStringParameters']['year']
+            major = event['queryStringParameters']['major']
+            
             Items={'userID': user_id,
                     'name': name,
                     'friends': user_response['Items'][0].get('friends', ''),

@@ -16,7 +16,19 @@ export default function Friend({ id, name, profilePic, major, year, activeFilter
         try {
             const userID = auth.currentUser ? auth.currentUser.uid : null;
             console.log(id);
-            const response = await fetch(`------- Enter manage_friends URL--------?id=${id}&userID=${userID}`);
+            // const response = await fetch(`?id=${id}&userID=${userID}`);
+            const queryParams = new URLSearchParams();
+            queryParams.append('userID', userID);
+            queryParams.append('id', id);
+            queryParams.append('type','add')
+            let url = '---ADD Manage Friends API Gateway URL -----??' + queryParams.toString();
+            // const response = await fetch(url);
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
             if (!response.ok) {
                 throw new Error('Failed to add friend');
             }
@@ -32,7 +44,19 @@ export default function Friend({ id, name, profilePic, major, year, activeFilter
         try {
             const userID = auth.currentUser ? auth.currentUser.uid : null;
             console.log(id);
-            const response = await fetch(`------- Enter manage_friends URL--------?id=${id}&userID=${userID}`);
+            const queryParams = new URLSearchParams();
+            queryParams.append('userID', userID);
+            queryParams.append('id', id);
+            queryParams.append('type','remove')
+            let url = '---ADD Manage Friends  API Gateway URL -----??' + queryParams.toString();
+            // const response = await fetch(url);
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+    
             if (!response.ok) {
                 throw new Error('Failed to remove friend');
             }

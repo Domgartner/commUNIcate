@@ -8,11 +8,17 @@ table2 = dynamodb.Table('communicate-class')
 def handler(event, context):
     try:
        # Extract data from the event
-        data = json.loads(event['body'])
-        userID = str(data.get('userID', ''))
-        name = str(data.get('name', ''))
-        major = str(data.get('major', ''))
-        yearOfMajor = int(data.get('yearOfMajor', ''))
+        # data = json.loads(event['body'])
+        # userID = str(data.get('userID', ''))
+        # name = str(data.get('name', ''))
+        # major = str(data.get('major', ''))
+        # yearOfMajor = int(data.get('yearOfMajor', ''))
+        
+        userID = event['queryStringParameters']['userID']
+        name = event['queryStringParameters']['name']
+        major = event['queryStringParameters']['major']
+        yearOfMajor = event['queryStringParameters']['yearOfMajor']
+        
 
         # profilePic = data.get('profilePic', '')
         if not (userID or name or major or yearOfMajor):
@@ -31,8 +37,8 @@ def handler(event, context):
 
          
         Items2={'userID': userID,
-               'className': 'LoserNoClasses',
-               'items': 'LoserNoItems'}
+               'classNames': 'LoserNoClasses',
+               'items': []}
 
         response = table2.put_item(Item=Items2)
         return {

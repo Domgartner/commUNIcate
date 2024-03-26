@@ -7,7 +7,7 @@ table = dynamodb.Table('communicate')
 
 def handler(event, context):
     try:
-        filter = event['queryStringParameters']['filter']
+        filter = event['queryStringParameters']['activeFilter']
         user_id = event['queryStringParameters']['userID']  # get the value of the 'userID' query parameter from the event object
         user_response = table.query(KeyConditionExpression=Key('userID').eq(user_id))  # query the DynamoDB table for the user's details based on userID
         

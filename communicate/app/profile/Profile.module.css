@@ -1,0 +1,17 @@
+.select {
+    /* Remove the default arrow and underline */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    outline: none; /* Remove outline on focus */
+  }
+
+  .text {
+    /* Remove the default arrow and underline */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    outline: none; /* Remove outline on focus */
+  }

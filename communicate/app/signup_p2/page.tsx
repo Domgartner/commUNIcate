@@ -19,6 +19,8 @@ export default function SignUpP2() {
         setImage(file); // Set the image file to the state
     };
     const router = useRouter();
+
+
     async function handleSubmit() {
         // Function to handle form submission
         // Check if all fields are completed
@@ -41,9 +43,16 @@ export default function SignUpP2() {
         console.log("Year of Major:", yearOfMajor);
         console.log("Profile Image:", image);
         console.log("UID:", userID);
+        const queryParams = new URLSearchParams();
+        queryParams.append('userID', userID);
+        queryParams.append('name', name);
+        queryParams.append('major', major);
+        queryParams.append('yearOfMajor', yearOfMajor);
+
+
         // Make the HTTP request to the Lambda function
         try {
-            const response = await fetch('------- Enter register URL--------', {
+            const response = await fetch('----ADD REGISTER APIGATEWAYURL-------' + queryParams.toString(), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -56,10 +65,15 @@ export default function SignUpP2() {
             const responseData = await response.json();
             console.log('Response Data:', responseData); // Log the response data
             createProfile();
+            localStorage.setItem('userID', JSON.stringify(auth.currentUser.uid));
+            localStorage.setItem('email', JSON.stringify(auth.currentUser.email));
         } catch (error) {
             console.error('Error submitting user info:', error);
         }
     };
+
+
+
 
     const createProfile = async () => {
         const secret = auth.currentUser ? auth.currentUser.uid : null; // Get userID from currentUser
@@ -71,7 +85,9 @@ export default function SignUpP2() {
             return;
         }
         try {
-            axios.put('https://api.chatengine.io/users/',{username: username, secret: secret},{headers:{"Private-key": 'PUT PRIVATE KEY HERE'}}
+ 
+            axios.put('https://api.chatengine.io/users/',{username: username, secret: secret},{headers:{"Private-key": 'ADD PRIVATE KEY'}}
+            
             ).then((r:any) => router.push('/profile'));
         } catch (error) {
             console.error('Error creating profile:', error);
