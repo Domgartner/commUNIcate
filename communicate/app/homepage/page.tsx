@@ -1,26 +1,40 @@
-"use client"
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../firebase/config';
+'use client'
+import React, { useState, useEffect } from 'react';
+
+import UpcomingEvents from "../components/upcomingEvents"
 import { useRouter } from 'next/navigation';
-import { signOut } from 'firebase/auth';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import NavBar from '../components/SideBar';
 import Header from '../components/Header';
-import BEvent from '../components/BEvent';
+import { auth } from '../firebase/config';
 
 export default function HomePage() {
 
-    const [user] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
     
     const router = useRouter();
 
-    if(!user) {
-        router.push('/sign-up')
-    }
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push('/sign-in');
+        }
+    }, [user, loading, router]);
 
-    return (
-    <div>
-        {/* <BEvent/> */}
-    </div>
-    )
-
-};
+  return (
+    <html lang="en">
+      <body className="flex flex-row">
+        <div className="flex-1% bg-gray-800">
+          <NavBar/>
+        </div>
+        <div className="flex-4 flex-grow flex-col">
+          <div>
+            <Header/>
+          </div>
+          <div>
+            <UpcomingEvents />
+          </div>
+        </div>
+      </body>
+    </html>
+  );
+  }

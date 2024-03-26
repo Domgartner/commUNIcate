@@ -35,11 +35,15 @@ export default function NavBar() {
       <Sidebar className="text-sans bg-bleh h-full fixed left-0 right-0 " collapsed={collapsed}>
         <button className='flex px-8 text-3xl text-baby-blue pt-8' onClick={handleToggleSidebar}><FontAwesomeIcon icon={faGripLines} /></button>
         <div className="flex flex-col items-star pt-20">
-          <button className='flex flex-row pt-5 pb-4 rounded-xl hover:bg-blue focus:outline-none focus:ring-4 focus:ring-blue-300' id={styles.friends} onClick={() => handleNavItemClick('friends')}>
+        <button className='flex flex-row pt-5 pb-4 rounded-xl hover:bg-blue focus:outline-none focus:ring-4 focus:ring-blue-300' id={styles.friends} onClick={() => handleNavItemClick('profile')}>
+            <FontAwesomeIcon icon={faUser} className='text-baby-blue text-md ml-9'/>
+            <h2 className=" text-baby-blue ml-10">Profile</h2>
+          </button>
+          <button className='flex flex-row pt-5 pb-4 rounded-xl hover:bg-blue focus:outline-none focus:ring-4 focus:ring-blue-300' id={styles.friends} onClick={() => handleNavItemClick('homepage')}>
             <FontAwesomeIcon icon={faHome} className='text-baby-blue text-md ml-9'/>
             <h2 className=" text-baby-blue ml-10">Home</h2>
           </button>
-          <button className='flex flex-row pt-5 pb-4 rounded-xl hover:bg-blue focus:outline-none focus:ring-4 focus:ring-blue-300' id={styles.friends} onClick={() => handleNavItemClick('friends')}>
+          <button className='flex flex-row pt-5 pb-4 rounded-xl hover:bg-blue focus:outline-none focus:ring-4 focus:ring-blue-300' id={styles.friends} onClick={() => handleNavItemClick('manage-events')}>
             <FontAwesomeIcon icon={faCalendarAlt} className='text-baby-blue text-md ml-9'/>
             <h2 className=" text-baby-blue ml-10">Manage Events</h2>
           </button>
