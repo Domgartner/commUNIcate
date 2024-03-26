@@ -83,9 +83,6 @@ const upcomingEvents = () => {
           <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 mt-5 mx-10">
             {buildPhotoBlocks(events)}
           </div>
-          <button className="fixed bottom-8 right-8 bg-blue-500 text-white text-4xl rounded-md p-4 shadow-lg cursor-pointer z-10" onClick={() => handleNavItemClick('new-post')}>
-            <FontAwesomeIcon icon={faPlus} />
-          </button>
       </div>
     );
   };

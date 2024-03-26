@@ -20,32 +20,79 @@ type Event = {
 
 type PhotoBlockProps = {
   image: string;
+  id: string;
   title: string;
   location: string;
   date: string;
   description: string;
 };
 
-const PhotoBlock = ({ image, title, location, date, description }: PhotoBlockProps) => {
+const PhotoBlock = ({ image, id, title, location, date, description }: PhotoBlockProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editedTitle, setEditedTitle] = useState(title);
     const [editedLocation, setEditedLocation] = useState(location);
     const [editedDate, setEditedDate] = useState(date);
     const [editedDescription, setEditedDescription] = useState(description);
+    const userEmail = auth.currentUser ? auth.currentUser.email : null;
+
   
     const handleEditClick = () => {
       setIsEditing(true);
     };
   
-    const handleConfirmClick = () => {
-      // Here, you would typically submit the edited data to update the event
-      // For the sake of this example, we'll just log the edited values
-      console.log("Edited Title:", editedTitle);
-      console.log("Edited Location:", editedLocation);
-      console.log("Edited Date:", editedDate);
-      console.log("Edited Description:", editedDescription);
-      setIsEditing(false);
+        const handleConfirmClick = async () => {
+            try {
+                const formData = new FormData();
+                formData.append('user-email', userEmail || '');
+                formData.append('id', id);
+                formData.append('title', title);
+                formData.append('date', date);
+                formData.append('location', location);
+                formData.append('description', description);
+    
+              
+        
+                const response = await fetch('https://ev2mvdzfkivy6hxernaljqnjoa0yielf.lambda-url.ca-central-1.on.aws/', {
+                    method: 'POST',
+                    body: formData,
+                });
+        
+                if (response.ok) {
+                    // Handle successful response
+                    console.log('Form submitted successfully');
+                } else {
+                    // Handle error response
+                    console.error('Failed to submit form:', response.statusText);
+                }
+                setIsEditing(false);
+            } catch (error) {
+                console.error('Error submitting form:', error);
+            }
+    
+      
     };
+
+    const handleDeleteClick = async () => { 
+        const answer = window.confirm("Are you sure?");
+        if (answer) {
+          const res = await fetch(
+            `https://3h5ppth3zn2oxestbxvvgvzqym0knoxu.lambda-url.ca-central-1.on.aws?email=${userEmail}&id=${id}`,
+            {
+            method: "DELETE",
+        });
+
+        if(res.ok) {
+            // Handle successful response
+            console.log('Form submitted successfully');
+            // Reload the window
+            window.location.reload();
+
+        } else {
+            // Handle error response
+            console.error('Failed to submit form:', res.statusText);
+        }
+      }
+    }
   
     return (
       <div className="flex flex-col group relative rounded-xl border p-4">
@@ -98,12 +145,20 @@ const PhotoBlock = ({ image, title, location, date, description }: PhotoBlockPro
           </div>
         </div>
         {isEditing ? ( // Render confirm button when editing
-          <button
-            className="absolute bottom-2 right-2 bg-green-500 text-white text-xl rounded-md p-2 shadow cursor-pointer z-10"
-            onClick={handleConfirmClick}
-          >
-            <FontAwesomeIcon icon={faCheck} /> Confirm
-          </button>
+        <div className='flex flex-col'>
+            <button
+                className="absolute bottom-16 right-2 bg-green-500 text-white text-xl rounded-md p-2 shadow cursor-pointer z-10"
+                onClick={handleDeleteClick}
+            >
+                    <FontAwesomeIcon icon={faCheck} /> Delete
+            </button>
+            <button
+                className="absolute bottom-2 right-2 bg-green-500 text-white text-xl rounded-md p-2 shadow cursor-pointer z-10"
+                onClick={handleConfirmClick}
+            >
+                <FontAwesomeIcon icon={faCheck} /> Confirm
+            </button>
+        </div>
         ) : (
           <button
             className="absolute bottom-2 right-2 bg-blue-500 text-white text-xl rounded-md p-2 shadow cursor-pointer z-10"
@@ -154,6 +209,7 @@ const upcomingEvents = () => {
       items.push(
         <div key={event.id} className="flex flex-col justify-start mx-2 my-2 gap-4 rounded-md">
           <PhotoBlock
+            id={event.id}
             image={event.image_url}
             title={event.title}
             location={event.location}
