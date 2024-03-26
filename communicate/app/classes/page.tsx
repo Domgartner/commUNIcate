@@ -122,7 +122,7 @@ export default function Classes() {
         id: uniqueID,
         itemName: itemInput
     };
-      let url = `------ ENTER manage_class_items URL-------?type=${"delete"}`;
+      let url = `https://7ggjq2dbvab4xt5ej2g7aq7t2y0jdjdn.lambda-url.ca-central-1.on.aws/?type=${"delete"}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -155,7 +155,7 @@ export default function Classes() {
         id: uniqueID,
         itemName: itemInput
     };
-      let url = `------ ENTER manage_class_items URL-------?type=${"add"}`;
+      let url = `https://7ggjq2dbvab4xt5ej2g7aq7t2y0jdjdn.lambda-url.ca-central-1.on.aws/?type=${"add"}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -178,7 +178,7 @@ export default function Classes() {
     try {
       const userID = auth.currentUser ? auth.currentUser.uid : null;
       console.log(userID);
-      let url = `------ ENTER get_class URL-------?userID=${userID}`;
+      let url = `https://xij73ndhjrodeazl64ocft4cla0ogrik.lambda-url.ca-central-1.on.aws/?userID=${userID}`;
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Failed to fetch classes');
@@ -240,7 +240,7 @@ export default function Classes() {
             class: selectedClass,
             userID: auth.currentUser.uid
         }
-        let url = `------- Enter enroll URL--------?type=${"unenroll"}`;
+        let url = `https://xij73ndhjrodeazl64ocft4cla0ogrik.lambda-url.ca-central-1.on.aws/?type=${"unenroll"}`;
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -268,7 +268,7 @@ export default function Classes() {
             class: className,
             userID: auth.currentUser.uid
         }
-        let url = `------- Enter enroll URL--------?type=${"enroll"}`;
+        let url = `https://xij73ndhjrodeazl64ocft4cla0ogrik.lambda-url.ca-central-1.on.aws/?type=${"enroll"}`;
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -288,6 +288,18 @@ export default function Classes() {
 }
 
   return (
+
+
+    <div className="container">
+    <div className="navCont">
+      <NavBar />
+    </div>
+    <div className="headContent">
+      <div className="headCont">
+        <Header />
+      </div>
+      <div className="content">
+
         <div className="content pl-5">
           <div className="flex items-center border-b-2 border-line pb-2">
             <button
@@ -469,6 +481,9 @@ export default function Classes() {
               </div>
             </div>
           )}
+        </div>
+        </div>
+        </div>
         </div>
   );
 }
