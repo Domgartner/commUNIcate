@@ -107,6 +107,11 @@ def handler(event, context):
 
     id = binary_data[7].decode()
 
+    users = []
+    for prt in data.parts:
+        if prt.headers[b'Content-Disposition'].decode().startswith('form-data; name="users'):
+            users.append(prt.content.decode())
+
     tags = []
     for part in data.parts:
         if part.headers[b'Content-Disposition'].decode().startswith('form-data; name="tags'):
@@ -121,8 +126,10 @@ def handler(event, context):
             'date' : date,
             'location': location,
             'capacity': capacity,
+            'registered': "0",
             'description': description,
             'tags': tags,
+            'users': users,
             'image_url': image_url
         })
         return {

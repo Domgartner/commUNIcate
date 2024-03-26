@@ -64,17 +64,22 @@ locals {
   function_name_4 = "delete-event"
   handler_name_4 = "main.handler"
 
+  function_name_5 = "register-user"
+  handler_name_5 = "main.handler"
+
 
   get_path = "../functions/get_events/main.py"
   create_path = "../functions/create/main.py"
   update_path = "../functions/update/main.py"
   delete_path = "../functions/delete_event/main.py"
+  register_path = "../functions/register_user/main.py"
 
 
   get_artifact = "get.zip"
   create_artifact = "create.zip"
   update_artifact = "update.zip"
   delete_artifact = "delete.zip"
+  register_artifact = "register.zip"
 }
 
 
@@ -150,7 +155,6 @@ resource "aws_iam_role" "lambda_create_events" {
 }
 
 
-
 resource "aws_iam_role" "lambda_update_event" {
   name               = "iam-for-lambda-${local.function_name_3}"
   assume_role_policy = jsonencode({
@@ -170,6 +174,23 @@ resource "aws_iam_role" "lambda_update_event" {
 
 resource "aws_iam_role" "lambda_delete_event" {
   name               = "iam-for-lambda-${local.function_name_4}"
+  assume_role_policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "lambda.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+  })
+}
+
+
+resource "aws_iam_role" "lambda_register_user" {
+  name               = "iam-for-lambda-${local.function_name_5}"
   assume_role_policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
@@ -223,6 +244,13 @@ data "archive_file" "file_4" {
   type = "zip"
   source_file = local.delete_path
   output_path = local.delete_artifact
+}
+
+# create archive file from main.py for update
+data "archive_file" "file_5" {
+  type = "zip"
+  source_file = local.register_path
+  output_path = local.register_artifact
 }
 
 
@@ -286,7 +314,14 @@ resource "aws_lambda_function" "lambda_func_delete" {
   runtime = "python3.9"
 }
 
-
+resource "aws_lambda_function" "lambda_func_register" {
+  role          = aws_iam_role.lambda_register_user.arn
+  function_name = local.function_name_5
+  handler       = local.handler_name_5
+  filename      = local.register_artifact
+  source_code_hash = data.archive_file.file_5.output_base64sha256
+  runtime = "python3.9"
+}
 
 
 
@@ -413,6 +448,30 @@ resource "aws_iam_policy" "logs_4" {
 EOF
 }
 
+resource "aws_iam_policy" "logs_5" {
+  name        = "lambda-logging-${local.function_name_5}"
+  description = "IAM policy for logging from a lambda"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:DeleteItem" 
+      ],
+      "Resource": ["arn:aws:logs:*:*:*", "${aws_dynamodb_table.communicate-events.arn}"],
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
 
 
 
@@ -452,7 +511,23 @@ resource "aws_iam_role_policy_attachment" "lambda_logs_4" {
   policy_arn = aws_iam_policy.logs_4.arn
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_logs_5" {
+  role       = aws_iam_role.lambda_register_user.name
+  policy_arn = aws_iam_policy.logs_5.arn
+}
 
+# Attach a policy granting DynamoDB permissions to the Lambda function role
+resource "aws_iam_policy_attachment" "lambda_dynamodb_policy" {
+  name       = "lambda-dynamodb-policy"
+  roles      = [
+    aws_iam_role.lambda_get_events.name,
+    aws_iam_role.lambda_create_events.name,
+    aws_iam_role.lambda_update_event.name,
+    aws_iam_role.lambda_delete_event.name,
+    aws_iam_role.lambda_register_user.name
+  ]
+  policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"  # Adjust as needed
+}
 
 
 
@@ -527,6 +602,21 @@ resource "aws_lambda_function_url" "url_4" {
   }
 }
 
+resource "aws_lambda_function_url" "url_5" {
+  function_name      = aws_lambda_function.lambda_func_register.function_name
+  authorization_type = "NONE"
+
+  cors {
+    allow_credentials = true
+    allow_origins     = ["*"]
+     allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+    allow_headers     = ["*"]
+    expose_headers    = ["keep-alive", "date"]
+  }
+}
+
+
+
 
 
 
@@ -545,7 +635,10 @@ output "lambda_url_update" {
   value = aws_lambda_function_url.url_3.function_url
 }
 
-
 output "lambda_url_delete" {
   value = aws_lambda_function_url.url_4.function_url
+}
+
+output "lambda_url_register" {
+  value = aws_lambda_function_url.url_5.function_url
 }

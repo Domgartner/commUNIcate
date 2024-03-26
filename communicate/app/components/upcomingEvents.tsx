@@ -9,6 +9,7 @@ import Line from './line';
 import { useRouter } from "next/navigation";
 
 type Event = {
+  id: string
   image_url: string;
   title: string;
   location: string;
@@ -28,13 +29,17 @@ const upcomingEvents = () => {
       };
 
 
-    useEffect(() => {
+      useEffect(() => {
         const fetchEvents = async () => {
             try {
                 const response = await fetch('https://fpwya4ojfnycyejef3y7v7567q0scycr.lambda-url.ca-central-1.on.aws/');
                 const data = await response.json();
-                setEvents(data);
-                setFilteredEvents(data);
+                if (Array.isArray(data)) {
+                    setEvents(data);
+                    setFilteredEvents(data);
+                } else {
+                    console.error("Data fetched is not an array:", data);
+                }
             } catch (error) {
                 console.log(error);
             }
@@ -64,6 +69,7 @@ const upcomingEvents = () => {
               .filter((event, idx) => idx % 3 === index)
               .map((filteredPhoto) => (
                 <PhotoBlock
+                  id={filteredPhoto.id}
                   image={filteredPhoto.image_url}
                   title={filteredPhoto.title}
                   location={filteredPhoto.location}
