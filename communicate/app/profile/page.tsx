@@ -4,30 +4,51 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from 'react';
 import { auth } from '../firebase/config';
-import Header from '../components/Header';
+import { ChangeEvent } from 'react'; // Import ChangeEvent type
 import NavBar from '../components/SideBar';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useRouter } from 'next/navigation';
+import Header from '../components/Header';
+
 
 export default function Profile() {
-    const [user, loading] = useAuthState(auth);
-    
-    const router = useRouter();
-
-    useEffect(() => {
-        if (!loading && !user) {
-            router.push('/sign-in');
-        }
-    }, [user, loading, router]);
     const [isChanged, setIsChanged] = useState(false);
     const [year, setYear] = useState(1);
     const [major, setMajor] = useState("");
     const [name, setName] = useState("");
+    const [imageUrl, setImageUrl] = useState("");
 
-    const handleImageChange = () => {
-        console.log('Image change');
+    // const handleImageChange = (e:any) => {
+    //     const file = e.target.files[0]; // Get the selected file
+    //     const imageUrl = URL.createObjectURL(file); // Convert the file to a URL
+    //     setImageUrl(imageUrl); // Update the state with the image URL
+    // };
+    const handleFileInputChange = async (event: ChangeEvent<HTMLInputElement>) => {
+        if (!event.target.files || event.target.files.length === 0) {
+            return;
+        }
+
+        const file = event.target.files[0];
+        // Check if the selected file is an image
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file.');
+            return;
+        }
+
+        // Convert the image to black and white
+        const bitmap = await createImageBitmap(file);
+        const canvas = document.createElement('canvas');
+        canvas.width = bitmap.width;
+        canvas.height = bitmap.height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            console.error('Canvas context is null.');
+            return;
+        }
+        ctx.drawImage(bitmap, 0, 0);
+
+        // Convert the canvas to a data URL and set it as the image URL
+        const imageUrl = canvas.toDataURL();
+        setImageUrl(imageUrl);
     };
-
     const handleYearChange = (e: { target: { name: any; value: any; }; }) => {
         setIsChanged(true);
         const { value } = e.target;
@@ -47,12 +68,11 @@ export default function Profile() {
                 name: name,
                 year: year,
                 major: major,
+                profilePic: imageUrl
             };
-            console.log(data.name);
-            console.log(data.year);
-            console.log(data.major);
+
             const userID = localStorage.getItem('userID');
-            let url = `https://eiuzdiehzrakj347tarhxghbtm0mphae.lambda-url.ca-central-1.on.aws/?type=${"update"}&userID=${userID}`;
+            let url = `https://jle7exdim25dy7yrsd2pqqxnha0lwsgu.lambda-url.ca-central-1.on.aws/?type=${"update"}&userID=${userID}`;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -64,6 +84,8 @@ export default function Profile() {
                 throw new Error('Failed to update profile');
             }
             const responseData = await response.json();
+            console.log('Profile updated successfully:', responseData);
+
         } catch (error) {
             console.error('Error updating profile:', error);
         }
@@ -78,7 +100,7 @@ export default function Profile() {
                 if (!userID) {
                     throw new Error('User ID not found in localStorage');
                 }
-                let url = `https://eiuzdiehzrakj347tarhxghbtm0mphae.lambda-url.ca-central-1.on.aws/?type=${"get"}&userID=${userID}`;
+                let url = `https://jle7exdim25dy7yrsd2pqqxnha0lwsgu.lambda-url.ca-central-1.on.aws/?type=${"get"}&userID=${userID}`;
                 const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error('Failed to fetch profile');
@@ -88,6 +110,8 @@ export default function Profile() {
                 setName(responseData.data.name);
                 setYear(responseData.data.year);
                 setMajor(responseData.data.major);
+                setImageUrl(responseData.data.profilePic);
+                console.log(responseData.data.profilePic)
             } catch (error) {
                 console.error('Error fetching profile:', error);
             }
@@ -105,16 +129,24 @@ export default function Profile() {
                     <Header />
                 </div>
                 <div className="content">
+
                     <div className="md:container md:mx-auto h-full flex items-center justify-center">
                         <div className="bg-white rounded-2xl bg-neutral-100 shadow-2xl shadow-slate-600 p-8 w-1/3 relative h-3/4 min-w-[35rem] min-h-96 max-h-full mx-auto">
                             <div className="flex items-center justify-center mb-4 relative -left-5">
                                 <div className="sticky top-0 right-96 transform translate-x-[17rem] -mt-52">
-                                    <div className="bg-white rounded-full p-2 border border-black z-50 cursor-pointer px-3 hover:bg-gray-200" onClick={handleImageChange}>
+                                    <label htmlFor="image" className="bg-white rounded-full p-2 border border-black z-50 cursor-pointer px-3 hover:bg-gray-200">
                                         <FontAwesomeIcon icon={faPencilAlt} />
-                                    </div>
+                                        <input
+                                            type="file"
+                                            id="image"
+                                            accept="image/*"
+                                            onChange={(e) => handleFileInputChange(e)}
+                                            className="hidden" // Hide the file input
+                                        />
+                                    </label>
                                 </div>
                                 <div className="w-72 h-72 bg-white rounded-full flex items-center justify-center border-4 border-gray-300 overflow-hidden">
-                                    <img className="w-60 h-60 rounded-full object-cover" src="https://png.pngtree.com/png-clipart/20230330/ourmid/pngtree-woman-profile-silhouette-black-png-image_6660698.png" alt="Profile" />
+                                    <img className="w-60 h-60 rounded-full object-cover" src={imageUrl} alt="Profile" />
                                 </div>
                             </div>
                             <div className='flex items-center justify-center'>
@@ -151,7 +183,6 @@ export default function Profile() {
                     </div>
                 </div>
             </div>
-        </div>
-
-    );
+            </div>
+            );
 }
