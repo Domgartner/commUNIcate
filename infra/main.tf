@@ -273,6 +273,255 @@ resource "aws_lambda_function_url" "url-update-profile" {
 }
 # -------- create function URL for Lambda functions ---------- #
 
+#------------API GATEWAY----------------#
+resource "aws_apigatewayv2_api" "main" {
+  name          = "main"
+  protocol_type = "HTTP"
+  
+  cors_configuration {
+    allow_origins = ["*"]
+    allow_methods = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+  }
+}
+
+resource "aws_apigatewayv2_stage" "default" {
+  api_id      = aws_apigatewayv2_api.main.id
+  name        = "default"
+  auto_deploy = true
+}
+
+// ENROLL//
+resource "aws_apigatewayv2_route" "class_enroll" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "ANY /class-enroll"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_enroll.id}"
+}
+resource "aws_apigatewayv2_integration" "lambda_enroll" {
+  api_id             = aws_apigatewayv2_api.main.id
+  integration_uri    = aws_lambda_function.lambda-enroll.invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
+resource "aws_lambda_permission" "api_gw_enroll" {
+  statement_id  = "lambda-e2f6df7f-4b7f-4fa8-983a-48a3821fdf4e"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda-enroll.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/ANY/class-enroll"
+}
+// ENROLL//
+
+// CREATE//
+resource "aws_apigatewayv2_route" "create" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "ANY /create"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_create.id}"
+}
+resource "aws_apigatewayv2_integration" "lambda_create" {
+  api_id             = aws_apigatewayv2_api.main.id
+  integration_uri    = aws_lambda_function.lambda-create.invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
+resource "aws_lambda_permission" "api_gw_create" {
+  statement_id  = "lambda-e2f6df7f-4b7f-4fa8-983a-48a3821fdf4e"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda-create.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/ANY/create"
+}
+// CREATE//
+
+// REGISTER//
+resource "aws_apigatewayv2_route" "register" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "ANY /register"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_register.id}"
+}
+resource "aws_apigatewayv2_integration" "lambda_register" {
+  api_id             = aws_apigatewayv2_api.main.id
+  integration_uri    = aws_lambda_function.lambda-register.invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
+resource "aws_lambda_permission" "api_gw_register" {
+  statement_id  = "lambda-e2f6df7f-4b7f-4fa8-983a-48a3821fdf4e"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda-register.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/ANY/register"
+}
+// REGISTER//
+
+// GET-EVENTS//
+resource "aws_apigatewayv2_route" "get-events" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "ANY /get-events"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_get_events.id}"
+}
+resource "aws_apigatewayv2_integration" "lambda_get_events" {
+  api_id             = aws_apigatewayv2_api.main.id
+  integration_uri    = aws_lambda_function.lambda-get-events.invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
+resource "aws_lambda_permission" "api_gw_get_events" {
+  statement_id  = "lambda-e2f6df7f-4b7f-4fa8-983a-48a3821fdf4e"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda-get-events.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/ANY/get-events"
+}
+// GET-EVENTS//
+
+// GET-CLASS//
+resource "aws_apigatewayv2_route" "get-class" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "ANY /get-class"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_get_class.id}"
+}
+resource "aws_apigatewayv2_integration" "lambda_get_class" {
+  api_id             = aws_apigatewayv2_api.main.id
+  integration_uri    = aws_lambda_function.lambda-get-class.invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
+resource "aws_lambda_permission" "api_gw_get_class" {
+  statement_id  = "lambda-e2f6df7f-4b7f-4fa8-983a-48a3821fdf4e"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda-get-class.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/ANY/get-class"
+}
+// GET-CLASS//
+
+// MANAGE-FRIENDS//
+resource "aws_apigatewayv2_route" "manage-friends" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "ANY /manage-friends"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_manage_friends.id}"
+}
+resource "aws_apigatewayv2_integration" "lambda_manage_friends" {
+  api_id             = aws_apigatewayv2_api.main.id
+  integration_uri    = aws_lambda_function.lambda-manage-friends.invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
+resource "aws_lambda_permission" "api_gw_manage_friends" {
+  statement_id  = "lambda-e2f6df7f-4b7f-4fa8-983a-48a3821fdf4e"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda-manage-friends.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/ANY/manage-friends"
+}
+// MANAGE-FRIENDS//
+
+// GET-FRIENDS//
+resource "aws_apigatewayv2_route" "get-friends" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "ANY /get-friends"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_get_friends.id}"
+}
+resource "aws_apigatewayv2_integration" "lambda_get_friends" {
+  api_id             = aws_apigatewayv2_api.main.id
+  integration_uri    = aws_lambda_function.lambda-get-friends.invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
+resource "aws_lambda_permission" "api_gw_get_friends" {
+  statement_id  = "lambda-e2f6df7f-4b7f-4fa8-983a-48a3821fdf4e"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda-get-friends.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/ANY/get-friends"
+}
+// GET-FRIENDS//
+
+// MANAGE-CLASS-ITEMS//
+resource "aws_apigatewayv2_route" "manage-class-items" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "ANY /manage-class-items"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_manage_class_items.id}"
+}
+resource "aws_apigatewayv2_integration" "lambda_manage_class_items" {
+  api_id             = aws_apigatewayv2_api.main.id
+  integration_uri    = aws_lambda_function.lambda-manage-class-items.invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
+resource "aws_lambda_permission" "api_gw_manage_class_items" {
+  statement_id  = "lambda-e2f6df7f-4b7f-4fa8-983a-48a3821fdf4e"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda-manage-class-items.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/ANY/manage-class-items"
+}
+// MANAGE-CLASS-ITEMS//
+
+
+// UPDATE-PROFILE//
+resource "aws_apigatewayv2_route" "update-profile" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "ANY /update-profile"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_update_profile.id}"
+}
+resource "aws_apigatewayv2_integration" "lambda_update_profile" {
+  api_id             = aws_apigatewayv2_api.main.id
+  integration_uri    = aws_lambda_function.lambda-update-profile.invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
+resource "aws_lambda_permission" "api_gw_update_profile" {
+  statement_id  = "lambda-e2f6df7f-4b7f-4fa8-983a-48a3821fdf4e"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda-update-profile.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/ANY/update-profile"
+}
+// UPDATE-PROFILE//
+
+
+
+
+# resource "aws_apigatewayv2_api" "main" {
+#   name          = "main"
+#   protocol_type = "HTTP"
+# }
+
+# resource "aws_apigatewayv2_stage" "dev" {
+#   api_id      = aws_apigatewayv2_api.main.id
+#   name        = "dev"
+#   auto_deploy = true
+# }
+
+# resource "aws_apigatewayv2_integration" "lambda_enroll" {
+#   api_id             = aws_apigatewayv2_api.main.id
+#   integration_uri    = aws_lambda_function.lambda-enroll.invoke_arn
+#   integration_type   = "AWS_PROXY"
+#   integration_method = "POST"
+# }
+
+# resource "aws_apigatewayv2_route" "class_enroll" {
+#   api_id    = aws_apigatewayv2_api.main.id
+#   route_key = "POST /class-enroll"
+#   target    = "integrations/${aws_apigatewayv2_integration.lambda_enroll.id}"
+# }
+
+# resource "aws_lambda_permission" "api_gw" {
+#   statement_id  = "AllowExecutionFromAPIGateway"
+#   action        = "lambda:InvokeFunction"
+#   function_name = aws_lambda_function.lambda-enroll.function_name
+#   principal     = "apigateway.amazonaws.com"
+#   source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/POST/class-enroll"
+# }
+
+# output "URL_API_GATEWAY" {
+#   value = aws_apigatewayv2_stage.dev.invoke_url
+# }
+
+
+
+
 # -------------------- DynamoDB Table ---------------------- #
 resource "aws_dynamodb_table" "communicate" {
   name           = "communicate"
@@ -280,6 +529,7 @@ resource "aws_dynamodb_table" "communicate" {
   billing_mode   = "PROVISIONED"
   read_capacity  = 1
   write_capacity = 1
+
   attribute {
     name = "userID"
     type = "S"
@@ -303,7 +553,7 @@ resource "aws_dynamodb_table" "communicate-class" {
 # ------------------- create artifacts --------------------- #
 data "archive_file" "data_register_zip" {
   type        = "zip"
-  source_file = "../functions/register/main.py"         # UPDATE PATH AFTER
+  source_dir = "../functions/register/"         # UPDATE PATH AFTER
   output_path = local.artifact_register
 }
 data "archive_file" "data_create_zip" {
@@ -348,7 +598,7 @@ data "archive_file" "data_manage_class_items_zip" {
 }
 data "archive_file" "data_update_profile_zip" {
   type        = "zip"
-  source_file = "../functions/update_profile/main.py"         # UPDATE PATH AFTER
+  source_dir = "../functions/update_profile/"         # UPDATE PATH AFTER
   output_path = local.artifact_update_profile
 }
 # ------------------- create artifacts -------------------- #
