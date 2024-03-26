@@ -16,6 +16,7 @@ type Event = {
   date: string;
   description: string;
   tags: string[];
+  users: string[]; // Include the rsvpedUsers property
 };
 
 const upcomingEvents = () => {
@@ -75,6 +76,7 @@ const upcomingEvents = () => {
                   location={filteredPhoto.location}
                   date={filteredPhoto.date}
                   description={filteredPhoto.description}
+                  users={filteredPhoto.users}
                 />
               ))}
           </div>

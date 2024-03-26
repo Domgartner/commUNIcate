@@ -22,6 +22,7 @@ export default function NewPost() {
     const [location, setLocation] = useState('');
     const [capacity, setCapacity] = useState('');
     const [tags, setTags] = useState<string[]>([]);
+    const [users, setUsers] = useState<string[]>([]);
     const [tagInput, setTagInput] = useState<string>('');
     const [description, setDescription] = useState('');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -46,9 +47,15 @@ export default function NewPost() {
             }
             formData.append('id', uuid());
 
+            users.forEach((user, idx) => {
+                formData.append(`users[${idx}]`, user);
+            });
+
             tags.forEach((tag, index) => {
                 formData.append(`tags[${index}]`, tag);
             });
+
+
 
             console.log(selectedFile)
             console.log(userEmail)
