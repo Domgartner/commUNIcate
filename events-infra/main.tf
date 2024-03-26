@@ -22,18 +22,18 @@ resource "aws_dynamodb_table" "communicate-events" { # creating the table, got t
   # up to 1KB per second
   write_capacity = 1 #keep this
 
+  range_key = "id"
   hash_key = "email"
-  range_key = "name"
+
 
   attribute {
-    name = "email"
+    name = "id"
     type = "S"
   }
 
-
   attribute {
-    name = "name"
-    type = "S"
+  name = "email"
+  type = "S"
   }
 
 }

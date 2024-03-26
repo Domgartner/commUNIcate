@@ -6,11 +6,13 @@ import Dropdown from '../components/dropdownField'
 import CheckboxField from '../components/checkboxField'
 import {Card, CardBody, CardHeader, Image, Slider} from "@nextui-org/react";
 import Link from 'next/link';
+import uuid from 'react-uuid';
 import { useRouter } from 'next/navigation'
 import Header from '../components/Header';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import NavBar from '../components/SideBar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { auth } from "../firebase/config";
 
 export default function NewPost() {
     const router = useRouter()
@@ -23,21 +25,35 @@ export default function NewPost() {
     const [tagInput, setTagInput] = useState<string>('');
     const [description, setDescription] = useState('');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const userEmail = auth.currentUser ? auth.currentUser.email : null;
+    const userID = auth.currentUser ? auth.currentUser.uid : null;
 
     const handleSubmit = async () => {
         try {
             const formData = new FormData();
+            formData.append('user-email', userEmail || '');
             formData.append('title', title);
             formData.append('date', date);
             formData.append('location', location);
             formData.append('capacity', capacity);
             formData.append('description', description);
+
+            if (selectedFile) {
+                console.log(selectedFile + "it worked");
+                formData.append('file', selectedFile);
+            } else {
+                console.log("no")
+            }
+            formData.append('id', uuid());
+
             tags.forEach((tag, index) => {
                 formData.append(`tags[${index}]`, tag);
             });
-            if (selectedFile) {
-                formData.append('file', selectedFile);
-            }
+
+            console.log(selectedFile)
+            console.log(userEmail)
+            console.log(userID)
+            
     
             const response = await fetch('https://tgk4hztzlqjftfj3lfvlj6asou0seqyu.lambda-url.ca-central-1.on.aws/', {
                 method: 'POST',
@@ -58,12 +74,20 @@ export default function NewPost() {
     };
     
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files && event.target.files[0];
-        if (file) {
-            setSelectedFile(file);
-        }
-    };
+  const [file, setFile] = useState()
+
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (event.target.files) {
+        setSelectedFile(event.target.files[0]);
+        console.log("hi")
+        console.log(selectedFile)
+    }
+}
+
+useEffect(() => {
+    console.log(selectedFile);
+  }, [selectedFile]);
+
 
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -132,7 +156,7 @@ export default function NewPost() {
                                 <input
                                     type="file"
                                     accept="image/*"
-                                    onChange={handleFileChange}
+                                    onChange={handleChange}
                                     className="hidden"
                                     id="file-upload"
                                 />

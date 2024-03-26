@@ -92,24 +92,31 @@ def handler(event, context):
     data = decoder.MultipartDecoder(body, content_type)
 
     binary_data = [part.content for part in data.parts]
-    title = binary_data[0].decode()
-    date = binary_data[1].decode()
-    location = binary_data[2].decode()
-    capacity = binary_data[3].decode()
-    description = binary_data[4].decode()
-    tags = binary_data[5].decode()
-    # print(id)
-    # print(id, type(id))
-    # print(name, type(name))
-    # print(born, type(born))
+    email = binary_data[0].decode()
+    title = binary_data[1].decode()
+    date = binary_data[2].decode()
+    location = binary_data[3].decode()
+    capacity = binary_data[4].decode()
+    description = binary_data[5].decode()
 
     file_name = os.path.join("/tmp", "event.png")
     with open(file_name, "wb") as f:
-        f.write(binary_data[0])
+        f.write(binary_data[6])
 
     image_url = upload_to_cloudinary(file_name)
+
+    id = binary_data[7].decode()
+
+    tags = []
+    for part in data.parts:
+        if part.headers[b'Content-Disposition'].decode().startswith('form-data; name="tags'):
+            tags.append(part.content.decode())
+
+    
     try:
         table.put_item(Item={
+            'email': email,
+            'id': id,
             'title': title,
             'date' : date,
             'location': location,

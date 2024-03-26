@@ -2,7 +2,10 @@
 import React, { useState } from 'react';
 import NavBar from "./components/SideBar";
 import Header from "./components/Header";
-import UpcomingEvents from "./components/upcomingEvents"
+import Friend from "./components/Friend";
+import FriendsPage from "./friends/page";
+import SignIn from "./sign-in/page";
+import UpcomingEvents from './components/upcomingEvents';
 
 export default function Home() {
   return (
