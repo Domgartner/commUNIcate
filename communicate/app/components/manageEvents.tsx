@@ -16,6 +16,7 @@ type Event = {
   location: string;
   date: string;
   description: string;
+  tags: string[];
 };
 
 type PhotoBlockProps = {
@@ -226,14 +227,7 @@ const upcomingEvents = () => {
   return (
     <div>
       <div className="flex my-2 pl-10">
-        <Field
-          fieldType="text"
-          fieldValue={tag}
-          onChange={setTag}
-          placeholderText="Enter a search tag"
-        />
       </div>
-      <Line />
       <div className='flex flex-row py-2 px-12'>
         <h1 className="font-bold text-3xl pt-2">Manage My Events</h1>
       </div>

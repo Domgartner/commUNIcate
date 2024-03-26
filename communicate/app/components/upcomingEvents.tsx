@@ -14,12 +14,14 @@ type Event = {
   location: string;
   date: string;
   description: string;
+  tags: string[];
 };
 
 const upcomingEvents = () => {
     const router = useRouter();
     const [tag, setTag] = useState("");
     const [events, setEvents] = useState<Event[]>([]);
+    const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
 
     const handleNavItemClick = (navItemId: any) => {
         router.push(`/${navItemId}`);
@@ -32,6 +34,7 @@ const upcomingEvents = () => {
                 const response = await fetch('https://fpwya4ojfnycyejef3y7v7567q0scycr.lambda-url.ca-central-1.on.aws/');
                 const data = await response.json();
                 setEvents(data);
+                setFilteredEvents(data);
             } catch (error) {
                 console.log(error);
             }
@@ -41,8 +44,16 @@ const upcomingEvents = () => {
 
 
     useEffect(() => {
-      console.log(events);
-    }, [events]);
+      if (tag.trim() === "") {
+          setFilteredEvents(events);
+      } else {
+          const filtered = events.filter(event =>
+              event.tags.some(t => t.toLowerCase().includes(tag.toLowerCase()))
+          );
+          setFilteredEvents(filtered);
+      }
+  }, [tag, events]);
+
 
     const buildPhotoBlocks = (events : Event[]) => {
       let items = [];
@@ -81,7 +92,7 @@ const upcomingEvents = () => {
             <h1 className="font-bold text-3xl pt-2">Upcoming Events</h1>
           </div>
           <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 mt-5 mx-10">
-            {buildPhotoBlocks(events)}
+            {buildPhotoBlocks(filteredEvents)}
           </div>
       </div>
     );
