@@ -182,6 +182,7 @@ export default function SignUpP2() {
                     {/* Finished Button */}
                     <button
                         className="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                        style={{ backgroundColor: '#4285F4' }} // Override button background color
                         onClick={handleSubmit}
                     >
                         Done!
