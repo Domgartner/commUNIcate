@@ -10,7 +10,6 @@ def handler(event, context):
         filter = event['queryStringParameters']['type']
         user_id = event['queryStringParameters']['userID'].strip('"')  # Remove leading and trailing "/"
         user_response = table.query(KeyConditionExpression=Key('userID').eq(user_id))  # query the DynamoDB table for the user's details based on userID
-        
         # check if the query returned any items
         if user_response['Count'] == 0:
             # if no items were found, return a success response with an empty list of data
@@ -24,11 +23,11 @@ def handler(event, context):
             return response
 
         if filter == "update" :
-            # Query the DynamoDB table to get the details of all the friends
-            data = json.loads(event['body'])
-            name = str(data.get('name', ''))
-            year = int(data.get('year', ''))
-            major = str(data.get('major', ''))
+            name = event['queryStringParameters']['name']
+            year = event['queryStringParameters']['year']
+            major = event['queryStringParameters']['major']
+            
+            
             Items={'userID': user_id,
                     'name': name,
                     'friends': user_response['Items'][0].get('friends', ''),
@@ -42,19 +41,22 @@ def handler(event, context):
                     'body': json.dumps({'message': 'Profile Updated successfully'})
             }
         else:
-            user_data = user_response['Items'][0]
-            data = {
-                'name': user_data.get('name', ''),
-                'year': int(user_data.get('year', '')),
-                'major': user_data.get('major', '')
-            }
+            name = user_response['Items'][0].get('name', '')
+            year = int(user_response['Items'][0].get('year', 0))
+            major = user_response['Items'][0].get('major', '')
+            profilePic = user_response['Items'][0].get('profilePic', '')
             return {
                 'statusCode': 200,
                 'body': json.dumps({
-                    'message': "Success",
-                    'data': data
-                })
-            }
+                'message': "Success",
+                'data': {
+                    'name': name,
+                    'year': year,
+                    'major': major,
+                    'profilePic': profilePic
+                }
+            })
+        }
     except Exception:
         # if an exception occurs, return an error response
         response = {

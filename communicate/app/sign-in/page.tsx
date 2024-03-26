@@ -17,6 +17,8 @@ export default function SignIn() {
             console.log(res);
             setEmail('');
             setPassword('');
+            localStorage.setItem('userID', JSON.stringify(auth.currentUser.uid));
+            localStorage.setItem('email', JSON.stringify(auth.currentUser.email));
             router.push('/profile');
         } catch (e){
             console.error(e);

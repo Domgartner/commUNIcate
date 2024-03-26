@@ -8,9 +8,21 @@ table = dynamodb.Table('communicate-class')
 def handler(event, context):
     try:
         # Parse the query parameters to extract the user's ID and the class name
-        data = json.loads(event['body'])
-        userID = str(data.get('userID', ''))
-        className = str(data.get('class', ''))
+        # data = json.loads(event['body'])
+        # userID = str(data.get('userID', ''))
+        # className = str(data.get('class', ''))
+        userID = event['queryStringParameters']['userID']
+        className = event['queryStringParameters']['class']
+        
+        # response = {
+        #             "statusCode": 200,
+        #             "body": json.dumps({
+        #                 'message': "Class already enrolled",
+        #                 'class': 
+        #             })
+        #         }
+        # return response
+        
 
         type = event['queryStringParameters']['type']
         # Query the DynamoDB table to get the user's details

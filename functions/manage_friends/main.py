@@ -10,6 +10,7 @@ def handler(event, context):
         # Parse the query parameters to extract the friend's id
         friendID = event['queryStringParameters']['id']
         userID = event['queryStringParameters']['userID']
+        type = event['queryStringParameters']['type']
         # Query the DynamoDB table to get the user's details
         user_response = table.query(KeyConditionExpression=Key('userID').eq(userID))
         user_friends_str = user_response['Items'][0].get('friends', '')
@@ -26,7 +27,7 @@ def handler(event, context):
             }
             return response
         # Check if the friendID is already in the list of friends
-        if friendID in user_friends:
+        if type ==  'remove':
             # Remove the friend from the list
             updated_friends = ','.join([str(f) for f in user_friends if f != friendID])
             updated_friends = [f for f in user_friends if f != friendID]
@@ -47,12 +48,22 @@ def handler(event, context):
                 'statusCode': 200,
                 'body': json.dumps({'message': 'Friend removed successfully'})
             }
-        else:
+        
+        
+        
+        if type == 'add':
             # Add the friend to the list
             if "LoserNoFriends" in user_friends:
                 new_friends = friendID # Initialize with just the new friend
+                
             else:
-                new_friends = ','.join(user_friends + [friendID]) 
+                if friendID not in user_friends:  # Check if friendID already exists
+                    new_friends = ','.join(user_friends + [friendID])
+                else:
+                    new_friends = ','.join(user_friends) 
+                
+                # new_friends = ','.join(user_friends + [friendID])
+                
             
             Items={'userID': userID,
                     'name': user_response['Items'][0].get('name', ''),
