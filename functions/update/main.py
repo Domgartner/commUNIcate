@@ -39,7 +39,7 @@
 #                 ':description': description
 #             },
 #             ExpressionAttributeNames={
-#                 '#date': 'date'  # date is a reserved word in DynamoDB, so using an alias
+#                 '#date': 'date'
 #             },
 #             ReturnValues='UPDATED_NEW'
 #         )
@@ -66,8 +66,6 @@ from base64 import b64decode
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table("communicate-events")
-ssm = boto3.client("ssm", "ca-central-1")
-polly = boto3.client("polly", "ca-central-1")
 
 def handler(event, context):
     try:

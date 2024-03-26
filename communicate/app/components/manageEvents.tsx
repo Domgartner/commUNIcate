@@ -15,20 +15,28 @@ type Event = {
   title: string;
   location: string;
   date: string;
+  capacity: string;
   description: string;
+  registered: string;
   tags: string[];
+  users: string[];
 };
 
 type PhotoBlockProps = {
-  image: string;
-  id: string;
+  id: string; // Add id field to uniquely identify each event
+  image_url: string;
+  email: string;
   title: string;
   location: string;
   date: string;
+  capacity: string;
   description: string;
+  registered: string;
+  tags: string[];
+  users: string[];
 };
 
-const PhotoBlock = ({ image, id, title, location, date, description }: PhotoBlockProps) => {
+const PhotoBlock = ({ image_url, id, title, location, date, capacity, description, registered, tags, users }: PhotoBlockProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editedTitle, setEditedTitle] = useState(title);
     const [editedLocation, setEditedLocation] = useState(location);
@@ -43,19 +51,31 @@ const PhotoBlock = ({ image, id, title, location, date, description }: PhotoBloc
   
         const handleConfirmClick = async () => {
             try {
+
+              const data = {
+                email: userEmail,
+                id: id,
+                title: editedTitle,
+                date: editedDate,
+                location: editedLocation,
+                description: editedDescription,
+                image_url: image_url,
+                capacity: capacity,
+                registered: registered,
+                tags: tags,
+                users: users,
+              }
                 const formData = new FormData();
-                formData.append('user-email', userEmail || '');
+                formData.append('email', userEmail || '');
                 formData.append('id', id);
-                formData.append('title', title);
-                formData.append('date', date);
-                formData.append('location', location);
-                formData.append('description', description);
-    
-              
-        
+                formData.append('title', editedTitle);
+                formData.append('date', editedDate);
+                formData.append('location', editedLocation);
+                formData.append('description', editedDescription);
+  
                 const response = await fetch('https://ev2mvdzfkivy6hxernaljqnjoa0yielf.lambda-url.ca-central-1.on.aws/', {
                     method: 'POST',
-                    body: formData,
+                    body: JSON.stringify(data)
                 });
         
                 if (response.ok) {
@@ -98,7 +118,7 @@ const PhotoBlock = ({ image, id, title, location, date, description }: PhotoBloc
     return (
       <div className="flex flex-col group relative rounded-xl border p-4">
         <img
-          src={image}
+          src={image_url}
           alt={description}
           className="cursor-pointer rounded-md object-cover"
           style={{ width: '150px', height: '150px' }}
@@ -198,10 +218,6 @@ const upcomingEvents = () => {
     fetchEvents();
   }, [userEmail]);
 
-  const handleEditClick = (event: Event) => {
-    setSelectedEvent(event);
-    // Open popup for editing
-  };
 
   const buildPhotoBlocks = (events: Event[]) => {
     let items = [];
@@ -211,11 +227,16 @@ const upcomingEvents = () => {
         <div key={event.id} className="flex flex-col justify-start mx-2 my-2 gap-4 rounded-md">
           <PhotoBlock
             id={event.id}
-            image={event.image_url}
+            image_url={event.image_url}
             title={event.title}
             location={event.location}
             date={event.date}
             description={event.description}
+            capacity={event.capacity}
+            email={event.email}
+            registered={event.registered}
+            tags={event.tags}
+            users={event.users}
           />
           {index !== events.length - 1 && <Line />} {/* Add line between events */}
         </div>
