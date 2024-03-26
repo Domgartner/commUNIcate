@@ -1,28 +1,13 @@
-'use client'
-import React, { useState } from 'react';
-import NavBar from "./components/SideBar";
-import Header from "./components/Header";
-import Friend from "./components/Friend";
-import FriendsPage from "./friends/page";
-import SignIn from "./sign-in/page";
-import UpcomingEvents from './components/upcomingEvents';
+// pages/index.tsx (or index.js if you're not using TypeScript)
+"use client"
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return (
-    <html lang="en">
-      <body className="flex flex-row">
-        <div className="flex-1% bg-gray-800">
-          <NavBar/>
-        </div>
-        <div className="flex-4 flex-grow flex-col">
-          <div>
-            <Header/>
-          </div>
-          <div>
-            <UpcomingEvents />
-          </div>
-        </div>
-      </body>
-    </html>
-  );
-  }
+  const router = useRouter();
+
+  // Directly route to the sign-in page
+  router.push('/sign-in');
+
+  // This return statement is optional since the routing happens before anything is rendered
+  return null;
+}
