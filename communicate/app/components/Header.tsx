@@ -30,7 +30,7 @@ export default function Header() {
                 <div className="flex flex-row py-2 px-10 justify-between">
                     <h1 className="text-4xl py-2">Comm<span className="text-olive">UNI</span>cate</h1>
                     <button className='text-4xl pt-2' onClick={() => router.push('/sign-in')}>
-                        <FontAwesomeIcon icon={faUser} />
+                        <FontAwesomeIcon icon={faSignOutAlt} />
                     </button>
                 </div>
                 <Line />
