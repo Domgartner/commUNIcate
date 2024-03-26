@@ -41,6 +41,28 @@ const PhotoBlock = ({ id, users, image, title, location, date, description }: Ph
     }
   };
 
+
+  const handleUnregister = async () => {
+    setRsvpLoading(true);
+    console.log(userEmail);
+    console.log(id);
+
+    try {
+      const formData = new FormData();
+      formData.append('user-email', userEmail || '');
+      formData.append('id', id);
+      const response = await fetch('https://m5wwpa6fpmpolcd4paopucghyy0dlpya.lambda-url.ca-central-1.on.aws/', {
+        method: 'POST',
+        body: formData,
+      });
+      // Handle response as needed
+    } catch (error) {
+      console.error('Error RSVPing:', error);
+    } finally {
+      setRsvpLoading(false);
+    }
+  };
+
   return (
     <div>
       <Link href={""}>
@@ -75,7 +97,7 @@ const PhotoBlock = ({ id, users, image, title, location, date, description }: Ph
             </div>
             <div>
               {hasRSVPed ? (
-                <button disabled={true}>Reserved</button>
+                <Button buttonText="Unregister" onClick={handleUnregister} />
               ) : (
                 <Button buttonText="RSVP" onClick={handleRSVP} />
               )}

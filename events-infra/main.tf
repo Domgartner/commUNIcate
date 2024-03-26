@@ -67,12 +67,16 @@ locals {
   function_name_5 = "register-user"
   handler_name_5 = "main.handler"
 
+  function_name_6 = "unregister-user"
+  handler_name_6 = "main.handler"
+
 
   get_path = "../functions/get_events/main.py"
   create_path = "../functions/create/main.py"
   update_path = "../functions/update/main.py"
   delete_path = "../functions/delete_event/main.py"
   register_path = "../functions/register_user/main.py"
+  unregister_path = "../functions/unregister_user/main.py"
 
 
   get_artifact = "get.zip"
@@ -80,6 +84,7 @@ locals {
   update_artifact = "update.zip"
   delete_artifact = "delete.zip"
   register_artifact = "register.zip"
+  unregister_artifact = "unregister.zip"
 }
 
 
@@ -206,6 +211,23 @@ resource "aws_iam_role" "lambda_register_user" {
 }
 
 
+resource "aws_iam_role" "lambda_unregister_user" {
+  name               = "iam-for-lambda-${local.function_name_6}"
+  assume_role_policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "lambda.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+  })
+}
+
+
 
 
 
@@ -251,6 +273,13 @@ data "archive_file" "file_5" {
   type = "zip"
   source_file = local.register_path
   output_path = local.register_artifact
+}
+
+# create archive file from main.py for update
+data "archive_file" "file_6" {
+  type = "zip"
+  source_file = local.unregister_path
+  output_path = local.unregister_artifact
 }
 
 
@@ -323,6 +352,14 @@ resource "aws_lambda_function" "lambda_func_register" {
   runtime = "python3.9"
 }
 
+resource "aws_lambda_function" "lambda_func_unregister" {
+  role          = aws_iam_role.lambda_unregister_user.arn
+  function_name = local.function_name_6
+  handler       = local.handler_name_6
+  filename      = local.unregister_artifact
+  source_code_hash = data.archive_file.file_6.output_base64sha256
+  runtime = "python3.9"
+}
 
 
 
@@ -474,7 +511,30 @@ EOF
 }
 
 
+resource "aws_iam_policy" "logs_6" {
+  name        = "lambda-logging-${local.function_name_6}"
+  description = "IAM policy for logging from a lambda"
 
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:DeleteItem" 
+      ],
+      "Resource": ["arn:aws:logs:*:*:*", "${aws_dynamodb_table.communicate-events.arn}"],
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
 
 
 
@@ -516,6 +576,11 @@ resource "aws_iam_role_policy_attachment" "lambda_logs_5" {
   policy_arn = aws_iam_policy.logs_5.arn
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_logs_6" {
+  role       = aws_iam_role.lambda_unregister_user.name
+  policy_arn = aws_iam_policy.logs_6.arn
+}
+
 # Attach a policy granting DynamoDB permissions to the Lambda function role
 resource "aws_iam_policy_attachment" "lambda_dynamodb_policy" {
   name       = "lambda-dynamodb-policy"
@@ -524,7 +589,8 @@ resource "aws_iam_policy_attachment" "lambda_dynamodb_policy" {
     aws_iam_role.lambda_create_events.name,
     aws_iam_role.lambda_update_event.name,
     aws_iam_role.lambda_delete_event.name,
-    aws_iam_role.lambda_register_user.name
+    aws_iam_role.lambda_register_user.name,
+    aws_iam_role.lambda_unregister_user.name
   ]
   policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"  # Adjust as needed
 }
@@ -615,6 +681,20 @@ resource "aws_lambda_function_url" "url_5" {
   }
 }
 
+resource "aws_lambda_function_url" "url_6" {
+  function_name      = aws_lambda_function.lambda_func_unregister.function_name
+  authorization_type = "NONE"
+
+  cors {
+    allow_credentials = true
+    allow_origins     = ["*"]
+     allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+    allow_headers     = ["*"]
+    expose_headers    = ["keep-alive", "date"]
+  }
+}
+
+
 
 
 
@@ -641,4 +721,8 @@ output "lambda_url_delete" {
 
 output "lambda_url_register" {
   value = aws_lambda_function_url.url_5.function_url
+}
+
+output "lambda_url_unregister" {
+  value = aws_lambda_function_url.url_6.function_url
 }
