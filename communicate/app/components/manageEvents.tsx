@@ -167,7 +167,7 @@ const PhotoBlock = ({ image_url, id, title, location, date, capacity, descriptio
                                       onChange={(e) => setEditedDate(e.target.value)}
                                   />
                               ) : (
-                                  <h1 className="text-blue">DATE: {editedDate}</h1>
+                                  <h1 className="text-white">DATE: {editedDate}</h1>
                               )}
                           </div>
                       </div>
