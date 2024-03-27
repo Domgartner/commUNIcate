@@ -71,7 +71,7 @@ export default function NewPost() {
                 // Handle error response
                 console.error('Failed to submit form:', response.statusText);
             }
-            router.push('/');
+            router.push('/homepage');
         } catch (error) {
             console.error('Error submitting form:', error);
         }
@@ -141,10 +141,10 @@ useEffect(() => {
                     <Header/>
                 </div>
                 <div className="flex flex-col justify-middle items-center py-10 w-full flex-1">
-                    <div className='flex flex-col w-11/12 bg-green rounded-xl'>
+                    <div className='flex flex-col w-11/12 bg-light-grey rounded-xl'>
                         <div className='flex flex-row p-12 w-11/12 justify-between'>
                             <div className="flex flex-col bg-light-cream rounded-xl">
-                                    <h1 className='font-serif text-2xl font-normal'>Create your own event posting!</h1>
+                                    <h1 className='font-montserrat text-2xl font-normal'>Create your own event posting!</h1>
                                     <p>Please fill out the following information:</p>
                                     <Field
                                     labelName="Title"
