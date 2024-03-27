@@ -88,11 +88,11 @@ export default function FriendsPage() {
     );
 
     return (
-        <div className="container">
-            <div className="navCont">
+        <div className="flex flex-row">
+            <div className="flex-1% bg-gray-800">
                 <NavBar />
             </div>
-            <div className="headContent">
+            <div className="flex-4 flex-grow flex-col">
                 <div className="headCont">
                     <Header />
                 </div>
