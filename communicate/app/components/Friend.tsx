@@ -63,8 +63,6 @@ export default function Friend({ id, name, profilePic, major, year, activeFilter
                     <p className={styles.add}>Add</p>
                     <p className={styles.message}>Message</p>
                 </div>
-
-                
             </div>
 
         </div>
