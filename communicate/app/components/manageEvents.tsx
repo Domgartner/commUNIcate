@@ -73,26 +73,6 @@ const PhotoBlock = ({ image_url, id, title, location, date, capacity, descriptio
                     'Content-Type': 'application/json'
                 }
             });
-
-
-              // const data = {
-              //   email: userEmail,
-              //   id: id,
-              //   title: editedTitle,
-              //   date: editedDate,
-              //   location: editedLocation,
-              //   description: editedDescription,
-              //   image_url: image_url,
-              //   capacity: capacity,
-              //   registered: registered,
-              //   tags: tags,
-              //   users: users,
-              // }
-  
-              //   const response = await fetch('https://h2or2awj67.execute-api.ca-central-1.amazonaws.com/default/update-event', {
-              //       method: 'POST',
-              //       body: JSON.stringify(data)
-              //   });
         
                 if (response.ok) {
                     // Handle successful response
@@ -138,83 +118,95 @@ const PhotoBlock = ({ image_url, id, title, location, date, capacity, descriptio
   
     return (
       <div className="flex group relative rounded-xl border p-4">
-          <div className="flex-1 mr-4">
-              <img
-                  src={image_url}
-                  alt={description}
-                  className="cursor-pointer rounded-md object-cover"
-                  style={{ width: '150px', height: '150px' }}
-              />
-          </div>
-          <div className="flex-1">
-              <div className="font-bold">
-                  <h1 className="text-white">DESCRIPTION: {description}</h1>
-              </div>
-              <div className="flex flex-row justify-around bg-beige py-5">
-                  <div className="flex-5 justify-items-center flex-col">
-                      <div className="flex">
-                          {isEditing ? (
-                              <input
-                                  type="text"
-                                  value={editedDate}
-                                  onChange={(e) => setEditedDate(e.target.value)}
-                              />
-                          ) : (
-                              <h1 className="text-blue">DATE: {editedDate}</h1>
-                          )}
-                      </div>
-                  </div>
-                  <div className="flex-2 justify-items-center flex-col">
-                      <div className="flex">
-                          {isEditing ? (
-                              <input
-                                  type="text"
-                                  value={editedTitle}
-                                  onChange={(e) => setEditedTitle(e.target.value)}
-                              />
-                          ) : (
-                              <h1 className="text-xl font-bold">TITLE: {editedTitle}</h1>
-                          )}
-                      </div>
-                      <div className="flex pt-1">
-                          {isEditing ? (
-                              <input
-                                  type="text"
-                                  value={editedLocation}
-                                  onChange={(e) => setEditedLocation(e.target.value)}
-                              />
-                          ) : (
-                              <h2 className="text-gray">LOCATION: {editedLocation}</h2>
-                          )}
-                      </div>
-                  </div>
-              </div>
+        <div className=" mr-4">
+          <img
+            src={image_url}
+            alt={description}
+            className="cursor-pointer rounded-md object-cover"
+            style={{ width: '250px', height: '250px' }}
+          />
+        </div>
+        <div>
+          <div className="font-bold">
+            <h1 className="text-white">DESCRIPTION:  
               {isEditing ? (
-                  <div className='flex flex-col'>
-                      <button
-                          className="absolute bottom-16 right-2 bg-green-500 text-white text-xl rounded-md p-2 shadow cursor-pointer z-10"
-                          onClick={handleDeleteClick}
-                      >
-                          <FontAwesomeIcon icon={faCheck} /> Delete
-                      </button>
-                      <button
-                          className="absolute bottom-2 right-2 bg-green-500 text-white text-xl rounded-md p-2 shadow cursor-pointer z-10"
-                          onClick={handleConfirmClick}
-                      >
-                          <FontAwesomeIcon icon={faCheck} /> Confirm
-                      </button>
-                  </div>
+                <input
+                  type="text"
+                  value={editedDescription}
+                  onChange={(e) => setEditedDescription(e.target.value)}
+                />
               ) : (
-                  <button
-                      className="absolute bottom-2 right-2 bg-blue-500 text-white text-xl rounded-md p-2 shadow cursor-pointer z-10"
-                      onClick={handleEditClick}
-                  >
-                      <FontAwesomeIcon icon={faEdit} /> Edit
-                  </button>
+                <span>{description}</span>
               )}
+            </h1>
           </div>
+          <div className="flex flex-col py-5">
+            <div className="flex justify-items-center flex-col">
+              <div className="flex">
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editedDate}
+                    onChange={(e) => setEditedDate(e.target.value)}
+                  />
+                ) : (
+                  <h1 className="text-blue">DATE: {editedDate}</h1>
+                )}
+              </div>
+            </div>
+            <div className="flex justify-items-center flex-col">
+              <div className="flex">
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editedTitle}
+                    onChange={(e) => setEditedTitle(e.target.value)}
+                  />
+                ) : (
+                  <h1 className="text-xl font-bold">TITLE: {editedTitle}</h1>
+                )}
+              </div>
+              <div className="flex pt-1">
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editedLocation}
+                    onChange={(e) => setEditedLocation(e.target.value)}
+                  />
+                ) : (
+                  <h2 className="text-gray">LOCATION: {editedLocation}</h2>
+                )}
+              </div>
+            </div>
+          </div>
+          {isEditing ? (
+            <div className='flex flex-col'>
+              <button
+                className="bg-green-500 text-white text-xl rounded-md p-2 shadow cursor-pointer"
+                onClick={handleDeleteClick}
+              >
+                <FontAwesomeIcon icon={faCheck} /> Delete
+              </button>
+              <button
+                className="bg-green-500 text-white text-xl rounded-md p-2 shadow cursor-pointer mt-2"
+                onClick={handleConfirmClick}
+              >
+                <FontAwesomeIcon icon={faCheck} /> Confirm
+              </button>
+            </div>
+          ) : (
+            <button
+              className="bg-blue-500 text-white text-xl rounded-md p-2 shadow cursor-pointer mt-2"
+              onClick={handleEditClick}
+            >
+              <FontAwesomeIcon icon={faEdit} /> Edit
+            </button>
+          )}
+        </div>
       </div>
-  );
+    );
+    
+    
 };
 
 const upcomingEvents = () => {
