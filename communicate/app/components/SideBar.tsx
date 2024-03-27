@@ -105,6 +105,17 @@ export default function NavBar() {
           />
           <h3 className="text-baby-blue ml-10">Classes</h3>
         </button>
+        <button
+          className="flex flex-row pt-5 pb-4 rounded-xl hover:bg-blue focus:outline-none focus:ring-4 focus:ring-blue-300"
+          id={styles.classes}
+          onClick={() => handleNavItemClick("profile")}
+        >
+          <FontAwesomeIcon
+            icon={faUser}
+            className="text-baby-blue text-md ml-9"
+          />
+          <h3 className="text-baby-blue ml-10">Profile</h3>
+        </button>
       </div>
     </Sidebar>
   );
