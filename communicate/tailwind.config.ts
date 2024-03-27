@@ -31,7 +31,8 @@ const config: Config = {
      'bleh': '#1F1F1F',
      'line' : "#9FB4BC",
      'baby-blue' : '#e5f3ff',
-     'blue' : '#68c9f8'
+     'blue' : '#68c9f8',
+     'light-grey' : '#F1F4F5'
    },
  },
  plugins: [],

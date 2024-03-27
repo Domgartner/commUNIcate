@@ -42,6 +42,7 @@ const PhotoBlock = ({ image_url, id, title, location, date, capacity, descriptio
     const [editedLocation, setEditedLocation] = useState(location);
     const [editedDate, setEditedDate] = useState(date);
     const [editedDescription, setEditedDescription] = useState(description);
+    const [editedCapacity, setEditedCapacity] = useState(capacity);
     const userEmail = auth.currentUser ? auth.currentUser.email : null;
 
   
@@ -59,7 +60,7 @@ const PhotoBlock = ({ image_url, id, title, location, date, capacity, descriptio
               queryParams.append('date', editedDate);
               queryParams.append('location', editedLocation);
               queryParams.append('image_url', image_url);
-              queryParams.append('capacity', capacity);
+              queryParams.append('capacity', editedCapacity);
               queryParams.append('description', description);
               queryParams.append('registered', registered);
               queryParams.append('tags', tags.join(',')); // Convert tags array to comma-separated string
@@ -73,26 +74,6 @@ const PhotoBlock = ({ image_url, id, title, location, date, capacity, descriptio
                     'Content-Type': 'application/json'
                 }
             });
-
-
-              // const data = {
-              //   email: userEmail,
-              //   id: id,
-              //   title: editedTitle,
-              //   date: editedDate,
-              //   location: editedLocation,
-              //   description: editedDescription,
-              //   image_url: image_url,
-              //   capacity: capacity,
-              //   registered: registered,
-              //   tags: tags,
-              //   users: users,
-              // }
-  
-              //   const response = await fetch('https://h2or2awj67.execute-api.ca-central-1.amazonaws.com/default/update-event', {
-              //       method: 'POST',
-              //       body: JSON.stringify(data)
-              //   });
         
                 if (response.ok) {
                     // Handle successful response
@@ -135,83 +116,122 @@ const PhotoBlock = ({ image_url, id, title, location, date, capacity, descriptio
         }
       }
     }
+        // Calculate remaining capacity
+        const remainingCapacity = parseInt(capacity) - users.length;
   
-    return (
-      <div className="flex flex-col group relative rounded-xl border p-4">
-        <img
-          src={image_url}
-          alt={description}
-          className="cursor-pointer rounded-md object-cover"
-          style={{ width: '150px', height: '150px' }}
-        />
-        <div className="font-bold">
-          <h1 className="text-white">{description}</h1>
-        </div>
-        <div className="flex flex-row justify-around bg-beige py-5">
-          <div className="flex-5 justify-items-center flex-col">
-            <div className="flex">
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={editedDate}
-                  onChange={(e) => setEditedDate(e.target.value)}
-                />
-              ) : (
-                <h1 className="text-blue">{editedDate}</h1>
-              )}
-            </div>
+
+        return (
+          <div className="flex group relative rounded-xl border p-4">
+              <div className=" mr-4">
+                  <img
+                      src={image_url}
+                      alt={description}
+                      className="cursor-pointer rounded-md object-cover"
+                      style={{ width: '250px', height: '250px' }}
+                  />
+              </div>
+              <div>
+                  <div className="font-bold">
+                      <h1 className="text-white">TITLE:
+                          {isEditing ? (
+                              <input
+                                  type="text"
+                                  value={editedTitle}
+                                  onChange={(e) => setEditedTitle(e.target.value)}
+                              />
+                          ) : (
+                              <span>{editedTitle}</span>
+                          )}
+                      </h1>
+                  </div>
+                  <div className="font-bold">
+                      <h1 className="text-white">DESCRIPTION:
+                          {isEditing ? (
+                              <input
+                                  type="text"
+                                  value={editedDescription}
+                                  onChange={(e) => setEditedDescription(e.target.value)}
+                              />
+                          ) : (
+                              <span>{editedDescription}</span>
+                          )}
+                      </h1>
+                  </div>
+                  <div className="flex flex-col py-5">
+                      <div className="flex justify-items-center flex-col">
+                          <div className="flex">
+                              {isEditing ? (
+                                  <input
+                                      type="text"
+                                      value={editedDate}
+                                      onChange={(e) => setEditedDate(e.target.value)}
+                                  />
+                              ) : (
+                                  <h1 className="text-white">DATE: {editedDate}</h1>
+                              )}
+                          </div>
+                      </div>
+                      <div className="flex justify-items-center flex-col">
+                          <div className="flex">
+                              {isEditing ? (
+                                  <input
+                                      type="text"
+                                      value={editedLocation}
+                                      onChange={(e) => setEditedLocation(e.target.value)}
+                                  />
+                              ) : (
+                                  <h2 className="text-gray">LOCATION: {editedLocation}</h2>
+                              )}
+                          </div>
+                      </div>
+                      <div className="flex justify-items-center flex-col">
+                          <div className="flex">
+                              {isEditing ? (
+                                  <input
+                                      type="text"
+                                      value={editedCapacity}
+                                      onChange={(e) => setEditedCapacity(e.target.value)}
+                                  />
+                              ) : (
+                                  <h2 className="text-gray">CAPACITY: {editedCapacity}</h2>
+                              )}
+                          </div>
+                      </div>
+                      <div className="flex justify-items-center flex-col">
+                          <div className="flex">
+                              <h2 className="text-gray">REMAINING CAPACITY: {remainingCapacity}</h2>
+                          </div>
+                      </div>
+                  </div>
+                  {isEditing ? (
+                      <div className='flex flex-col'>
+                          <button
+                              className="bg-green-500 text-white text-xl rounded-md p-2 shadow cursor-pointer"
+                              onClick={handleDeleteClick}
+                          >
+                              <FontAwesomeIcon icon={faCheck} /> Delete
+                          </button>
+                          <button
+                              className="bg-green-500 text-white text-xl rounded-md p-2 shadow cursor-pointer mt-2"
+                              onClick={handleConfirmClick}
+                          >
+                              <FontAwesomeIcon icon={faCheck} /> Confirm
+                          </button>
+                      </div>
+                  ) : (
+                      <button
+                          className="bg-blue-500 text-white text-xl rounded-md p-2 shadow cursor-pointer mt-2"
+                          onClick={handleEditClick}
+                      >
+                          <FontAwesomeIcon icon={faEdit} /> Edit
+                      </button>
+                  )}
+              </div>
           </div>
-          <div className="flex-2 justify-items-center flex-col">
-            <div className="flex">
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={editedTitle}
-                  onChange={(e) => setEditedTitle(e.target.value)}
-                />
-              ) : (
-                <h1 className="text-xl font-bold">{editedTitle}</h1>
-              )}
-            </div>
-            <div className="flex pt-1">
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={editedLocation}
-                  onChange={(e) => setEditedLocation(e.target.value)}
-                />
-              ) : (
-                <h2 className="text-gray">{editedLocation}</h2>
-              )}
-            </div>
-          </div>
-        </div>
-        {isEditing ? ( // Render confirm button when editing
-        <div className='flex flex-col'>
-            <button
-                className="absolute bottom-16 right-2 bg-green-500 text-white text-xl rounded-md p-2 shadow cursor-pointer z-10"
-                onClick={handleDeleteClick}
-            >
-                    <FontAwesomeIcon icon={faCheck} /> Delete
-            </button>
-            <button
-                className="absolute bottom-2 right-2 bg-green-500 text-white text-xl rounded-md p-2 shadow cursor-pointer z-10"
-                onClick={handleConfirmClick}
-            >
-                <FontAwesomeIcon icon={faCheck} /> Confirm
-            </button>
-        </div>
-        ) : (
-          <button
-            className="absolute bottom-2 right-2 bg-blue-500 text-white text-xl rounded-md p-2 shadow cursor-pointer z-10"
-            onClick={handleEditClick}
-          >
-            <FontAwesomeIcon icon={faEdit} /> Edit
-          </button>
-        )}
-      </div>
-    );
-  };
+      );
+    
+    
+};
 
 const upcomingEvents = () => {
   const router = useRouter();
@@ -259,7 +279,7 @@ const upcomingEvents = () => {
             tags={event.tags}
             users={event.users}
           />
-          {index !== events.length - 1 && <Line />} {/* Add line between events */}
+          {index !== events.length - 1 && <Line />} 
         </div>
       );
     }
