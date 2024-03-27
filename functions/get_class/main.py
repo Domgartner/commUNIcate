@@ -62,5 +62,3 @@ def handler(event, context):
             })
         }
         return response
-
-

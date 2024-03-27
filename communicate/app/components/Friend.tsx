@@ -21,7 +21,7 @@ export default function Friend({ id, name, profilePic, major, year, activeFilter
             queryParams.append('userID', userID);
             queryParams.append('id', id);
             queryParams.append('type','add')
-            let url = 'https://si3agv274d.execute-api.ca-central-1.amazonaws.com/default/manage-friends?' + queryParams.toString();
+            let url = 'https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/manage-friends?' + queryParams.toString();
             // const response = await fetch(url);
             const response = await fetch(url, {
                 method: 'POST',
@@ -69,24 +69,26 @@ export default function Friend({ id, name, profilePic, major, year, activeFilter
     }    
 
     return (
-        <div className={styles.friendContainer} key={id}>
+        <div className={styles.friendContainer}>
             <div className={styles.profilepicCont}>
-                <img src={profilePic} alt={name} className={styles.userImage} />
+                <img src="/profiletest.png" className={styles.userImage} />
             </div>
             <div className={styles.friendInfo}>
                 <div className={styles.mainInfo}>
-                    <h2 className={styles.name}><b>{name}</b></h2>
-                    <p className={styles.major}>{major} ({year})</p>
+                    <h2 className={styles.name}>Put Name Here</h2>
+                    <p className={styles.major}>Software Engineering (3)</p>
                 </div>
+
                 <div className={styles.clubs}>
-                    {/* Clubs information */}
+                    {/* Need to map clubs here from db */}
                 </div>
+
                 <div className={styles.buttons}>
-                    {activeFilter === 'Following' && <p className={styles.remove} onClick={() => handleRemove(id)}><FontAwesomeIcon icon={faTimes} className={styles.icon}/></p>}
-                    {activeFilter === 'Discover' && <p className={styles.add} onClick={() => handleAdd(id)}><FontAwesomeIcon icon={faPlus} className={styles.icon}/></p>}
-                    {activeFilter === 'Following' && <p className={styles.message} onClick={handleMessageClick}><FontAwesomeIcon icon={faComments} className={styles.icon}/></p>}
+                    <p className={styles.add}>Add</p>
+                    <p className={styles.message}>Message</p>
                 </div>
             </div>
+
         </div>
     );
 }

@@ -166,10 +166,23 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from 'react';
 import { auth } from '../firebase/config';
+import Header from '../components/Header';
+import NavBar from '../components/SideBar';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useRouter } from 'next/navigation';
 import { ChangeEvent } from 'react'; // Import ChangeEvent type
 
 
 export default function Profile() {
+    const [user, loading] = useAuthState(auth);
+    
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push('/sign-in');
+        }
+    }, [user, loading, router]);
     const [isChanged, setIsChanged] = useState(false);
     const [year, setYear] = useState(1);
     const [major, setMajor] = useState("");
@@ -215,7 +228,7 @@ export default function Profile() {
             queryParams.append('name', name);
             queryParams.append('year', year);
             queryParams.append('major', major);
-            let url = 'https://si3agv274d.execute-api.ca-central-1.amazonaws.com/default/update-profile?' + queryParams.toString()
+            let url = 'https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/update-profile?' + queryParams.toString()
                 // const response = await fetch(url);
             const response = await fetch(url, {
                 method: 'POST',
@@ -247,7 +260,7 @@ export default function Profile() {
                 const queryParams = new URLSearchParams();
                 queryParams.append('userID', userID);
                 queryParams.append('type', 'get');
-                let url = 'https://si3agv274d.execute-api.ca-central-1.amazonaws.com/default/update-profile?' + queryParams.toString()
+                let url = 'https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/update-profile?' + queryParams.toString()
                 // const response = await fetch(url);
                 const response = await fetch(url, {
                     method: 'POST',
@@ -271,6 +284,15 @@ export default function Profile() {
     }, []);
 
     return (
+        <div className="container">
+            <div className="navCont">
+                <NavBar />
+            </div>
+            <div className="headContent">
+                <div className="headCont">
+                    <Header />
+                </div>
+                <div className="content"></div>
         <div className="md:container md:mx-auto h-full flex items-center justify-center">
             <div className="bg-white rounded-2xl bg-neutral-100 shadow-2xl shadow-slate-600 p-8 w-1/3 relative h-3/4 min-w-[35rem] min-h-96 max-h-full mx-auto">
                 <div className="flex items-center justify-center mb-4 relative -left-5">
@@ -312,5 +334,8 @@ export default function Profile() {
                 )}
             </div>
         </div>
+        </div>
+        </div>
+
     );
 }

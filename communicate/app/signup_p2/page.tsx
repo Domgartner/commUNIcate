@@ -1,12 +1,46 @@
 "use client"
-import { ChangeEvent, useState } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { UserAuth } from '../context/AuthContext';
 import { auth } from "../firebase/config";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { getAuth, isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink } from "firebase/auth";
+
+
+
+
 export default function SignUpP2() {
-    // const { user } = UserAuth(); // Call UserAuth as a function to get the context value
-    // const userID = user?.uid; // Retrieve the UID from the user object
+    const [user, loading] = useAuthState(auth);
+   
+    const router = useRouter();
+
+
+    // const actionCodeSettings = {
+    //     // URL you want to redirect back to. The domain (www.example.com) for this
+    //     // URL must be in the authorized domains list in the Firebase Console.
+    //     url: 'http://localhost:3000/homepage',
+    //     // This must be true.
+    //     handleCodeInApp: true,
+    //     iOS: {
+    //       bundleId: 'com.example.ios'
+    //     },
+    //     android: {
+    //       packageName: 'com.example.android',
+    //       installApp: true,
+    //       minimumVersion: '12'
+    //     },
+    //     dynamicLinkDomain: 'example.page.link'
+    //   };
+
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push('/sign-in');
+        }
+    }, [user, loading, router]);
+
+
     const CHAT_ENG_PK = process.env.NEXT_PUBLIC_CHAT_ENGINE_PK
     const [name, setName] = useState('');
     const [major, setMajor] = useState('');
@@ -14,7 +48,6 @@ export default function SignUpP2() {
     const [image, setImage] = useState(null); // State to store the image file
     const [imageUrl, setImageUrl] = useState<string>('');
 
-    const router = useRouter();
 
     const handleFileInputChange = async (event: ChangeEvent<HTMLInputElement>) => {
         if (!event.target.files || event.target.files.length === 0) {
@@ -68,16 +101,9 @@ export default function SignUpP2() {
         queryParams.append('name', name);
         queryParams.append('major', major);
         queryParams.append('yearOfMajor', yearOfMajor);
-        
-        console.log("Submitting form...");
-        console.log("Name:", name);
-        console.log("Major:", major);
-        console.log("Year of Major:", yearOfMajor);
-        console.log("Profile Image:", imageUrl);
-        console.log("UID:", userID);
-    
+        // Make the HTTP request to the Lambda function
         try {
-            const response = await fetch('https://si3agv274d.execute-api.ca-central-1.amazonaws.com/default/register?' + queryParams.toString(), {
+            const response = await fetch('https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/register?' + queryParams.toString(), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -97,16 +123,23 @@ export default function SignUpP2() {
         }
     };
 
+
     const createProfile = async () => {
         const secret = auth.currentUser ? auth.currentUser.uid : null; // Get userID from currentUser
-        const username = auth.currentUser ? auth.currentUser.email : null; // Get email from currentUser
+        const username = auth.currentUser ? auth.currentUser.email : null
         console.log("Name:", name);
         console.log("pass:", secret);
         console.log(image);
-        if (name.length === 0) {
+        if (name.length === 0 ) {
+            return;
+        }
+        if (!username) {
+            console.error('Username not found');
             return;
         }
         try {
+            // await sendSignInLinkToEmail(auth, username, actionCodeSettings);
+            // window.localStorage.setItem('emailForSignIn', username);
             axios.put('https://api.chatengine.io/users/',{username: username, secret: secret},{headers:{"Private-key": CHAT_ENG_PK}}
             ).then((r:any) => router.push('/profile'));
         } catch (error) {
@@ -175,6 +208,7 @@ export default function SignUpP2() {
                     {/* Finished Button */}
                     <button
                         className="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                        style={{ backgroundColor: '#4285F4' }} // Override button background color
                         onClick={handleSubmit}
                     >
                         Done!
@@ -184,3 +218,6 @@ export default function SignUpP2() {
         </div>
     );
 }
+
+
+

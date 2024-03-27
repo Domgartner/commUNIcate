@@ -131,7 +131,7 @@
 
 
 
-"use client" 
+"use client"
 import React, { useState, useEffect, useRef } from 'react';
 import MsgFriend from '../components/msgFriend';
 import styles from './Messages.module.css';
@@ -140,9 +140,22 @@ import axios from 'axios';
 import dynamic from 'next/dynamic';
 import { auth } from "../firebase/config";
 import { Socket } from 'react-chat-engine';
+import NavBar from '../components/SideBar';
+import Header from '../components/Header';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useRouter } from 'next/navigation';
 // import { Router } from '@/node_modules/next/router';
 
 export default function Messages() {
+  const [user, loading] = useAuthState(auth);
+    
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push('/sign-in');
+        }
+    }, [user, loading, router]);
   const [inputMessage, setInputMessage] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
   const [friends, setFriends] = useState([]);
@@ -179,6 +192,15 @@ useEffect(() => {
   }, [username, secret]);
 
   return (
+    <div className="container">
+      <div className="navCont">
+        <NavBar />
+      </div>
+      <div className="headContent">
+        <div className="headCont">
+          <Header />
+        </div>
+        <div className="content"></div>
     <div className={styles.container}>
       <ChatEngine className={styles.chat}
         height="calc(100vh - 212px)"
@@ -191,5 +213,8 @@ useEffect(() => {
         onFailAuth={(props: any) => console.log(props)}
       />
     </div>
+    </div>
+    </div>
+
   );
 }

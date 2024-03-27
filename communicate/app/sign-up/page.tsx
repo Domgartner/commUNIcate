@@ -17,7 +17,7 @@ export default function SignUp() {
 
     const handleSignUp = async () => {
         if (!validateEmail(email)) {
-            setError('Invalid email format!');
+            setError('Invalid email format! (use your ucalgary.ca email)');
             return;
         }
 
@@ -31,9 +31,11 @@ export default function SignUp() {
             console.log({ res });
             setEmail('');
             setPassword('');
-            setError('')
+            setError('');
 
-            router.push('/signup_p2')
+            router.push('/signup_p2');
+            console.log("logged in");
+
 
         } catch (e) {
             console.error(e);
@@ -43,7 +45,7 @@ export default function SignUp() {
 
     const validateEmail = (email: string) => {
         // Regular expression pattern for email validation
-        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const pattern = /^[a-zA-Z0-9._%+-]+@ucalgary\.ca$/;
         return pattern.test(email);
     }
 
@@ -87,10 +89,9 @@ export default function SignUp() {
         router.push('/sign-in');
     };
 
-
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="max-w-md w-full p-6 bg-white rounded-md shadow-md">
+            <div className="max-w-md w-full p-6 bg-white rounded-md shadow-md" style={{ backgroundColor: '#FFF' }}> {/* Override background color */}
                 <h2 className="text-2xl font-semibold text-gray-800 mb-6">Sign Up</h2>
                 <div className="space-y-4">
                     <input
@@ -109,12 +110,14 @@ export default function SignUp() {
                     />
                     <button
                         className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
+                        style={{ backgroundColor: '#4CAF50' }} // Override button background color
                         onClick={handleSignUp}
                     >
                         Sign Up
                     </button>
                     <button
                         className="w-full bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300"
+                        style={{ backgroundColor: '#FFC107' }} // Override button background color
                         onClick={handleGoogleSignIn}
                     >
                         Sign Up with Google
@@ -124,13 +127,11 @@ export default function SignUp() {
                     </div>
                     <button
                         className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-300"
+                        style={{ backgroundColor: '#4285F4' }} // Override button background color
                         onClick={handleSignIn}
                     >
                         Sign In
                     </button>
-
-
-
                 </div>
                 {error && <div className="text-red-500">{error}</div>}
             </div>

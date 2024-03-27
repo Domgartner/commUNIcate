@@ -7,6 +7,10 @@ import { useEffect, useState } from 'react';
 import Friend from "../components/Friend";
 import ReactLoading from 'react-loading';
 import { auth } from "../firebase/config";
+import NavBar from "../components/SideBar";
+import Header from "../components/Header";
+import { useRouter } from "next/navigation";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 interface Friend {
     major: string;
@@ -21,6 +25,15 @@ export default function FriendsPage() {
     const [friends, setFriends] = useState<Friend[]>([]);
     const [searchKeyword, setSearchKeyword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [user, loading] = useAuthState(auth);
+    
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push('/sign-in');
+        }
+    }, [user, loading, router]);
 
     const handleFilterClick = (filter: any) => {
         setActiveFilter(filter);
@@ -35,7 +48,7 @@ export default function FriendsPage() {
             const queryParams = new URLSearchParams();
             queryParams.append('userID', userID);
             queryParams.append('activeFilter', activeFilter);
-            let url = 'https://si3agv274d.execute-api.ca-central-1.amazonaws.com/default/get-friends?' + queryParams.toString()
+            let url = 'https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/get-friends?' + queryParams.toString()
             // const response = await fetch(url);
             const response = await fetch(url, {
                 method: 'POST',
@@ -57,7 +70,7 @@ export default function FriendsPage() {
             setIsLoading(false);
         }
     }
-    
+
     useEffect(() => {
         fetchFriends();
     }, [activeFilter]); // Trigger fetch on activeFilter change
@@ -69,47 +82,59 @@ export default function FriendsPage() {
     );
 
     return (
-        <div className={styles.FriendsCont}>
-            <div className={styles.head}>
-                <div className={styles.SearchBar}>
-                    <div className={styles.SearchIcon}>
-                        <FontAwesomeIcon icon={faSearch} />
-                    </div>
-                    <input type="text" placeholder="Search..." className={styles.Input} value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)}/>
-                </div>
-                <div className={styles.filter}>
-                    <div className={`${styles.followingBtn} ${activeFilter === 'Following' ? styles.active : ''}`} onClick={() => handleFilterClick('Following')}>
-                        Following
-                    </div>
-                    <div className={`${styles.DiscoverBtn} ${activeFilter === 'Discover' ? styles.active : ''}`} onClick={() => handleFilterClick('Discover')}>
-                        Discover
-                    </div>
-                </div>
-                <div className={styles.total}>Total: {filteredFriends.length}</div>
+        <div className="container">
+            <div className="navCont">
+                <NavBar />
             </div>
-            <div className={styles.friendsArea}>
-                {isLoading ? (
-                    <div className={styles.loading}>
-                    <ReactLoading type={'spin'} color={'rgba(0, 0, 0, 1)'} height={50} width={50} />
+            <div className="headContent">
+                <div className="headCont">
+                    <Header />
+                </div>
+                <div className="content">
+                    <div className={styles.FriendsCont}>
+                        <div className={styles.head}>
+                            <div className={styles.SearchBar}>
+                                <div className={styles.SearchIcon}>
+                                    <FontAwesomeIcon icon={faSearch} />
+                                </div>
+                                <input type="text" placeholder="Search..." className={styles.Input} value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)} />
+                            </div>
+                            <div className={styles.filter}>
+                                <div className={`${styles.followingBtn} ${activeFilter === 'Following' ? styles.active : ''}`} onClick={() => handleFilterClick('Following')}>
+                                    Following
+                                </div>
+                                <div className={`${styles.DiscoverBtn} ${activeFilter === 'Discover' ? styles.active : ''}`} onClick={() => handleFilterClick('Discover')}>
+                                    Discover
+                                </div>
+                            </div>
+                            <div className={styles.total}>Total: {filteredFriends.length}</div>
+                        </div>
+                        <div className={styles.friendsArea}>
+                            {isLoading ? (
+                                <div className={styles.loading}>
+                                    <ReactLoading type={'spin'} color={'rgba(0, 0, 0, 1)'} height={50} width={50} />
+                                </div>
+                            ) : filteredFriends.length === 0 ? (
+                                <div className={styles.noFriendsMessage}>
+                                    {activeFilter === 'Following' ? "You have no Friends" : "No Friends to add"}
+                                </div>
+                            ) : (
+                                filteredFriends.map((friend, index) => (
+                                    <Friend
+                                        key={index}
+                                        id={friend.id}
+                                        name={friend.name}
+                                        profilePic={friend.profilePic}
+                                        major={friend.major}
+                                        year={friend.year}
+                                        activeFilter={activeFilter}
+                                        fetchFriends={fetchFriends}
+                                    />
+                                ))
+                            )}
+                        </div>
                     </div>
-                ) : filteredFriends.length === 0 ? (
-                    <div className={styles.noFriendsMessage}>
-                    {activeFilter === 'Following' ? "You have no Friends" : "No Friends to add"}
-                    </div>
-                ) : (
-                    filteredFriends.map((friend, index) => (
-                    <Friend
-                        key={index}
-                        id={friend.id}
-                        name={friend.name}
-                        profilePic={friend.profilePic}
-                        major={friend.major}
-                        year={friend.year}
-                        activeFilter={activeFilter}
-                        fetchFriends={fetchFriends}
-                    />
-                    ))
-                )}
+                </div>
             </div>
         </div>
     );
