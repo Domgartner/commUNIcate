@@ -1,16 +1,15 @@
 "use client"
 import React, { useState, useEffect, useRef } from 'react';
-import MsgFriend from '../components/msgFriend';
 import styles from './Messages.module.css';
 import ReactLoading from 'react-loading';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
 import { auth } from "../firebase/config";
-import { Socket } from 'react-chat-engine';
 import NavBar from '../components/SideBar';
 import Header from '../components/Header';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRouter } from 'next/navigation';
+// import { chatEngine } from 'react-chat-engine';
 // import { Router } from '@/node_modules/next/router';
 
 export default function Messages() {

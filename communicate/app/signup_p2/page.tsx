@@ -97,7 +97,7 @@ export default function SignUpP2() {
         console.log("Profile Image:", imageUrl);
         console.log("UID:", userID);
         const queryParams = new URLSearchParams();
-        queryParams.append('userID', userID);
+        queryParams.append('userID', userID || '');
         queryParams.append('name', name);
         queryParams.append('major', major);
         queryParams.append('yearOfMajor', yearOfMajor);
@@ -113,8 +113,11 @@ export default function SignUpP2() {
             const responseData = await response.json();
             console.log('Response Data:', responseData); // Log the response data
             createProfile();
-            localStorage.setItem('userID', JSON.stringify(auth.currentUser.uid));
-            localStorage.setItem('email', JSON.stringify(auth.currentUser.email));
+            const currentUser = auth.currentUser;
+            if (currentUser) {
+                localStorage.setItem('userID', JSON.stringify(currentUser.uid));
+                localStorage.setItem('email', JSON.stringify(currentUser.email));
+            }
             if (responseData.profilePic) {
                 localStorage.setItem('profilePic', responseData.profilePic);
             }

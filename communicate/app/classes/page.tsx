@@ -208,7 +208,7 @@ export default function Classes() {
 
     // const dateString = selectedDate ? selectedDate.toISOString() : "";
     const queryParams = new URLSearchParams();
-    queryParams.append('userID', userID);
+    queryParams.append('userID', userID || '');
     queryParams.append('id', uniqueID);
     // queryParams.append('date',dateString);
     queryParams.append('itemName',itemInput);
@@ -258,7 +258,7 @@ export default function Classes() {
 
       const dateString = selectedDate ? selectedDate.toISOString() : "";
       const queryParams = new URLSearchParams();
-      queryParams.append('userID', userID);
+      queryParams.append('userID', userID || '');
       queryParams.append('id', uniqueID);
       queryParams.append('date',dateString);
       queryParams.append('itemName',itemInput);
@@ -293,7 +293,7 @@ export default function Classes() {
       console.log(userID);
 
       const queryParams = new URLSearchParams();
-      queryParams.append('userID', userID);
+      queryParams.append('userID', userID || '');
       let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/get-class?' + queryParams.toString();
 
       const response = await fetch(url);
@@ -355,11 +355,11 @@ export default function Classes() {
 
   async function unEnroll() {
       try {
-        console.log('Enrolling in class:', selectedClass);
-        console.log('User ID:', auth.currentUser.uid);
+        // console.log('Enrolling in class:', selectedClass);
+        // console.log('User ID:', localStorage.getItem('userID'));
         const data = {
             class: selectedClass,
-            userID: auth.currentUser.uid
+            userID: localStorage.getItem('userID')
         }
         if (!selectedClass) {
           throw new Error("Selected class is null or undefined.");
@@ -367,7 +367,7 @@ export default function Classes() {
   
         
         const queryParams = new URLSearchParams();
-        queryParams.append('userID', auth.currentUser.uid);
+        queryParams.append('userID', localStorage.getItem('userID') || '');
         queryParams.append('class', selectedClass);
         queryParams.append('type','unenroll')
         
@@ -395,19 +395,19 @@ export default function Classes() {
 
   async function enroll(className:string) {
     try {
-        console.log("ENROLL FUNCTION CALLED");
-        console.log('Enrolling in class:', className);
-        console.log('User ID:', auth.currentUser.uid);
+        // console.log("ENROLL FUNCTION CALLED");
+        // console.log('Enrolling in class:', className);
+        // console.log('User ID:', auth.currentUser.uid);
 
         const data = {
             class: className,
-            userID: auth.currentUser.uid
+            userID: localStorage.getItem('userID')
         }
       //   if (!selectedClass) {
       //     throw new Error("Selected class is null or undefined.");
       // }
         const queryParams = new URLSearchParams();
-        queryParams.append('userID', auth.currentUser.uid);
+        queryParams.append('userID', localStorage.getItem('userID') || '');
         queryParams.append('class', className);
         queryParams.append('type','enroll')
         
