@@ -1,50 +1,49 @@
 "use client"
-import React, { useState, useEffect, useRef } from 'react';
-// import MsgFriend from '../components/msgFriend';
+import React, { useState, useEffect } from 'react';
 import styles from './Messages.module.css';
 // import ReactLoading from 'react-loading';
 // import axios from 'axios';
 import dynamic from 'next/dynamic';
 import { auth } from "../firebase/config";
-// import { Socket } from 'react-chat-engine';
 import NavBar from '../components/SideBar';
 import Header from '../components/Header';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRouter } from 'next/navigation';
+// import { chatEngine } from 'react-chat-engine';
 // import { Router } from '@/node_modules/next/router';
+
 
 export default function Messages() {
   const [user, loading] = useAuthState(auth);
-    
-    const router = useRouter();
-
-    useEffect(() => {
-        if (!loading && !user) {
-            router.push('/sign-in');
-        }
-    }, [user, loading, router]);
-  const [inputMessage, setInputMessage] = useState('');
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [friends, setFriends] = useState([]);
-  const [activeFriend, setActiveFriend] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  useEffect(() => {
+      if (!loading && !user) {
+          router.push('/sign-in');
+      }
+  }, [user, loading, router]);
   const CHAT_ENG_PID = process.env.NEXT_PUBLIC_CHAT_ENGINE_PID
 // Retrieve the username and secret from localStorage if available
-const [username, setUsername] = useState(localStorage.getItem('username') || (auth.currentUser ? auth.currentUser.email : null));
-const [secret, setSecret] = useState(localStorage.getItem('secret') || (auth.currentUser ? auth.currentUser.uid : null));
+const [username, setUsername] = useState(
+    typeof window !== 'undefined' ? localStorage.getItem('username') || (auth.currentUser ? auth.currentUser.email : null) : ''
+);
+
+const [secret, setSecret] = useState(
+    typeof window !== 'undefined' ? localStorage.getItem('secret') || (auth.currentUser ? auth.currentUser.uid : null) : ''
+);
 
 // Update the username and secret in localStorage whenever they change
 useEffect(() => {
-  localStorage.setItem('username', username || '');
-  console.log("eferert" + username)
+    if (typeof window !== 'undefined') {
+        localStorage.setItem('username', username || '');
+    }
 }, [username]);
 
 useEffect(() => {
-  localStorage.setItem('secret', secret || '');
-  console.log(secret)
+    if (typeof window !== 'undefined') {
+        localStorage.setItem('secret', secret || '');
+    }
 }, [secret]);
 
-  const messageContainerRef = useRef<HTMLDivElement>(null);
 
   const ChatEngine = dynamic(() =>
     import("react-chat-engine").then((module) => module.ChatEngine)
