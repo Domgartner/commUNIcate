@@ -1,24 +1,21 @@
 import json
 import boto3
-import base64
-from requests_toolbelt.multipart import decoder
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('communicate-events')
 
 def handler(event, context):
-    body = event["body"]
+    try:        
+        email = event['queryStringParameters']['email']
+        id = event['queryStringParameters']['id']
+        
 
-    if event["isBase64Encoded"]:
-        body = base64.b64decode(body)
-
-    content_type = event["headers"]["content-type"]
-    data = decoder.MultipartDecoder(body, content_type)
-
-    binary_data = [part.content for part in data.parts]
-    email = binary_data[0].decode()
-    id = binary_data[1].decode()
-    try:
+        # profilePic = data.get('profilePic', '')
+        if not (id or email):
+            return {
+                'statusCode': 400,
+                'body': json.dumps({'message': 'Missing required fields'})
+            }
         # Update DynamoDB table with the user's email
         response = table.update_item(
             Key={

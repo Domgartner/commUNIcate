@@ -51,32 +51,48 @@ const PhotoBlock = ({ image_url, id, title, location, date, capacity, descriptio
   
         const handleConfirmClick = async () => {
             try {
+              const email = auth.currentUser ? auth.currentUser.email : " " ; 
+              const queryParams = new URLSearchParams();
+              queryParams.append('email', "arminsandhuu@gmail.com");
+              queryParams.append('id', id);
+              queryParams.append('title', editedTitle);
+              queryParams.append('date', editedDate);
+              queryParams.append('location', editedLocation);
+              queryParams.append('image_url', image_url);
+              queryParams.append('capacity', capacity);
+              queryParams.append('description', description);
+              queryParams.append('registered', registered);
+              queryParams.append('tags', tags.join(',')); // Convert tags array to comma-separated string
+              queryParams.append('users', users.join(',')); // Convert users array to comma-separated string
 
-              const data = {
-                email: userEmail,
-                id: id,
-                title: editedTitle,
-                date: editedDate,
-                location: editedLocation,
-                description: editedDescription,
-                image_url: image_url,
-                capacity: capacity,
-                registered: registered,
-                tags: tags,
-                users: users,
-              }
-                const formData = new FormData();
-                formData.append('email', userEmail || '');
-                formData.append('id', id);
-                formData.append('title', editedTitle);
-                formData.append('date', editedDate);
-                formData.append('location', editedLocation);
-                formData.append('description', editedDescription);
+              let url = 'https://h2or2awj67.execute-api.ca-central-1.amazonaws.com/default/update-event?' + queryParams.toString()
+
+              const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+
+              // const data = {
+              //   email: userEmail,
+              //   id: id,
+              //   title: editedTitle,
+              //   date: editedDate,
+              //   location: editedLocation,
+              //   description: editedDescription,
+              //   image_url: image_url,
+              //   capacity: capacity,
+              //   registered: registered,
+              //   tags: tags,
+              //   users: users,
+              // }
   
-                const response = await fetch('https://ev2mvdzfkivy6hxernaljqnjoa0yielf.lambda-url.ca-central-1.on.aws/', {
-                    method: 'POST',
-                    body: JSON.stringify(data)
-                });
+              //   const response = await fetch('https://h2or2awj67.execute-api.ca-central-1.amazonaws.com/default/update-event', {
+              //       method: 'POST',
+              //       body: JSON.stringify(data)
+              //   });
         
                 if (response.ok) {
                     // Handle successful response
@@ -96,10 +112,15 @@ const PhotoBlock = ({ image_url, id, title, location, date, capacity, descriptio
     const handleDeleteClick = async () => { 
         const answer = window.confirm("Are you sure?");
         if (answer) {
-          const res = await fetch(
-            `https://3h5ppth3zn2oxestbxvvgvzqym0knoxu.lambda-url.ca-central-1.on.aws?email=${userEmail}&id=${id}`,
-            {
-            method: "DELETE",
+          const queryParams = new URLSearchParams();
+          queryParams.append('id', id);
+          queryParams.append('email', userEmail || '');
+          let url = 'https://h2or2awj67.execute-api.ca-central-1.amazonaws.com/default/delete-event?' + queryParams.toString()
+          const res = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
 
         if(res.ok) {
@@ -207,7 +228,7 @@ const upcomingEvents = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch('https://fpwya4ojfnycyejef3y7v7567q0scycr.lambda-url.ca-central-1.on.aws/');
+        const response = await fetch('https://h2or2awj67.execute-api.ca-central-1.amazonaws.com/default/get-events?');
         const data = await response.json();
         const filteredEvents = data.filter((event: Event) => event.email === userEmail);
         setEvents(filteredEvents);
