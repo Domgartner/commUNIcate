@@ -91,13 +91,12 @@ def handler(event, context):
         
         
         timeStamp = str(time.time())
-        secretTime = "timestamp=" + timeStamp + str("xdRaA9uE-pjJVL8iRg9V9PqOc-4")
-        api_key = str("458542315386238")
+        secretTime = "timestamp=" + timeStamp + str("")
+        api_key = str("")
         secretTime_encode = secretTime.encode()
         secretTime_decode = hashlib.sha1(secretTime_encode)
         signature = secretTime_decode.hexdigest()
         cloudinaryData = {"api_key": api_key, "timestamp": timeStamp,"signature": signature}
-        # cloud_name = "dbz2svzwj"
        
         # Upload image to Cloudinary
         files = {'file': profilePic}
