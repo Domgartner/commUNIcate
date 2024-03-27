@@ -69,26 +69,24 @@ export default function Friend({ id, name, profilePic, major, year, activeFilter
     }    
 
     return (
-        <div className={styles.friendContainer}>
+        <div className={styles.friendContainer} key={id}>
             <div className={styles.profilepicCont}>
-                <img src="/profiletest.png" className={styles.userImage} />
+                <img src={profilePic} alt={name} className={styles.userImage} />
             </div>
             <div className={styles.friendInfo}>
                 <div className={styles.mainInfo}>
-                    <h2 className={styles.name}>Put Name Here</h2>
-                    <p className={styles.major}>Software Engineering (3)</p>
+                    <h2 className={styles.name}><b>{name}</b></h2>
+                    <p className={styles.major}>{major} ({year})</p>
                 </div>
-
                 <div className={styles.clubs}>
-                    {/* Need to map clubs here from db */}
+                    {/* Clubs information */}
                 </div>
-
                 <div className={styles.buttons}>
-                    <p className={styles.add}>Add</p>
-                    <p className={styles.message}>Message</p>
+                    {activeFilter === 'Following' && <p className={styles.remove} onClick={() => handleRemove(id)}><FontAwesomeIcon icon={faTimes} className={styles.icon}/></p>}
+                    {activeFilter === 'Discover' && <p className={styles.add} onClick={() => handleAdd(id)}><FontAwesomeIcon icon={faPlus} className={styles.icon}/></p>}
+                    {activeFilter === 'Following' && <p className={styles.message} onClick={handleMessageClick}><FontAwesomeIcon icon={faComments} className={styles.icon}/></p>}
                 </div>
             </div>
-
         </div>
     );
 }
