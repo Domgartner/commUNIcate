@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useAuthState } from "react-firebase-hooks/auth";
 import { getAuth, isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink } from "firebase/auth";
+import { available_majors } from "./majors";
 
 
 
@@ -184,11 +185,9 @@ export default function SignUpP2() {
                         onChange={(e) => setMajor(e.target.value)}
                     >
                         <option value="">Select Major</option>
-                        <option value="Software Engineering">Software Engineering</option>
-                        <option value="Mechanical Engineering">Mechanical Engineering</option>
-                        <option value="Civil Engineering">Civil Engineering</option>
-                        <option value="Biomedical Engineering">Biomedical Engineering</option>
-                        <option value="Electrical Engineering">Electrical Engineering</option>
+                        {available_majors.map((maj, index) => (
+                            <option key={index} value={maj}>{maj}</option>
+                        ))}
                     </select>
                     {/* Year of Major */}
                     <select
