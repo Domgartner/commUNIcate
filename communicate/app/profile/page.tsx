@@ -159,7 +159,6 @@
 // }
 
 
-
 "use client"
 import styles from './Profile.module.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -171,6 +170,7 @@ import NavBar from '../components/SideBar';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent } from 'react'; // Import ChangeEvent type
+import { available_majors } from './majors'; 
 
 
 export default function Profile() {
@@ -228,7 +228,7 @@ export default function Profile() {
             queryParams.append('name', name);
             queryParams.append('year', year);
             queryParams.append('major', major);
-            let url = 'https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/update-profile?' + queryParams.toString()
+            let url = 'https://ct9o7580ma.execute-api.ca-central-1.amazonaws.com/default/update-profile?' + queryParams.toString()
                 // const response = await fetch(url);
             const response = await fetch(url, {
                 method: 'POST',
@@ -260,7 +260,7 @@ export default function Profile() {
                 const queryParams = new URLSearchParams();
                 queryParams.append('userID', userID);
                 queryParams.append('type', 'get');
-                let url = 'https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/update-profile?' + queryParams.toString()
+                let url = 'https://ct9o7580ma.execute-api.ca-central-1.amazonaws.com/default/update-profile?' + queryParams.toString()
                 // const response = await fetch(url);
                 const response = await fetch(url, {
                     method: 'POST',
@@ -284,58 +284,59 @@ export default function Profile() {
     }, []);
 
     return (
-        <div className="container">
-            <div className="navCont">
-                <NavBar />
+            <div className="container">
+                <div className="navCont">
+                    <NavBar />
+                </div>
+                <div className="headContent">
+                    <div className="content">
+                        <div className="md:container md:mx-auto h-full flex items-center justify-center">
+                            <div className="bg-white rounded-2xl bg-neutral-100 shadow-2xl shadow-slate-600 p-8 w-1/3 relative h-3/4 min-w-[35rem] min-h-96 max-h-full mx-auto">
+                                <div className="flex items-center justify-center mb-4 relative -left-5">
+                                    <div className="w-72 h-72 bg-white rounded-full flex items-center justify-center border-4 border-gray-300 overflow-hidden">
+                                        <img className="w-60 h-60 rounded-full object-cover" src={imageUrl} alt="Profile" />
+                                    </div>
+                                </div>
+                                <div className='flex items-center justify-center'>
+                                    <p className="text-2xl font-bold text-center mb-2">
+                                        Name: 
+                                        <input type="text" value={name} className={`text-2xl font-normal text-gray-500 border-b border-gray-300 focus:outline-none focus:border-black ml-2 ${styles.text}`} onChange={(e) => setName(e.target.value)} />
+                                    </p>
+                                </div>
+                                <p className="text-base text-gray-500 text-center mb-2">
+                                    <select
+                                        className={`text-base text-gray-500 border-b border-gray-300 focus:outline-none focus:border-black appearance-none bg-transparent ${styles.select}`}
+                                        onChange={handleYearChange} name="year" value={year}
+                                    >
+                                        <option value="">Select Year</option>
+                                        {Array.from({ length: 7 }, (_, i) => i + 1).map((val) => (
+                                            <option key={val} value={val}>{val}th</option>
+                                        ))}
+                                    </select>
+                                    <span> Year </span> 
+                                    <select
+                                        className={`text-base text-gray-500 border-b border-gray-300 focus:outline-none focus:border-black appearance-none bg-transparent ${styles.select}`}
+                                        onChange={(e) => setMajor(e.target.value)} value={major}
+                                    >
+                                        <option value="">Select Major</option>
+                                        {available_majors.map((major) => (
+                                            <option key={major} value={major}>{major}</option>
+                                        ))}
+                                    </select>
+                                </p>
+                                <div className="bg-white border border-black p-2 relative rounded-2xl mt-5">
+                                    <p className="absolute top-1 left-2 px-1 text-sm text-gray-500">Email:</p>
+                                    <p className="text-base text-gray-500 text-center mt-2">{localStorage.getItem('email')?.replace(/"/g, '') ?? 'Unknown'}</p>
+                                </div>
+                                {isChanged && (
+                                    <div className="absolute bottom-0 right-0 mb-4 mr-4">
+                                        <FontAwesomeIcon icon={faCheck} className="text-green-500 text-2xl cursor-pointer" onClick={handleSave} />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div className="headContent">
-                <div className="headCont">
-                    <Header />
-                </div>
-                <div className="content"></div>
-        <div className="md:container md:mx-auto h-full flex items-center justify-center">
-            <div className="bg-white rounded-2xl bg-neutral-100 shadow-2xl shadow-slate-600 p-8 w-1/3 relative h-3/4 min-w-[35rem] min-h-96 max-h-full mx-auto">
-                <div className="flex items-center justify-center mb-4 relative -left-5">
-                    <div className="sticky top-0 right-96 transform translate-x-[17rem] -mt-52">
-                    </div>
-                    <div className="w-72 h-72 bg-white rounded-full flex items-center justify-center border-4 border-gray-300 overflow-hidden">
-                        <img className="w-60 h-60 rounded-full object-cover" src={imageUrl} alt="Profile" />
-                    </div>
-                </div>
-                <div className='flex items-center justify-center'>
-                    <p className="text-2xl font-bold text-center mb-2">
-                        Name: 
-                        <input type="text" value={name} className={`text-2xl font-normal text-gray-500 border-b border-gray-300 focus:outline-none focus:border-black ml-2 ${styles.text}`} onChange={(e) => setName(e.target.value)} />
-                    </p>
-                </div>
-                <p className="text-base text-gray-500 text-center mb-2">
-                <select
-                    className={`text-base text-gray-500 border-b border-gray-300 focus:outline-none focus:border-black appearance-none bg-transparent ${styles.select}`}
-                    onChange={handleYearChange} name="year" value={year}
-                    >
-                    <option value="1">1st</option>
-                    <option value="2">2nd</option>
-                    <option value="3">3rd</option>
-                    <option value="4">4th</option>
-                    <option value="5">5th</option>
-                    <option value="6">6th</option>
-                    <option value="7">7th</option>
-                    </select>
-                    <span> Year </span> <input type="text" value={major} className={`text-base text-gray-500 border-b border-gray-300 focus:outline-none focus:border-black ${styles.text}`} onChange={(e) => setMajor(e.target.value)} />
-                </p>
-                <div className="bg-white border border-black p-2 relative rounded-2xl mt-5">
-                    <p className="absolute top-1 left-2 px-1 text-sm text-gray-500">Email:</p>
-                    <p className="text-base text-gray-500 text-center mt-2">{localStorage.getItem('email')?.replace(/"/g, '') ?? 'Unknown'}</p>
-                </div>
-                {isChanged && (
-                    <div className="absolute bottom-0 right-0 mb-4 mr-4">
-                        <FontAwesomeIcon icon={faCheck} className="text-green-500 text-2xl cursor-pointer" onClick={handleSave} />
-                    </div>
-                )}
-            </div>
-        </div>
-        </div>
-        </div>
-
-    );
-}
+        );
+    }
