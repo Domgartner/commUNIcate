@@ -211,8 +211,12 @@ export default function Profile() {
                 major: major,
                 profilePic: imageUrl 
             };
-
-            const userID = localStorage.getItem('userID');
+            let userID;
+            if (typeof window !== 'undefined') {
+                // Code that interacts with localStorage
+                userID = localStorage.getItem('userID');
+            }
+            // const userID = localStorage.getItem('userID');
             // let url = `https://stgwulswc574lgxdz5nnf6qxjm0fdrss.lambda-url.ca-central-1.on.aws/?type=${"update"}&userID=${userID}`;
             // const response = await fetch(url, {
             //     method: 'POST',
@@ -250,9 +254,14 @@ export default function Profile() {
 
     useEffect(() => {
         async function fetchData() {
+            
             try {
-                console.log('Fetching profile for '+ localStorage.getItem('userID'));
-                const userID = localStorage.getItem('userID');
+                let userID;
+                if (typeof window !== 'undefined') {
+                    // console.log('Fetching profile for '+ localStorage.getItem('userID'));
+                    userID = localStorage.getItem('userID');
+                }
+                
                 // let userID = auth.currentUser ? auth.currentUser.uid : null;
                 if (!userID) {
                     throw new Error('User ID not found in localStorage');
@@ -323,10 +332,15 @@ export default function Profile() {
                     </select>
                     <span> Year </span> <input type="text" value={major} className={`text-base text-gray-500 border-b border-gray-300 focus:outline-none focus:border-black ${styles.text}`} onChange={(e) => setMajor(e.target.value)} />
                 </p>
-                <div className="bg-white border border-black p-2 relative rounded-2xl mt-5">
-                    <p className="absolute top-1 left-2 px-1 text-sm text-gray-500">Email:</p>
-                    <p className="text-base text-gray-500 text-center mt-2">{localStorage.getItem('email')?.replace(/"/g, '') ?? 'Unknown'}</p>
-                </div>
+                {typeof window !== 'undefined' && (
+                    <div className="bg-white border border-black p-2 relative rounded-2xl mt-5">
+                        <p className="absolute top-1 left-2 px-1 text-sm text-gray-500">Email:</p>
+                        <p className="text-base text-gray-500 text-center mt-2">
+                            {localStorage.getItem('email')?.replace(/"/g, '') ?? 'Unknown'}
+                        </p>
+                    </div>
+                )}
+
                 {isChanged && (
                     <div className="absolute bottom-0 right-0 mb-4 mr-4">
                         <FontAwesomeIcon icon={faCheck} className="text-green-500 text-2xl cursor-pointer" onClick={handleSave} />

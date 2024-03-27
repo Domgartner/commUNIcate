@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Header from "./components/Header";
-import NavBar from "./components/SideBar";
-import Footer from './components/Footer'
 import "./globals.css";
 
 
@@ -12,6 +9,7 @@ export const metadata: Metadata = {
   title: "CommUNIcate",
   description: "University connections app",
 };
+
 
 export default function RootLayout({children,}: Readonly<{ children: React.ReactNode }>) {
   

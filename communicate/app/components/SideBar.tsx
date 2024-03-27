@@ -12,7 +12,7 @@ export default function NavBar() {
     const router = useRouter();
     const [activeNavItem, setActiveNavItem] = useState(() => {
         // Retrieve the activeNavItem from local storage if it exists
-        return localStorage.getItem('activeNavItem') || null;
+        // return localStorage.getItem('activeNavItem') || null;
     });
 
     // useEffect(() => {

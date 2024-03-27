@@ -12,6 +12,7 @@ import Header from "../components/Header";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 
+
 interface Friend {
     major: string;
     name: string;
@@ -40,6 +41,9 @@ export default function FriendsPage() {
     };
 
     async function fetchFriends() {
+        if (typeof window === 'undefined') {
+            return; // Do nothing if running on the server
+        }
         setIsLoading(true);
         try {
             const userID = auth.currentUser ? auth.currentUser.uid : null; // Get userID from currentUser
