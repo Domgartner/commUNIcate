@@ -76,7 +76,7 @@ const PhotoBlock = ({ id, users, image, title, location, date, description }: Ph
           <img
             src={image}
             alt={description}
-            className="cursor-pointer rounded-xl"
+            className="cursor-pointer"
             style={{ width: '100%', height: 'auto' }}
           />
           <div className="opacity-0 group-hover:opacity-100 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl text-white font-bold">
