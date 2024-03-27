@@ -48,7 +48,7 @@ export default function FriendsPage() {
             const queryParams = new URLSearchParams();
             queryParams.append('userID', userID);
             queryParams.append('activeFilter', activeFilter);
-            let url = 'https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/get-friends?' + queryParams.toString()
+            let url = 'https://.execute-api.ca-central-1.amazonaws.com/default/get-friends?' + queryParams.toString()
             // const response = await fetch(url);
             const response = await fetch(url, {
                 method: 'POST',
@@ -70,10 +70,16 @@ export default function FriendsPage() {
             setIsLoading(false);
         }
     }
-
     useEffect(() => {
-        fetchFriends();
+        // Call fetchFriends after a delay of 1000 milliseconds (1 second)
+        const timeoutId = setTimeout(() => {
+            fetchFriends();
+    }, 500);
+    
+        // Clean up the timeout if the component unmounts or when the activeFilter changes
+        return () => clearTimeout(timeoutId);
     }, [activeFilter]); // Trigger fetch on activeFilter change
+    
 
     const filteredFriends = friends.filter((friend: Friend) =>
         (friend.name && friend.name.toLowerCase().includes(searchKeyword.toLowerCase())) ||
