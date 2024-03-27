@@ -4,7 +4,12 @@ import NavBar from "../components/SideBar";
 import Header from "../components/Header";
 import Friend from "../components/Friend";
 import { useState, useEffect, SetStateAction } from "react";
-import { Calendar, momentLocalizer, EventPropGetter } from "react-big-calendar";
+import {
+  Calendar,
+  momentLocalizer,
+  EventPropGetter,
+  Views,
+} from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import DatePicker from "react-datepicker";
@@ -44,6 +49,15 @@ export default function Classes() {
   ];
   const index_class = selectedClasses.indexOf(selectedClass!);
   const color_class = colors[index_class % colors.length];
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  const handleNext = () => {
+    setCurrentDate((prevDate) => localizer.add(prevDate, 1, "month"));
+  };
+
+  const handlePrev = () => {
+    setCurrentDate((prevDate) => localizer.add(prevDate, -1, "month"));
+  };
 
   const handlePlusButtonClick = () => {
     setClassListVisible(true);
@@ -54,7 +68,7 @@ export default function Classes() {
   };
 
   const handleClassClick = (className: string) => {
-    if (selectedClasses.length < 7 && !selectedClasses.includes(className)) {
+    if (selectedClasses.length < 8 && !selectedClasses.includes(className)) {
       setSelectedClasses([...selectedClasses, className]);
       setUpcomingItems({ ...upcomingItems, [className]: [] });
       setSelectedClass(className);
@@ -316,7 +330,7 @@ export default function Classes() {
       // });
       const classNames = classes.map((className: string) => {
         if (
-          selectedClasses.length < 7 &&
+          selectedClasses.length < 8 &&
           !selectedClasses.includes(className)
         ) {
           setSelectedClasses([...selectedClasses, className]);
@@ -452,7 +466,7 @@ export default function Classes() {
             {selectedClasses.map((className, index) => (
               <p
                 key={index}
-                className="px-10 py-4 hover:bg-green rounded"
+                className={className ? "px-10 py-4 hover:bg-green rounded" : ""}
                 onClick={() => handleSelectedClassClick(className)}
               >
                 {className}
@@ -464,7 +478,7 @@ export default function Classes() {
             <div className="fixed top-0 left-0 flex justify-center items-center w-full h-full bg-cream bg-opacity-70 z-10">
               <div className="popupContainer rounded w-80 h-80 overflow-y-auto bg-green px-2">
                 <div className="popupContent">
-                  <div className="flex items-center py-4 border-b-2">
+                  <div className="flex items-center py-4">
                     <button
                       className="mr-2 px-4 py-2 hover:bg-light-green rounded"
                       onClick={handlePlusButtonExitClick}
@@ -473,29 +487,31 @@ export default function Classes() {
                     </button>
                     <p>Software Engineer Class List</p>
                   </div>
-                  {/* Search bar */}
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    className="w-full px-3 py-2 border rounded-md mb-4"
-                    onChange={handleSearchInputChange}
-                  />
-                  {/* Class list */}
-                  {available_classes
-                    .filter((className) =>
-                      className
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase())
-                    )
-                    .map((className, index) => (
-                      <p
-                        key={index}
-                        className="hover:bg-light-green rounded"
-                        onClick={() => handleClassClick(className)}
-                      >
-                        {className}
-                      </p>
-                    ))}
+                  <div style={{ overflow: "hidden" }}>
+                    <input
+                      type="text"
+                      placeholder="Search..."
+                      className="w-full px-3 py-2 border rounded-md mb-4"
+                      onChange={handleSearchInputChange}
+                    />
+                  </div>
+                  <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+                    {available_classes
+                      .filter((className) =>
+                        className
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase())
+                      )
+                      .map((className, index) => (
+                        <p
+                          key={index}
+                          className="hover:bg-light-green rounded"
+                          onClick={() => handleClassClick(className)}
+                        >
+                          {className}
+                        </p>
+                      ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -567,6 +583,8 @@ export default function Classes() {
                     views={["month"]}
                     defaultView="month"
                     eventPropGetter={eventStyleGetter}
+                    date={currentDate} // Set the date prop to control the displayed month
+                    onNavigate={(newDate) => setCurrentDate(newDate)} // Update the current date when navigation occurs
                   />
                 </div>
                 <div className="flex justify-end pt-10 pr-8 pb-4">
