@@ -137,81 +137,85 @@ const PhotoBlock = ({ image_url, id, title, location, date, capacity, descriptio
     }
   
     return (
-      <div className="flex flex-col group relative rounded-xl border p-4">
-        <img
-          src={image_url}
-          alt={description}
-          className="cursor-pointer rounded-md object-cover"
-          style={{ width: '150px', height: '150px' }}
-        />
-        <div className="font-bold">
-          <h1 className="text-white">{description}</h1>
-        </div>
-        <div className="flex flex-row justify-around bg-beige py-5">
-          <div className="flex-5 justify-items-center flex-col">
-            <div className="flex">
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={editedDate}
-                  onChange={(e) => setEditedDate(e.target.value)}
-                />
-              ) : (
-                <h1 className="text-blue">{editedDate}</h1>
-              )}
-            </div>
+      <div className="flex group relative rounded-xl border p-4">
+          <div className="flex-1 mr-4">
+              <img
+                  src={image_url}
+                  alt={description}
+                  className="cursor-pointer rounded-md object-cover"
+                  style={{ width: '150px', height: '150px' }}
+              />
           </div>
-          <div className="flex-2 justify-items-center flex-col">
-            <div className="flex">
+          <div className="flex-1">
+              <div className="font-bold">
+                  <h1 className="text-white">DESCRIPTION: {description}</h1>
+              </div>
+              <div className="flex flex-row justify-around bg-beige py-5">
+                  <div className="flex-5 justify-items-center flex-col">
+                      <div className="flex">
+                          {isEditing ? (
+                              <input
+                                  type="text"
+                                  value={editedDate}
+                                  onChange={(e) => setEditedDate(e.target.value)}
+                              />
+                          ) : (
+                              <h1 className="text-blue">DATE: {editedDate}</h1>
+                          )}
+                      </div>
+                  </div>
+                  <div className="flex-2 justify-items-center flex-col">
+                      <div className="flex">
+                          {isEditing ? (
+                              <input
+                                  type="text"
+                                  value={editedTitle}
+                                  onChange={(e) => setEditedTitle(e.target.value)}
+                              />
+                          ) : (
+                              <h1 className="text-xl font-bold">TITLE: {editedTitle}</h1>
+                          )}
+                      </div>
+                      <div className="flex pt-1">
+                          {isEditing ? (
+                              <input
+                                  type="text"
+                                  value={editedLocation}
+                                  onChange={(e) => setEditedLocation(e.target.value)}
+                              />
+                          ) : (
+                              <h2 className="text-gray">LOCATION: {editedLocation}</h2>
+                          )}
+                      </div>
+                  </div>
+              </div>
               {isEditing ? (
-                <input
-                  type="text"
-                  value={editedTitle}
-                  onChange={(e) => setEditedTitle(e.target.value)}
-                />
+                  <div className='flex flex-col'>
+                      <button
+                          className="absolute bottom-16 right-2 bg-green-500 text-white text-xl rounded-md p-2 shadow cursor-pointer z-10"
+                          onClick={handleDeleteClick}
+                      >
+                          <FontAwesomeIcon icon={faCheck} /> Delete
+                      </button>
+                      <button
+                          className="absolute bottom-2 right-2 bg-green-500 text-white text-xl rounded-md p-2 shadow cursor-pointer z-10"
+                          onClick={handleConfirmClick}
+                      >
+                          <FontAwesomeIcon icon={faCheck} /> Confirm
+                      </button>
+                  </div>
               ) : (
-                <h1 className="text-xl font-bold">{editedTitle}</h1>
+                  <button
+                      className="absolute bottom-2 right-2 bg-blue-500 text-white text-xl rounded-md p-2 shadow cursor-pointer z-10"
+                      onClick={handleEditClick}
+                  >
+                      <FontAwesomeIcon icon={faEdit} /> Edit
+                  </button>
               )}
-            </div>
-            <div className="flex pt-1">
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={editedLocation}
-                  onChange={(e) => setEditedLocation(e.target.value)}
-                />
-              ) : (
-                <h2 className="text-gray">{editedLocation}</h2>
-              )}
-            </div>
           </div>
-        </div>
-        {isEditing ? ( // Render confirm button when editing
-        <div className='flex flex-col'>
-            <button
-                className="absolute bottom-16 right-2 bg-green-500 text-white text-xl rounded-md p-2 shadow cursor-pointer z-10"
-                onClick={handleDeleteClick}
-            >
-                    <FontAwesomeIcon icon={faCheck} /> Delete
-            </button>
-            <button
-                className="absolute bottom-2 right-2 bg-green-500 text-white text-xl rounded-md p-2 shadow cursor-pointer z-10"
-                onClick={handleConfirmClick}
-            >
-                <FontAwesomeIcon icon={faCheck} /> Confirm
-            </button>
-        </div>
-        ) : (
-          <button
-            className="absolute bottom-2 right-2 bg-blue-500 text-white text-xl rounded-md p-2 shadow cursor-pointer z-10"
-            onClick={handleEditClick}
-          >
-            <FontAwesomeIcon icon={faEdit} /> Edit
-          </button>
-        )}
       </div>
-    );
-  };
+  );
+};
 
 const upcomingEvents = () => {
   const router = useRouter();
@@ -259,7 +263,7 @@ const upcomingEvents = () => {
             tags={event.tags}
             users={event.users}
           />
-          {index !== events.length - 1 && <Line />} {/* Add line between events */}
+          {index !== events.length - 1 && <Line />} 
         </div>
       );
     }

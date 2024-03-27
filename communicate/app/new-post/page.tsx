@@ -32,10 +32,27 @@ export default function NewPost() {
     const userID = auth.currentUser ? auth.currentUser.uid : null;
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [image, setImage] = useState('');
+    const [formValid, setFormValid] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+
+    useEffect(() => {
+        setFormValid(
+            title.trim() !== '' &&
+            date.trim() !== '' &&
+            location.trim() !== '' &&
+            capacity.trim() !== '' &&
+            description.trim() !== '' &&
+            tags.length > 0
+        );
+    }, [title, date, location, capacity, description, tags]);
 
     const handleSubmit = async () => {
+        console.log(date);
+        if (!formValid) {
+            setShowAlert(true); // Show alert if form is not valid
+            return;
+        }
         try {
-
             const queryParams = new URLSearchParams();
             queryParams.append('email', userEmail || '');
             queryParams.append('id', uuid());
@@ -74,6 +91,15 @@ export default function NewPost() {
             router.push('/homepage');
         } catch (error) {
             console.error('Error submitting form:', error);
+        }
+    };
+
+    const handleDateChange = (date: Date | [Date, Date] | null) => {
+        if (date instanceof Date) {
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-based
+            const day = date.getDate().toString().padStart(2, '0');
+            setDate(`${year}-${month}-${day}`);
         }
     };
 
@@ -154,14 +180,16 @@ useEffect(() => {
                                     placeholderText="Enter your event name"
                                     className='w-60'
                                     />
-                                    <Field
-                                    labelName="Date"
-                                    fieldType="text"
-                                    fieldValue={date}
-                                    onChange={setDate}
-                                    placeholderText="Enter your event Date"
-                                    className='w-60'
-                                    />
+                                    <div className="flex flex-col w-60">
+                                        <label className="block text-sm font-medium text-gray-900">Date</label>
+                                        <DatePicker
+                                            selected={date ? new Date(date) : null}
+                                            onChange={handleDateChange}
+                                            placeholderText='Enter your event date'
+                                            dateFormat="MMMM d, yyyy"
+                                            className="w-60 relative mt-1 rounded-md block w-full pl-4 rounded-xl border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />
+                                    </div>
                                     <Field
                                     labelName="Location"
                                     fieldType="text"
@@ -240,7 +268,13 @@ useEffect(() => {
                                 </div>
                             </div>
                             <div className="flex">
-                                <Button buttonText="Submit" onClick={handleSubmit} />
+                                <button onClick={handleSubmit} disabled={!formValid} >Submit</button>
+                                {/* Display alert if form is not valid */}
+                                {showAlert && (
+                                    <div className="alert alert-danger" role="alert">
+                                        Please fill in all fields before submitting.
+                                    </div>
+                                )}
                             </div>
                         </div>
 
