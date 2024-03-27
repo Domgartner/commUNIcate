@@ -6,20 +6,18 @@ from requests_toolbelt.multipart import decoder
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('communicate-events')
 
-def handler(event, context):
-    body = event["body"]
-
-    if event["isBase64Encoded"]:
-        body = base64.b64decode(body)
-
-    content_type = event["headers"]["content-type"]
-    data = decoder.MultipartDecoder(body, content_type)
-
-    binary_data = [part.content for part in data.parts]
-    email = binary_data[0].decode()
-    id = binary_data[1].decode()
-    
+def handler(event, context):    
     try:
+
+        email = event['queryStringParameters']['email']
+        id = event['queryStringParameters']['id']
+
+        if not (id or email):
+            return {
+                'statusCode': 400,
+                'body': json.dumps({'message': 'Missing required fields'})
+            }
+        
         # Retrieve the item from DynamoDB to get the users list
         item = table.get_item(
             Key={

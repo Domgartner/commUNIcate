@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, KeyboardEvent  } from 'react';
+import { useState, useEffect, ChangeEvent  } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 import Field from "../components/field";
@@ -31,43 +31,37 @@ export default function NewPost() {
     const userEmail = auth.currentUser ? auth.currentUser.email : null;
     const userID = auth.currentUser ? auth.currentUser.uid : null;
     const [startDate, setStartDate] = useState<Date | null>(null);
+    const [image, setImage] = useState('');
 
     const handleSubmit = async () => {
         try {
-            const formData = new FormData();
-            formData.append('user-email', userEmail || '');
-            formData.append('title', title);
-            formData.append('date', date);
-            formData.append('location', location);
-            formData.append('capacity', capacity);
-            formData.append('description', description);
 
-            if (selectedFile) {
-                console.log(selectedFile + "it worked");
-                formData.append('file', selectedFile);
-            } else {
-                console.log("no")
-            }
-            formData.append('id', uuid());
-
-            users.forEach((user, idx) => {
-                formData.append(`users[${idx}]`, user);
-            });
-
-            tags.forEach((tag, index) => {
-                formData.append(`tags[${index}]`, tag);
-            });
+            const queryParams = new URLSearchParams();
+            queryParams.append('email', userEmail || '');
+            queryParams.append('id', uuid());
+            queryParams.append('title', title);
+            queryParams.append('date', date);
+            queryParams.append('location', location);
+            queryParams.append('capacity', capacity);
+            queryParams.append('description', description);
 
 
+            // Append the base64-encoded file content as a query parameter
+            queryParams.append('tags', tags.join(',')); // Convert tags array to comma-separated string
+            queryParams.append('users', users.join(',')); // Convert users array to comma-separated string
 
             console.log(selectedFile)
             console.log(userEmail)
             console.log(userID)
-            
+        
     
-            const response = await fetch('https://tgk4hztzlqjftfj3lfvlj6asou0seqyu.lambda-url.ca-central-1.on.aws/', {
+            let url = 'https://h2or2awj67.execute-api.ca-central-1.amazonaws.com/default/create-event?' + queryParams.toString()
+            const response = await fetch(url, {
                 method: 'POST',
-                body: formData,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: image
             });
     
             if (response.ok) {
@@ -82,17 +76,40 @@ export default function NewPost() {
             console.error('Error submitting form:', error);
         }
     };
-    
 
-  const [file, setFile] = useState()
 
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    if (event.target.files) {
-        setSelectedFile(event.target.files[0]);
-        console.log("hi")
-        console.log(selectedFile)
-    }
-}
+    const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
+        if (!event.target.files || event.target.files.length === 0) {
+            return;
+        }
+        
+        const file = event.target.files[0];
+        setSelectedFile(file);
+        // Check if the selected file is an image
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file.');
+            return;
+        }
+
+        // Convert the image to black and white
+        const bitmap = await createImageBitmap(file);
+        const canvas = document.createElement('canvas');
+        canvas.width = bitmap.width;
+        canvas.height = bitmap.height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            console.error('Canvas context is null.');
+            return;
+        }
+        ctx.drawImage(bitmap, 0, 0);
+
+        // Convert the canvas to a data URL and set it as the image URL
+        const imageUrl = canvas.toDataURL();
+        
+        // const imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/3/3f/JPEG_example_flower.jpg'
+        // const imageUrl = canvas.toDataURL('image/jpeg', 0.01);
+        setImage(imageUrl);
+    };
 
 useEffect(() => {
     console.log(selectedFile);
@@ -136,12 +153,6 @@ useEffect(() => {
                                     onChange={setTitle}
                                     placeholderText="Enter your event name"
                                     className='w-60'
-                                    />
-                                    <DatePicker
-                                    selected={startDate} // Pass the selected date value
-                                    onChange={date => setDate(date)} // Function to handle date change
-                                    dateFormat="yyyy-MM-dd" // Specify the date format
-                                    placeholderText="Select Date" // Placeholder text for the input field
                                     />
                                     <Field
                                     labelName="Date"

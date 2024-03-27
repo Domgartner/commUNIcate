@@ -1,7 +1,6 @@
 import json
 
 import requests
-from requests_toolbelt.multipart import decoder
 import boto3
 import base64
 import os
@@ -83,39 +82,33 @@ def create_query_string(body):
     return query_string
 
 def handler(event, context):
-    body = event["body"]
+    email = event['queryStringParameters']['email']
+    id = event['queryStringParameters']['id']
+    title = event['queryStringParameters']['title']
+    date = event['queryStringParameters']['date']
+    location = event['queryStringParameters']['location']
+    capacity = event['queryStringParameters']['capacity']
+    description = event['queryStringParameters']['description']
 
-    if event["isBase64Encoded"]:
-        body = base64.b64decode(body)
+    profilePic = event['body']
+    timeStamp = str(time.time())
+    secretTime = "timestamp=" + timeStamp + str("xdRaA9uE-pjJVL8iRg9V9PqOc-4")
+    api_key = str("458542315386238")
+    secretTime_encode = secretTime.encode()
+    secretTime_decode = hashlib.sha1(secretTime_encode)
+    signature = secretTime_decode.hexdigest()
+    cloudinaryData = {"api_key": api_key, "timestamp": timeStamp,"signature": signature}
     
-    content_type = event["headers"]["content-type"]
-    data = decoder.MultipartDecoder(body, content_type)
+    # Upload image to Cloudinary
+    files = {'file': profilePic}
+    
 
-    binary_data = [part.content for part in data.parts]
-    email = binary_data[0].decode()
-    title = binary_data[1].decode()
-    date = binary_data[2].decode()
-    location = binary_data[3].decode()
-    capacity = binary_data[4].decode()
-    description = binary_data[5].decode()
+    cloudinaryImage = requests.post(f"https://api.cloudinary.com/v1_1/dbz2svzwj/auto/upload", data=cloudinaryData, files=files)
+    secure_urls = cloudinaryImage.json()
+    secure_url = secure_urls.get("secure_url")    
 
-    file_name = os.path.join("/tmp", "event.png")
-    with open(file_name, "wb") as f:
-        f.write(binary_data[6])
-
-    image_url = upload_to_cloudinary(file_name)
-
-    id = binary_data[7].decode()
-
-    users = []
-    for prt in data.parts:
-        if prt.headers[b'Content-Disposition'].decode().startswith('form-data; name="users'):
-            users.append(prt.content.decode())
-
-    tags = []
-    for part in data.parts:
-        if part.headers[b'Content-Disposition'].decode().startswith('form-data; name="tags'):
-            tags.append(part.content.decode())
+    tags = event['queryStringParameters'].get('tags', '').split(',') if event['queryStringParameters'].get('tags') else []
+    users = event['queryStringParameters'].get('users', '').split(',') if event['queryStringParameters'].get('users') else []
 
     
     try:
@@ -130,7 +123,7 @@ def handler(event, context):
             'description': description,
             'tags': tags,
             'users': users,
-            'image_url': image_url
+            'image_url': secure_url
         })
         return {
             "statusCode": 200,

@@ -26,13 +26,16 @@ const PhotoBlock = ({ id, users, image, title, location, date, description }: Ph
     console.log(id);
 
     try {
-      const formData = new FormData();
-      formData.append('user-email', userEmail || '');
-      formData.append('id', id);
-      const response = await fetch('https://hlcq5tpwxlvttjbpyp7kbrtgie0owhes.lambda-url.ca-central-1.on.aws/', {
+      const queryParams = new URLSearchParams();
+      queryParams.append('email', userEmail || '');
+      queryParams.append('id', id);
+      let url = 'https://h2or2awj67.execute-api.ca-central-1.amazonaws.com/default/register-user?' + queryParams.toString()
+      const response = await fetch(url, {
         method: 'POST',
-        body: formData,
-      });
+        headers: {
+            'content-type': 'application/json'
+        }
+    });
       // Handle response as needed
     } catch (error) {
       console.error('Error RSVPing:', error);
@@ -48,13 +51,16 @@ const PhotoBlock = ({ id, users, image, title, location, date, description }: Ph
     console.log(id);
 
     try {
-      const formData = new FormData();
-      formData.append('user-email', userEmail || '');
-      formData.append('id', id);
-      const response = await fetch('https://m5wwpa6fpmpolcd4paopucghyy0dlpya.lambda-url.ca-central-1.on.aws/', {
+      const queryParams = new URLSearchParams();
+      queryParams.append('email', userEmail || '');
+      queryParams.append('id', id);
+      let url = 'https://h2or2awj67.execute-api.ca-central-1.amazonaws.com/default/unregister-user?' + queryParams.toString()
+      const response = await fetch(url, {
         method: 'POST',
-        body: formData,
-      });
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
       // Handle response as needed
     } catch (error) {
       console.error('Error RSVPing:', error);
