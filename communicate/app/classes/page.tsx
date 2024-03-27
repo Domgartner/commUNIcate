@@ -216,7 +216,7 @@ export default function Classes() {
     queryParams.append('type','delete');
 
 
-    let url = 'https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/manage-class-items?' + queryParams.toString();
+    let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/manage-class-items?' + queryParams.toString();
     // let url = `https://ahjyyh4enmm3q7dxpts6wafviy0xqwqy.lambda-url.ca-central-1.on.aws/?type=${"add"}`;
     const response = await fetch(url, {
       method: 'POST',
@@ -266,7 +266,7 @@ export default function Classes() {
       queryParams.append('type','add');
 
 
-      let url = 'https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/manage-class-items?' + queryParams.toString();
+      let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/manage-class-items?' + queryParams.toString();
 
       const response = await fetch(url, {
         method: 'POST',
@@ -294,7 +294,7 @@ export default function Classes() {
 
       const queryParams = new URLSearchParams();
       queryParams.append('userID', userID);
-      let url = 'https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/get-class?' + queryParams.toString();
+      let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/get-class?' + queryParams.toString();
 
       const response = await fetch(url);
       if (!response.ok) {
@@ -372,7 +372,7 @@ export default function Classes() {
         queryParams.append('type','unenroll')
         
   
-        let url = 'https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/class-enroll?' + queryParams.toString();
+        let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/class-enroll?' + queryParams.toString();
         // let url = `https://htd3uel2yernvl4wim2mjgompy0mdpik.lambda-url.ca-central-1.on.aws/?type=${"unenroll"}`;
         const response = await fetch(url, {
           method: 'POST',
@@ -412,7 +412,7 @@ export default function Classes() {
         queryParams.append('type','enroll')
         
   
-        let url = 'https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/class-enroll?' + queryParams.toString();
+        let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/class-enroll?' + queryParams.toString();
       
         const response = await fetch(url, {
           method: 'POST',
@@ -442,7 +442,7 @@ export default function Classes() {
                 <div className="headCont">
                     <Header />
                 </div>
-                <div className="content"></div>
+                <div className="content">
    <div className="content pl-5">
      <div className="flex items-center border-b-2 border-line pb-2">
        <button
@@ -613,6 +613,7 @@ export default function Classes() {
          </div>
        </div>
      )}
+   </div>
    </div>
    </div>
    </div>

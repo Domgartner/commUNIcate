@@ -9,32 +9,42 @@ terraform {
 
 provider "aws" {
   region = "ca-central-1"
-  access_key = "AKIAQAM3EUQ3W4XJXWLB"
-  secret_key = "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"
+  access_key = "AKIAXPPF5PKLLZKOTBS4"
+  secret_key = "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"
 }
 
 locals {
   register = "register"
-  create = "create_event"
-  get_events = "get-events"
   enroll = "class-enroll"
   get_class = "read-class-info"
   manage_friends = "manage-friends"
   get_friends = "get-friends"
   manage_class_items = "manage-class-items"
   update_profile = "update-profile"
+      
+  get_events = "get-events"
+  create = "create-event"
+  update_events = "update-event"
+  delete_events = "delete-event"
+  register_user = "register-user"
+  unregister_user = "unregister-user"
 
   handler_name = "main.handler"
 
   artifact_register = "artifact_register.zip"
-  artifact_create = "artifact_create.zip"
-  artifact_get_events = "artifact_get_events.zip"
   artifact_enroll = "artifact_class_enroll.zip"
   artifact_get_class = "artifact_get_class.zip"
   artifact_manage_friends = "artifact_manage_friends.zip"
   artifact_get_friends = "artifact_get_friends.zip"
   artifact_manage_class_items = "artifact_manage_class_items.zip"
   artifact_update_profile = "artifact_update_profile.zip"
+
+  artifact_get_events = "artifact_get_events.zip"
+  artifact_create = "artifact_create.zip"
+  artifact_update_events = "artifact_update_events.zip"
+  artifact_delete_events = "artifact_delete_events.zip"
+  artifact_register_user = "artifact_register_user.zip"
+  artifact_unregister_user = "artifact_unregister_user.zip"
 }
 
 resource "aws_iam_role" "lambda_exec" {
@@ -65,8 +75,6 @@ resource "aws_iam_role_policy_attachment" "lambda_SSM" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
   role       = aws_iam_role.lambda_exec.name
 }
-
-# !!!!!!!!! IF WE DECIDE TO USE DYNAMODB !!!!!!!!!!!
 resource "aws_iam_role_policy_attachment" "lambda_dynamodb" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
   role       = aws_iam_role.lambda_exec.name
@@ -96,6 +104,38 @@ resource "aws_lambda_function" "lambda-get-events" {
   handler          = local.handler_name
   filename         = local.artifact_get_events
   source_code_hash = data.archive_file.data_get_events_zip.output_base64sha256
+  runtime = "python3.9"
+}
+resource "aws_lambda_function" "lambda-update-events" {
+  role             = aws_iam_role.lambda_exec.arn
+  function_name    = local.update_events
+  handler          = local.handler_name
+  filename         = local.artifact_update_events
+  source_code_hash = data.archive_file.data_update_events_zip.output_base64sha256
+  runtime = "python3.9"
+}
+resource "aws_lambda_function" "lambda-delete-events" {
+  role             = aws_iam_role.lambda_exec.arn
+  function_name    = local.delete_events
+  handler          = local.handler_name
+  filename         = local.artifact_delete_events
+  source_code_hash = data.archive_file.data_delete_events_zip.output_base64sha256
+  runtime = "python3.9"
+}
+resource "aws_lambda_function" "lambda-register-user" {
+  role             = aws_iam_role.lambda_exec.arn
+  function_name    = local.register_user
+  handler          = local.handler_name
+  filename         = local.artifact_register_user
+  source_code_hash = data.archive_file.data_register_user_zip.output_base64sha256
+  runtime = "python3.9"
+}
+resource "aws_lambda_function" "lambda-unregister-user" {
+  role             = aws_iam_role.lambda_exec.arn
+  function_name    = local.unregister_user
+  handler          = local.handler_name
+  filename         = local.artifact_unregister_user
+  source_code_hash = data.archive_file.data_unregister_user_zip.output_base64sha256
   runtime = "python3.9"
 }
 resource "aws_lambda_function" "lambda-enroll" {
@@ -149,105 +189,105 @@ resource "aws_lambda_function" "lambda-update-profile" {
 # -------------- create Lambda functions --------------- #
 
 # -------- create function URL for Lambda functions ---------- #
-resource "aws_lambda_function_url" "url-register" {
-  function_name      = aws_lambda_function.lambda-register.function_name
-  authorization_type = "NONE"   # AWS_IAM for secured access
-  cors {
-    allow_credentials = true
-    allow_origins     = ["*"]
-    allow_methods     = ["GET", "POST", "PUT", "DELETE"]
-    allow_headers     = ["*"]
-    expose_headers    = ["keep-alive", "date"]
-  }
-}
-resource "aws_lambda_function_url" "url-create" {
-  function_name      = aws_lambda_function.lambda-create.function_name
-  authorization_type = "NONE"
-  cors {
-    allow_credentials = true
-    allow_origins     = ["*"]
-    allow_methods     = ["GET", "POST", "PUT", "DELETE"]
-    allow_headers     = ["*"]
-    expose_headers    = ["keep-alive", "date"]
-  }
-}
-resource "aws_lambda_function_url" "url-get-events" {
-  function_name      = aws_lambda_function.lambda-get-events.function_name
-  authorization_type = "NONE"
-  cors {
-    allow_credentials = true
-    allow_origins     = ["*"]
-    allow_methods     = ["GET", "POST", "PUT", "DELETE"]
-    allow_headers     = ["*"]
-    expose_headers    = ["keep-alive", "date"]
-  }
-}
-resource "aws_lambda_function_url" "url-enroll" {
-  function_name      = aws_lambda_function.lambda-enroll.function_name
-  authorization_type = "NONE"
-  cors {
-    allow_credentials = true
-    allow_origins     = ["*"]
-    allow_methods     = ["GET", "POST", "PUT", "DELETE"]
-    allow_headers     = ["*"]
-    expose_headers    = ["keep-alive", "date"]
-  }
-}
-resource "aws_lambda_function_url" "url-get-class" {
-  function_name      = aws_lambda_function.lambda-get-class.function_name
-  authorization_type = "NONE"
-  cors {
-    allow_credentials = true
-    allow_origins     = ["*"]
-    allow_methods     = ["GET", "POST", "PUT", "DELETE"]
-    allow_headers     = ["*"]
-    expose_headers    = ["keep-alive", "date"]
-  }
-}
-resource "aws_lambda_function_url" "url-manage-friends" {
-  function_name      = aws_lambda_function.lambda-manage-friends.function_name
-  authorization_type = "NONE"
-  cors {
-    allow_credentials = true
-    allow_origins     = ["*"]
-    allow_methods     = ["GET", "POST", "PUT", "DELETE"]
-    allow_headers     = ["*"]
-    expose_headers    = ["keep-alive", "date"]
-  }
-}
-resource "aws_lambda_function_url" "url-get-friends" {
-  function_name      = aws_lambda_function.lambda-get-friends.function_name
-  authorization_type = "NONE"
-  cors {
-    allow_credentials = true
-    allow_origins     = ["*"]
-    allow_methods     = ["GET", "POST", "PUT", "DELETE"]
-    allow_headers     = ["*"]
-    expose_headers    = ["keep-alive", "date"]
-  }
-}
-resource "aws_lambda_function_url" "url-manage-class-items" {
-  function_name      = aws_lambda_function.lambda-manage-class-items.function_name
-  authorization_type = "NONE"
-  cors {
-    allow_credentials = true
-    allow_origins     = ["*"]
-    allow_methods     = ["GET", "POST", "PUT", "DELETE"]
-    allow_headers     = ["*"]
-    expose_headers    = ["keep-alive", "date"]
-  }
-}
-resource "aws_lambda_function_url" "url-update-profile" {
-  function_name      = aws_lambda_function.lambda-update-profile.function_name
-  authorization_type = "NONE"
-  cors {
-    allow_credentials = true
-    allow_origins     = ["*"]
-    allow_methods     = ["GET", "POST", "PUT", "DELETE"]
-    allow_headers     = ["*"]
-    expose_headers    = ["keep-alive", "date"]
-  }
-}
+# resource "aws_lambda_function_url" "url-register" {
+#   function_name      = aws_lambda_function.lambda-register.function_name
+#   authorization_type = "NONE"   # AWS_IAM for secured access
+#   cors {
+#     allow_credentials = true
+#     allow_origins     = ["*"]
+#     allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+#     allow_headers     = ["*"]
+#     expose_headers    = ["keep-alive", "date"]
+#   }
+# }
+# resource "aws_lambda_function_url" "url-create" {
+#   function_name      = aws_lambda_function.lambda-create.function_name
+#   authorization_type = "NONE"
+#   cors {
+#     allow_credentials = true
+#     allow_origins     = ["*"]
+#     allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+#     allow_headers     = ["*"]
+#     expose_headers    = ["keep-alive", "date"]
+#   }
+# }
+# resource "aws_lambda_function_url" "url-get-events" {
+#   function_name      = aws_lambda_function.lambda-get-events.function_name
+#   authorization_type = "NONE"
+#   cors {
+#     allow_credentials = true
+#     allow_origins     = ["*"]
+#     allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+#     allow_headers     = ["*"]
+#     expose_headers    = ["keep-alive", "date"]
+#   }
+# }
+# resource "aws_lambda_function_url" "url-enroll" {
+#   function_name      = aws_lambda_function.lambda-enroll.function_name
+#   authorization_type = "NONE"
+#   cors {
+#     allow_credentials = true
+#     allow_origins     = ["*"]
+#     allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+#     allow_headers     = ["*"]
+#     expose_headers    = ["keep-alive", "date"]
+#   }
+# }
+# resource "aws_lambda_function_url" "url-get-class" {
+#   function_name      = aws_lambda_function.lambda-get-class.function_name
+#   authorization_type = "NONE"
+#   cors {
+#     allow_credentials = true
+#     allow_origins     = ["*"]
+#     allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+#     allow_headers     = ["*"]
+#     expose_headers    = ["keep-alive", "date"]
+#   }
+# }
+# resource "aws_lambda_function_url" "url-manage-friends" {
+#   function_name      = aws_lambda_function.lambda-manage-friends.function_name
+#   authorization_type = "NONE"
+#   cors {
+#     allow_credentials = true
+#     allow_origins     = ["*"]
+#     allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+#     allow_headers     = ["*"]
+#     expose_headers    = ["keep-alive", "date"]
+#   }
+# }
+# resource "aws_lambda_function_url" "url-get-friends" {
+#   function_name      = aws_lambda_function.lambda-get-friends.function_name
+#   authorization_type = "NONE"
+#   cors {
+#     allow_credentials = true
+#     allow_origins     = ["*"]
+#     allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+#     allow_headers     = ["*"]
+#     expose_headers    = ["keep-alive", "date"]
+#   }
+# }
+# resource "aws_lambda_function_url" "url-manage-class-items" {
+#   function_name      = aws_lambda_function.lambda-manage-class-items.function_name
+#   authorization_type = "NONE"
+#   cors {
+#     allow_credentials = true
+#     allow_origins     = ["*"]
+#     allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+#     allow_headers     = ["*"]
+#     expose_headers    = ["keep-alive", "date"]
+#   }
+# }
+# resource "aws_lambda_function_url" "url-update-profile" {
+#   function_name      = aws_lambda_function.lambda-update-profile.function_name
+#   authorization_type = "NONE"
+#   cors {
+#     allow_credentials = true
+#     allow_origins     = ["*"]
+#     allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+#     allow_headers     = ["*"]
+#     expose_headers    = ["keep-alive", "date"]
+#   }
+# }
 # -------- create function URL for Lambda functions ---------- #
 
 #------------API GATEWAY----------------#
@@ -308,6 +348,90 @@ resource "aws_lambda_permission" "api_gw_create" {
   source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/ANY/create"
 }
 // CREATE//
+
+// UPDATE EVENTS//
+resource "aws_apigatewayv2_route" "update_events" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "ANY /update-events"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_update_events.id}"
+}
+resource "aws_apigatewayv2_integration" "lambda_update_events" {
+  api_id             = aws_apigatewayv2_api.main.id
+  integration_uri    = aws_lambda_function.lambda-update-events.invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
+resource "aws_lambda_permission" "api_gw_update_events" {
+  statement_id  = "lambda-e2f6df7f-4b7f-4fa8-983a-48a3821fdf4e"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda-update-events.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/ANY/update-events"
+}
+// UPDATE EVENTS//
+
+// DELETE EVENTS//
+resource "aws_apigatewayv2_route" "delete_events" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "ANY /delete-events"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_delete_events.id}"
+}
+resource "aws_apigatewayv2_integration" "lambda_delete_events" {
+  api_id             = aws_apigatewayv2_api.main.id
+  integration_uri    = aws_lambda_function.lambda-delete-events.invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
+resource "aws_lambda_permission" "api_gw_delete_events" {
+  statement_id  = "lambda-e2f6df7f-4b7f-4fa8-983a-48a3821fdf4e"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda-delete-events.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/ANY/delete-events"
+}
+// DELETE EVENTS//
+
+// REGISTER EVENTS//
+resource "aws_apigatewayv2_route" "register_user" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "ANY /register-user"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_register_user.id}"
+}
+resource "aws_apigatewayv2_integration" "lambda_register_user" {
+  api_id             = aws_apigatewayv2_api.main.id
+  integration_uri    = aws_lambda_function.lambda-register-user.invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
+resource "aws_lambda_permission" "api_gw_register_user" {
+  statement_id  = "lambda-e2f6df7f-4b7f-4fa8-983a-48a3821fdf4e"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda-register-user.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/ANY/register-user"
+}
+// REGISTER EVENTS//
+
+// UNREGISTER EVENTS//
+resource "aws_apigatewayv2_route" "unregister_user" {
+  api_id    = aws_apigatewayv2_api.main.id
+  route_key = "ANY /unregister-user"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_unregister_user.id}"
+}
+resource "aws_apigatewayv2_integration" "lambda_unregister_user" {
+  api_id             = aws_apigatewayv2_api.main.id
+  integration_uri    = aws_lambda_function.lambda-unregister-user.invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
+resource "aws_lambda_permission" "api_gw_unregister_user" {
+  statement_id  = "lambda-e2f6df7f-4b7f-4fa8-983a-48a3821fdf4e"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda-unregister-user.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.main.execution_arn}/*/ANY/unregister-user"
+}
+// UNREGISTER EVENTS//
 
 // REGISTER//
 resource "aws_apigatewayv2_route" "register" {
@@ -480,6 +604,24 @@ resource "aws_dynamodb_table" "communicate-class" {
     type = "S"
   }
 }
+resource "aws_dynamodb_table" "communicate-events" {
+  name         = "communicate-events"
+  billing_mode = "PROVISIONED"
+  # up to 8KB read per second (eventually consistent)
+  read_capacity = 1
+  # up to 1KB per second
+  write_capacity = 1 
+  range_key = "id"
+  hash_key = "email"
+  attribute {
+    name = "id"
+    type = "S"
+  }
+  attribute {
+  name = "email"
+  type = "S"
+  }
+}
 # -------------------- DynamoDB Table ---------------------- #
 
 # ------------------- create artifacts --------------------- #
@@ -497,6 +639,26 @@ data "archive_file" "data_get_events_zip" {
   type        = "zip"
   source_file = "../functions/get_events/main.py"       
   output_path = local.artifact_get_events
+}
+data "archive_file" "data_update_events_zip" {
+  type        = "zip"
+  source_file = "../functions/update/main.py"       
+  output_path = local.artifact_update_events
+}
+data "archive_file" "data_delete_events_zip" {
+  type        = "zip"
+  source_file = "../functions/delete_event/main.py"       
+  output_path = local.artifact_delete_events
+}
+data "archive_file" "data_register_user_zip" {
+  type        = "zip"
+  source_file = "../functions/register_user/main.py"       
+  output_path = local.artifact_register_user
+}
+data "archive_file" "data_unregister_user_zip" {
+  type        = "zip"
+  source_file = "../functions/unregister_user/main.py"       
+  output_path = local.artifact_unregister_user
 }
 data "archive_file" "data_enroll_zip" {
   type        = "zip"
@@ -553,7 +715,8 @@ resource "aws_iam_policy" "logs" {
                 "arn:aws:dynamodb:::table/",
                 "arn:aws:logs:::",
                 "arn:aws:dynamodb:ca-central-1:409601214226:table/communicate",
-                "arn:aws:dynamodb:ca-central-1:409601214226:table/communicate-class"
+                "arn:aws:dynamodb:ca-central-1:409601214226:table/communicate-class",
+                "arn:aws:dynamodb:ca-central-1:409601214226:table/communicate-events"
                 ],
       "Effect": "Allow"
     }
@@ -564,31 +727,31 @@ EOF
 # ------------ CloudWatch IAM Policy for pubishing logs ------------- #
 
 # ---------------------- Outputs ---------------------- #
-output "lambda_url_register" {
-  value = aws_lambda_function_url.url-register.function_url
-}
-output "lambda_url_create" {
-  value = aws_lambda_function_url.url-create.function_url
-}
-output "lambda_url_get_events" {
-  value = aws_lambda_function_url.url-get-events.function_url
-}
-output "lambda_url_enroll" {
-  value = aws_lambda_function_url.url-enroll.function_url
-}
-output "lambda_url_get_class" {
-  value = aws_lambda_function_url.url-get-class.function_url
-}
-output "lambda_url_manage_friends" {
-  value = aws_lambda_function_url.url-manage-friends.function_url
-}
-output "lambda_url_get_friends" {
-  value = aws_lambda_function_url.url-get-friends.function_url
-}
-output "lambda_url_manage_class_items" {
-  value = aws_lambda_function_url.url-manage-class-items.function_url
-}
-output "lambda_url_update_profile" {
-  value = aws_lambda_function_url.url-update-profile.function_url
-}
+# output "lambda_url_register" {
+#   value = aws_lambda_function_url.url-register.function_url
+# }
+# output "lambda_url_create" {
+#   value = aws_lambda_function_url.url-create.function_url
+# }
+# output "lambda_url_get_events" {
+#   value = aws_lambda_function_url.url-get-events.function_url
+# }
+# output "lambda_url_enroll" {
+#   value = aws_lambda_function_url.url-enroll.function_url
+# }
+# output "lambda_url_get_class" {
+#   value = aws_lambda_function_url.url-get-class.function_url
+# }
+# output "lambda_url_manage_friends" {
+#   value = aws_lambda_function_url.url-manage-friends.function_url
+# }
+# output "lambda_url_get_friends" {
+#   value = aws_lambda_function_url.url-get-friends.function_url
+# }
+# output "lambda_url_manage_class_items" {
+#   value = aws_lambda_function_url.url-manage-class-items.function_url
+# }
+# output "lambda_url_update_profile" {
+#   value = aws_lambda_function_url.url-update-profile.function_url
+# }
 # ---------------------- Outputs ---------------------- #

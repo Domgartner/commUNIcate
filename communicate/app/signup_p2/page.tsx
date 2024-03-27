@@ -103,7 +103,7 @@ export default function SignUpP2() {
         queryParams.append('yearOfMajor', yearOfMajor);
         // Make the HTTP request to the Lambda function
         try {
-            const response = await fetch('https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/register?' + queryParams.toString(), {
+            const response = await fetch('https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/register?' + queryParams.toString(), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

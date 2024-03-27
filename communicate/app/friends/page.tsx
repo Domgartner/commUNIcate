@@ -48,7 +48,7 @@ export default function FriendsPage() {
             const queryParams = new URLSearchParams();
             queryParams.append('userID', userID);
             queryParams.append('activeFilter', activeFilter);
-            let url = 'https://.execute-api.ca-central-1.amazonaws.com/default/get-friends?' + queryParams.toString()
+            let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/get-friends?' + queryParams.toString()
             // const response = await fetch(url);
             const response = await fetch(url, {
                 method: 'POST',

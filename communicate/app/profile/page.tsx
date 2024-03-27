@@ -223,12 +223,12 @@ export default function Profile() {
             // });
 
             const queryParams = new URLSearchParams();
-            queryParams.append('userID', userID);
+            queryParams.append('userID', userID || '');
             queryParams.append('type', 'update');
             queryParams.append('name', name);
-            queryParams.append('year', year);
+            queryParams.append('year', year.toString());
             queryParams.append('major', major);
-            let url = 'https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/update-profile?' + queryParams.toString()
+            let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/update-profile?' + queryParams.toString()
                 // const response = await fetch(url);
             const response = await fetch(url, {
                 method: 'POST',
@@ -260,7 +260,7 @@ export default function Profile() {
                 const queryParams = new URLSearchParams();
                 queryParams.append('userID', userID);
                 queryParams.append('type', 'get');
-                let url = 'https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/update-profile?' + queryParams.toString()
+                let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/update-profile?' + queryParams.toString()
                 // const response = await fetch(url);
                 const response = await fetch(url, {
                     method: 'POST',
