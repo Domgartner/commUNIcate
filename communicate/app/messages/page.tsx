@@ -68,7 +68,7 @@ useEffect(() => {
         </div>
         <div className="content"></div>
     <div className={styles.container}>
-      <ChatEngine className={styles.chat}
+{/*       <ChatEngine className={styles.chat}
         height="calc(100vh - 212px)"
         projectID={CHAT_ENG_PID}
         userName={username}
@@ -77,7 +77,7 @@ useEffect(() => {
         renderNewMessageForm={() => <MessageFormSocial />}
         onConnect={(creds: any) => console.log("CREDS" + creds)}
         onFailAuth={(props: any) => console.log(props)}
-      />
+      /> */}
     </div>
     </div>
     </div>
