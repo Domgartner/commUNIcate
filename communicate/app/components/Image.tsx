@@ -94,13 +94,13 @@ const PhotoBlock = ({ id, users, image, title, location, date, description }: Ph
         </div>
 
           <div className="absolute inset-0 bg-light-grey opacity-0 group-hover:opacity-100 z-0 transition-opacity duration-300 backdrop-filter backdrop-blur-sm"></div>
-          <div className="p-4 relative z-10 transition-opacity duration-300">
-            <div className="flex flex-1/2 justify-around items-center mb-4 opacity-100 group-hover:opacity-0">
-              <div className="text-center">
+          <div className=" p-4 relative z-10 transition-opacity duration-300">
+            <div className="flex-1 flex-row justify-around items-center mb-4 opacity-100 group-hover:opacity-0">
+              <div className=" flex flex-col text-center">
                 <h1 className="text-blue">{getMonthName(Number(date.split('-')[1]))}</h1>
                 <h1 className="text-xl font-bold">{getDay(date)}</h1>
               </div>
-              <div className="flex flex-1/2 flex-col items-start">
+              <div className="flex flex-col items-start">
                 <h1 className="text-xl font-bold">{title}</h1>
                 <h2 className="text-gray">{location}</h2>
               </div>
