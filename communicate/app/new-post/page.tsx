@@ -47,8 +47,9 @@ export default function NewPost() {
     }, [title, date, location, capacity, description, tags]);
 
     const handleSubmit = async () => {
+        console.log(date);
         if (!formValid) {
-            alert("Name cannot be empty");
+            setShowAlert(true); // Show alert if form is not valid
             return;
         }
         try {
@@ -267,7 +268,7 @@ useEffect(() => {
                                 </div>
                             </div>
                             <div className="flex">
-                                <button onClick={handleSubmit} >Submit</button>
+                                <button onClick={handleSubmit} disabled={!formValid} >Submit</button>
                                 {/* Display alert if form is not valid */}
                                 {showAlert && (
                                     <div className="alert alert-danger" role="alert">

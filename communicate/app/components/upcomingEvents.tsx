@@ -33,7 +33,7 @@ const upcomingEvents = () => {
       useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await fetch('https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/get-events?');
+                const response = await fetch('https://h2or2awj67.execute-api.ca-central-1.amazonaws.com/default/get-events?');
                 const data = await response.json();
                 if (Array.isArray(data)) {
                     setEvents(data);
