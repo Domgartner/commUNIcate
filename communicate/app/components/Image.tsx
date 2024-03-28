@@ -5,6 +5,7 @@ import Button from "./button";
 import { auth } from "../firebase/config";
 
 type PhotoBlockProps = {
+  email: string;
   id: string;
   image: string;
   title: string;
@@ -24,19 +25,20 @@ const getDay = (date: string): string => {
   return day;
 };
 
-const PhotoBlock = ({ id, users, image, title, location, date, description }: PhotoBlockProps) => {
+const PhotoBlock = ({ id, email, users, image, title, location, date, description }: PhotoBlockProps) => {
   const [rsvpLoading, setRsvpLoading] = useState(false);
   const userEmail = auth.currentUser ? auth.currentUser.email : null;
   const [hasRSVPed, setHasRSVPed] = useState(users.includes(userEmail || ''));
 
   const handleRSVP = async () => {
     setRsvpLoading(true);
-    console.log(userEmail);
-    console.log(id);
+    console.log(email)
+    console.log(userEmail)
 
     try {
       const queryParams = new URLSearchParams();
       queryParams.append('email', userEmail || '');
+      queryParams.append('OGemail', email);
       queryParams.append('id', id);
       let url = 'https://h2or2awj67.execute-api.ca-central-1.amazonaws.com/default/register-user?' + queryParams.toString()
       const response = await fetch(url, {

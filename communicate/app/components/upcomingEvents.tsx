@@ -9,6 +9,7 @@ import Line from './line';
 import { useRouter } from "next/navigation";
 
 type Event = {
+  email: string;
   id: string
   image_url: string;
   title: string;
@@ -70,6 +71,7 @@ const upcomingEvents = () => {
               .filter((event, idx) => idx % 3 === index)
               .map((filteredPhoto) => (
                 <PhotoBlock
+                  email={filteredPhoto.email}
                   id={filteredPhoto.id}
                   image={filteredPhoto.image_url}
                   title={filteredPhoto.title}
