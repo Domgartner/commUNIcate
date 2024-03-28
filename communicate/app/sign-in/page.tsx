@@ -18,14 +18,16 @@ export default function SignIn() {
             const res = await signInWithEmailAndPassword(email, password);
             // Check if the user is signed in successfully
             console.log(res);
-            if (res.user) {
+            if (res && res.user) {
                 console.log('User signed in successfully:', res.user);
                 setEmail('');
                 setPassword('');
 
-                localStorage.setItem('userID', JSON.stringify(auth.currentUser.uid));
-                localStorage.setItem('email', JSON.stringify(auth.currentUser.email));
-
+                const currentUser = auth.currentUser;
+                if (currentUser) {
+                    localStorage.setItem('userID', JSON.stringify(currentUser.uid));
+                    localStorage.setItem('email', JSON.stringify(currentUser.email));
+                }
                 router.push('/profile');
             } else {
                 // If the user object is null, credentials are incorrect

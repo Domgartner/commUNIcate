@@ -18,10 +18,10 @@ export default function Friend({ id, name, profilePic, major, year, activeFilter
             console.log(id);
             // const response = await fetch(`?id=${id}&userID=${userID}`);
             const queryParams = new URLSearchParams();
-            queryParams.append('userID', userID);
+            queryParams.append('userID', userID || '');
             queryParams.append('id', id);
             queryParams.append('type','add')
-            let url = 'https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/manage-friends?' + queryParams.toString();
+            let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/manage-friends?' + queryParams.toString();
             // const response = await fetch(url);
             const response = await fetch(url, {
                 method: 'POST',
@@ -45,10 +45,10 @@ export default function Friend({ id, name, profilePic, major, year, activeFilter
             const userID = auth.currentUser ? auth.currentUser.uid : null;
             console.log(id);
             const queryParams = new URLSearchParams();
-            queryParams.append('userID', userID);
+            queryParams.append('userID', userID || '');
             queryParams.append('id', id);
             queryParams.append('type','remove')
-            let url = 'https://si3agv274d.execute-api.ca-central-1.amazonaws.com/default/manage-friends?' + queryParams.toString();
+            let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/manage-friends?' + queryParams.toString();
             // const response = await fetch(url);
             const response = await fetch(url, {
                 method: 'POST',

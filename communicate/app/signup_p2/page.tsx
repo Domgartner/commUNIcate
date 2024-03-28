@@ -49,6 +49,7 @@ export default function SignUpP2() {
     const [image, setImage] = useState(null); // State to store the image file
     const [imageUrl, setImageUrl] = useState<string>('');
 
+    
 
     const handleFileInputChange = async (event: ChangeEvent<HTMLInputElement>) => {
         if (!event.target.files || event.target.files.length === 0) {
@@ -98,13 +99,13 @@ export default function SignUpP2() {
         console.log("Profile Image:", imageUrl);
         console.log("UID:", userID);
         const queryParams = new URLSearchParams();
-        queryParams.append('userID', userID);
+        queryParams.append('userID', userID || '');
         queryParams.append('name', name);
         queryParams.append('major', major);
         queryParams.append('yearOfMajor', yearOfMajor);
         // Make the HTTP request to the Lambda function
         try {
-            const response = await fetch('https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/register?' + queryParams.toString(), {
+            const response = await fetch('https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/register?' + queryParams.toString(), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -114,8 +115,11 @@ export default function SignUpP2() {
             const responseData = await response.json();
             console.log('Response Data:', responseData); // Log the response data
             createProfile();
-            localStorage.setItem('userID', JSON.stringify(auth.currentUser.uid));
-            localStorage.setItem('email', JSON.stringify(auth.currentUser.email));
+            const currentUser = auth.currentUser;
+            if (currentUser) {
+                localStorage.setItem('userID', JSON.stringify(currentUser.uid));
+                localStorage.setItem('email', JSON.stringify(currentUser.email));
+            }
             if (responseData.profilePic) {
                 localStorage.setItem('profilePic', responseData.profilePic);
             }
@@ -147,7 +151,30 @@ export default function SignUpP2() {
             console.error('Error creating profile:', error);
         }
     };
-    
+        // const createProfile = async () => {
+    //     const secret = auth.currentUser ? auth.currentUser.uid : null; // Get userID from currentUser
+    //     const username = auth.currentUser ? auth.currentUser.email : null
+    //     console.log("Name:", name);
+    //     console.log("pass:", secret);
+    //     console.log(image);
+    //     if (name.length === 0 ) {
+    //         return;
+    //     }
+    //     if (!username) {
+    //         console.error('Username not found');
+    //         return;
+    //     }
+    //     try {
+    //         // await sendSignInLinkToEmail(auth, username, actionCodeSettings);
+    //         // window.localStorage.setItem('emailForSignIn', username);
+    //         if (typeof window !== 'undefined') {
+    //             axios.put('https://api.chatengine.io/users/',{username: username, secret: secret},{headers:{"Private-key": CHAT_ENG_PK}}
+    //             ).then((r:any) => router.push('/profile'));
+    //         }
+    //     } catch (error) {
+    //         console.error('Error creating profile:', error);
+    //     }
+    // };
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="max-w-md w-full p-6 bg-white rounded-md shadow-md">

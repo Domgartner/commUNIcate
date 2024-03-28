@@ -213,17 +213,16 @@ export default function Classes() {
       queryParams.append("className", selectedClass);
       queryParams.append("type", "delete");
 
-      let url =
-        "https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/manage-class-items?" +
-        queryParams.toString();
-      // let url = `https://ahjyyh4enmm3q7dxpts6wafviy0xqwqy.lambda-url.ca-central-1.on.aws/?type=${"add"}`;
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+
+    let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/manage-class-items?' + queryParams.toString();
+    // let url = `https://ahjyyh4enmm3q7dxpts6wafviy0xqwqy.lambda-url.ca-central-1.on.aws/?type=${"add"}`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
       if (!response.ok) {
         throw new Error("Failed to delete class Item");
       }
@@ -266,9 +265,8 @@ export default function Classes() {
       queryParams.append("className", selectedClass);
       queryParams.append("type", "add");
 
-      let url =
-        "https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/manage-class-items?" +
-        queryParams.toString();
+
+      let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/manage-class-items?' + queryParams.toString();
 
       const response = await fetch(url, {
         method: "POST",
@@ -294,10 +292,10 @@ export default function Classes() {
       console.log(userID);
 
       const queryParams = new URLSearchParams();
-      queryParams.append("userID", userID || '');
-      let url =
-        "https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/get-class?" +
-        queryParams.toString();
+
+      queryParams.append('userID', userID || '');
+      let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/get-class?' + queryParams.toString();
+
 
       const response = await fetch(url);
       if (!response.ok) {
@@ -368,34 +366,32 @@ export default function Classes() {
   }
 
   async function unEnroll() {
-    const userEmail = auth.currentUser ? auth.currentUser.email : null;
-    const userID = auth.currentUser ? auth.currentUser.uid : null;
-    try {
-      console.log("Enrolling in class:", selectedClass);
-      console.log("User ID:", userID || '');
-      const data = {
-        class: selectedClass,
-        userID: userID || '',
-      };
-      if (!selectedClass) {
-        throw new Error("Selected class is null or undefined.");
+      try {
+        // console.log('Enrolling in class:', selectedClass);
+        // console.log('User ID:', localStorage.getItem('userID'));
+        const data = {
+            class: selectedClass,
+            userID: localStorage.getItem('userID')
+        }
+        if (!selectedClass) {
+          throw new Error("Selected class is null or undefined.");
       }
-
-      const queryParams = new URLSearchParams();
-      queryParams.append("userID", userID || '');
-      queryParams.append("class", selectedClass);
-      queryParams.append("type", "unenroll");
-
-      let url =
-        "https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/class-enroll?" +
-        queryParams.toString();
-      // let url = `https://htd3uel2yernvl4wim2mjgompy0mdpik.lambda-url.ca-central-1.on.aws/?type=${"unenroll"}`;
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+  
+        
+        const queryParams = new URLSearchParams();
+        queryParams.append('userID', localStorage.getItem('userID') || '');
+        queryParams.append('class', selectedClass);
+        queryParams.append('type','unenroll')
+        
+  
+        let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/class-enroll?' + queryParams.toString();
+        // let url = `https://htd3uel2yernvl4wim2mjgompy0mdpik.lambda-url.ca-central-1.on.aws/?type=${"unenroll"}`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
       });
       if (!response.ok) {
         throw new Error("Failed to unenroll class");
@@ -412,32 +408,31 @@ export default function Classes() {
     const userEmail = auth.currentUser ? auth.currentUser.email : null;
     const userID = auth.currentUser ? auth.currentUser.uid : null;
     try {
-      console.log("ENROLL FUNCTION CALLED");
-      console.log("Enrolling in class:", className);
-      console.log("User ID:", userID || '');
+        // console.log("ENROLL FUNCTION CALLED");
+        // console.log('Enrolling in class:', className);
+        // console.log('User ID:', auth.currentUser.uid);
 
-      const data = {
-        class: className,
-        userID: userID,
-      };
+        const data = {
+            class: className,
+            userID: localStorage.getItem('userID')
+        }
       //   if (!selectedClass) {
       //     throw new Error("Selected class is null or undefined.");
       // }
-      const queryParams = new URLSearchParams();
-      queryParams.append("userID", userID || '');
-      queryParams.append("class", className);
-      queryParams.append("type", "enroll");
-
-      let url =
-        "https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/class-enroll?" +
-        queryParams.toString();
-
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+        const queryParams = new URLSearchParams();
+        queryParams.append('userID', localStorage.getItem('userID') || '');
+        queryParams.append('class', className);
+        queryParams.append('type','enroll')
+        
+  
+        let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/class-enroll?' + queryParams.toString();
+      
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
       });
       if (!response.ok) {
         throw new Error("Failed to store class");
