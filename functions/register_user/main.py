@@ -9,29 +9,40 @@ def handler(event, context):
         email = event['queryStringParameters']['email']
         id = event['queryStringParameters']['id']
         
-
-        # profilePic = data.get('profilePic', '')
-        if not (id or email):
-            return {
-                'statusCode': 400,
-                'body': json.dumps({'message': 'Missing required fields'})
-            }
-        # Update DynamoDB table with the user's email
-        response = table.update_item(
+        # Check if user already exists in the users list
+        response = table.get_item(
             Key={
                 'email': email,
                 'id': id
-            },
-            UpdateExpression='SET #users = list_append(if_not_exists(#users, :empty_list), :user)',
-            ExpressionAttributeNames={'#users': 'users'},
-            ExpressionAttributeValues={':user': [email], ':empty_list': []},
-            ReturnValues='ALL_NEW'
+            }
         )
+    
 
-        return {
-            'statusCode': 200,
-            'body': json.dumps({'message': 'RSVP successful'})
-        }
+        # Get the existing users list if it exists
+        existing_users = response.get('Item', {}).get('users', [])
+
+        # Add user to DynamoDB table if not already in the users list
+        if email not in existing_users:
+            response = table.update_item(
+                Key={
+                    'email': email,
+                    'id': id
+                },
+                UpdateExpression='SET #users = list_append(if_not_exists(#users, :empty_list), :user)',
+                ExpressionAttributeNames={'#users': 'users'},
+                ExpressionAttributeValues={':user': [email], ':empty_list': []},
+                ReturnValues='ALL_NEW'
+            )
+
+            return {
+                'statusCode': 200,
+                'body': json.dumps({'message': 'RSVP successful'})
+            }
+        else:
+            return {
+                'statusCode': 400,
+                'body': json.dumps({'message': 'User is already registered'})
+            }
     except Exception as e:
         print('Error RSVPing:', e)
         return {
