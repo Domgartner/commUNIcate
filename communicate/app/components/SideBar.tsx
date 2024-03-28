@@ -16,11 +16,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGripLines } from "@fortawesome/free-solid-svg-icons";
 
 export default function NavBar() {
-  const router = useRouter();
-  const [activeNavItem, setActiveNavItem] = useState(() => {
-    // Retrieve the activeNavItem from local storage if it exists
-    return localStorage.getItem("activeNavItem") || null;
-  });
+    const router = useRouter();
+    const [activeNavItem, setActiveNavItem] = useState(() => {
+        // Retrieve the activeNavItem from local storage if it exists
+        // return localStorage.getItem('activeNavItem') || null;
+    });
 
   // useEffect(() => {
   //     // Save the activeNavItem to local storage whenever it changes

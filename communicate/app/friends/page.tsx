@@ -12,6 +12,7 @@ import Header from "../components/Header";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 
+
 interface Friend {
     major: string;
     name: string;
@@ -40,15 +41,18 @@ export default function FriendsPage() {
     };
 
     async function fetchFriends() {
+        if (typeof window === 'undefined') {
+            return; // Do nothing if running on the server
+        }
         setIsLoading(true);
         try {
             const userID = auth.currentUser ? auth.currentUser.uid : null; // Get userID from currentUser
             console.log(userID);
             
             const queryParams = new URLSearchParams();
-            queryParams.append('userID', userID);
+            queryParams.append('userID', userID || '');
             queryParams.append('activeFilter', activeFilter);
-            let url = 'https://.execute-api.ca-central-1.amazonaws.com/default/get-friends?' + queryParams.toString()
+            let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/get-friends?' + queryParams.toString()
             // const response = await fetch(url);
             const response = await fetch(url, {
                 method: 'POST',
