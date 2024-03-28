@@ -206,7 +206,7 @@ export default function Classes() {
 
       // const dateString = selectedDate ? selectedDate.toISOString() : "";
       const queryParams = new URLSearchParams();
-      queryParams.append("userID", userID);
+      queryParams.append("userID", userID || '');
       queryParams.append("id", uniqueID);
       // queryParams.append('date',dateString);
       queryParams.append("itemName", itemInput);
@@ -259,7 +259,7 @@ export default function Classes() {
 
       const dateString = selectedDate ? selectedDate.toISOString() : "";
       const queryParams = new URLSearchParams();
-      queryParams.append("userID", userID);
+      queryParams.append("userID", userID || '');
       queryParams.append("id", uniqueID);
       queryParams.append("date", dateString);
       queryParams.append("itemName", itemInput);
@@ -294,7 +294,7 @@ export default function Classes() {
       console.log(userID);
 
       const queryParams = new URLSearchParams();
-      queryParams.append("userID", userID);
+      queryParams.append("userID", userID || '');
       let url =
         "https://9l8gwc1l3d.execute-api.ca-central-1.amazonaws.com/default/get-class?" +
         queryParams.toString();
@@ -368,19 +368,21 @@ export default function Classes() {
   }
 
   async function unEnroll() {
+    const userEmail = auth.currentUser ? auth.currentUser.email : null;
+    const userID = auth.currentUser ? auth.currentUser.uid : null;
     try {
       console.log("Enrolling in class:", selectedClass);
-      console.log("User ID:", auth.currentUser.uid);
+      console.log("User ID:", userID || '');
       const data = {
         class: selectedClass,
-        userID: auth.currentUser.uid,
+        userID: userID || '',
       };
       if (!selectedClass) {
         throw new Error("Selected class is null or undefined.");
       }
 
       const queryParams = new URLSearchParams();
-      queryParams.append("userID", auth.currentUser.uid);
+      queryParams.append("userID", userID || '');
       queryParams.append("class", selectedClass);
       queryParams.append("type", "unenroll");
 
@@ -407,20 +409,22 @@ export default function Classes() {
   }
 
   async function enroll(className: string) {
+    const userEmail = auth.currentUser ? auth.currentUser.email : null;
+    const userID = auth.currentUser ? auth.currentUser.uid : null;
     try {
       console.log("ENROLL FUNCTION CALLED");
       console.log("Enrolling in class:", className);
-      console.log("User ID:", auth.currentUser.uid);
+      console.log("User ID:", userID || '');
 
       const data = {
         class: className,
-        userID: auth.currentUser.uid,
+        userID: userID,
       };
       //   if (!selectedClass) {
       //     throw new Error("Selected class is null or undefined.");
       // }
       const queryParams = new URLSearchParams();
-      queryParams.append("userID", auth.currentUser.uid);
+      queryParams.append("userID", userID || '');
       queryParams.append("class", className);
       queryParams.append("type", "enroll");
 
