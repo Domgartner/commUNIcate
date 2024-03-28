@@ -158,15 +158,22 @@ export default function Profile() {
                             </p>
                         </div>
                         <p className="text-base text-gray-500 text-center mb-2">
-                            <select
-                                className={`text-base text-gray-500 border-b border-gray-300 focus:outline-none focus:border-black appearance-none bg-transparent ${styles.select}`}
-                                onChange={handleYearChange} name="year" value={year}
-                            >
-                                <option value="">Select Year</option>
-                                {Array.from({ length: 7 }, (_, i) => i + 1).map((val) => (
-                                    <option key={val} value={val}>{val}th</option>
-                                ))}
-                            </select>
+                        <select
+                    className={`text-base text-gray-500 border-b border-gray-300 focus:outline-none focus:border-black appearance-none bg-transparent ${styles.select}`}
+                    onChange={handleYearChange} name="year" value={year}
+                    >
+                    <option value="1st">1st</option>
+                    <option value="2nd">2nd</option>
+                    <option value="3rd">3rd</option>
+                    <option value="4th">4th</option>
+                    <option value="5th">5th</option>
+                    <option value="6th">6th</option>
+                    <option value="7th">7th</option>
+                    </select>
+                            
+
+
+                            
                             <span> Year </span> 
                             <select
                                 className={`text-base text-gray-500 border-b border-gray-300 focus:outline-none focus:border-black appearance-none bg-transparent ${styles.select}`}
