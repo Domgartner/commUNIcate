@@ -8,11 +8,12 @@ def handler(event, context):
     try:        
         email = event['queryStringParameters']['email']
         id = event['queryStringParameters']['id']
+        ogEmail = event['queryStringParameters']['OGemail']
         
         # Check if user already exists in the users list
         response = table.get_item(
             Key={
-                'email': email,
+                'email': ogEmail,
                 'id': id
             }
         )
@@ -25,7 +26,7 @@ def handler(event, context):
         if email not in existing_users:
             response = table.update_item(
                 Key={
-                    'email': email,
+                    'email': ogEmail,
                     'id': id
                 },
                 UpdateExpression='SET #users = list_append(if_not_exists(#users, :empty_list), :user)',
