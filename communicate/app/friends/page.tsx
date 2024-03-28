@@ -53,7 +53,7 @@ export default function FriendsPage() {
       queryParams.append("userID", userID || "");
       queryParams.append("activeFilter", activeFilter);
       let url =
-        "https://7r34zgdsn9.execute-api.ca-central-1.amazonaws.com/default/get-friends?" +
+        "https://avhs2he1e8.execute-api.ca-central-1.amazonaws.com/default/get-friends?" +
         queryParams.toString();
       // const response = await fetch(url);
       const response = await fetch(url, {
