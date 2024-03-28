@@ -78,7 +78,6 @@ const PhotoBlock = ({ image_url, id, title, location, date, capacity, descriptio
                 if (response.ok) {
                     // Handle successful response
                     console.log('Form submitted successfully');
-                    window.location.reload();
                 } else {
                     // Handle error response
                     console.error('Failed to submit form:', response.statusText);
