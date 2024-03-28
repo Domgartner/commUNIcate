@@ -50,6 +50,7 @@ export default function Classes() {
   const index_class = selectedClasses.indexOf(selectedClass!);
   const color_class = colors[index_class % colors.length];
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [alert, setAlert] = useState(false);
 
   const handleNext = () => {
     setCurrentDate((prevDate) => localizer.add(prevDate, 1, "month"));
@@ -101,23 +102,28 @@ export default function Classes() {
   };
 
   const handleAddUpcomingItem = () => {
-    const uniqueID = uuidv4();
-    setUpcomingItems({
-      ...upcomingItems,
-      [selectedClass!]: [
-        ...upcomingItems[selectedClass!],
-        {
-          id: uniqueID,
-          title: itemInput,
-          date: selectedDate || new Date(),
-          className: selectedClass!,
-        },
-      ],
-    });
-    setPopupVisible(false);
-    setItemInput("");
-    setSelectedDate(null);
-    addClassItem(uniqueID, itemInput, selectedDate);
+    if (itemInput.trim() === '') {
+      setAlert(true);
+    }
+    else{
+      const uniqueID = uuidv4();
+      setUpcomingItems({
+        ...upcomingItems,
+        [selectedClass!]: [
+          ...upcomingItems[selectedClass!],
+          {
+            id: uniqueID,
+            title: itemInput,
+            date: selectedDate || new Date(),
+            className: selectedClass!,
+          },
+        ],
+      });
+      setPopupVisible(false);
+      setItemInput("");
+      setSelectedDate(null);
+      addClassItem(uniqueID, itemInput, selectedDate);
+  }
   };
 
   const handleDeleteItem = (className: string, index: number) => {
@@ -214,7 +220,7 @@ export default function Classes() {
       queryParams.append("type", "delete");
 
 
-    let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/manage-class-items?' + queryParams.toString();
+    let url = 'https://paxs9gw5e4.execute-api.ca-central-1.amazonaws.com/default/manage-class-items?' + queryParams.toString();
     // let url = `https://ahjyyh4enmm3q7dxpts6wafviy0xqwqy.lambda-url.ca-central-1.on.aws/?type=${"add"}`;
     const response = await fetch(url, {
       method: 'POST',
@@ -266,7 +272,7 @@ export default function Classes() {
       queryParams.append("type", "add");
 
 
-      let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/manage-class-items?' + queryParams.toString();
+      let url = 'https://paxs9gw5e4.execute-api.ca-central-1.amazonaws.com/default/manage-class-items?' + queryParams.toString();
 
       const response = await fetch(url, {
         method: "POST",
@@ -294,7 +300,7 @@ export default function Classes() {
       const queryParams = new URLSearchParams();
 
       queryParams.append('userID', userID || '');
-      let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/get-class?' + queryParams.toString();
+      let url = 'https://paxs9gw5e4.execute-api.ca-central-1.amazonaws.com/default/get-class?' + queryParams.toString();
 
 
       const response = await fetch(url);
@@ -384,7 +390,7 @@ export default function Classes() {
         queryParams.append('type','unenroll')
         
   
-        let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/class-enroll?' + queryParams.toString();
+        let url = 'https://paxs9gw5e4.execute-api.ca-central-1.amazonaws.com/default/class-enroll?' + queryParams.toString();
         // let url = `https://htd3uel2yernvl4wim2mjgompy0mdpik.lambda-url.ca-central-1.on.aws/?type=${"unenroll"}`;
         const response = await fetch(url, {
           method: 'POST',
@@ -425,7 +431,7 @@ export default function Classes() {
         queryParams.append('type','enroll')
         
   
-        let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/class-enroll?' + queryParams.toString();
+        let url = 'https://paxs9gw5e4.execute-api.ca-central-1.amazonaws.com/default/class-enroll?' + queryParams.toString();
       
         const response = await fetch(url, {
           method: 'POST',
@@ -616,8 +622,12 @@ export default function Classes() {
                       className="border border-gray-300 border-2 rounded-md"
                       type="text"
                       value={itemInput}
-                      onChange={(e) => setItemInput(e.target.value)}
+                      onChange={(e) => {
+                        setItemInput(e.target.value);
+                        setAlert(false);
+                      }}                      
                     />
+                    {alert && <span>Please fill out the task</span>}
                     <p className="pt-2">Date/Due Date</p>
                     <DatePicker
                       selected={selectedDate}
@@ -627,7 +637,12 @@ export default function Classes() {
                     <div className="pt-4">
                       <button
                         className="bg-olive hover:bg-light-green h-10 w-20 rounded"
-                        onClick={handleAddUpcomingItem}
+                        // onClick={handleAddUpcomingItem}
+                        onClick={() => {
+                          if (!alert) {
+                            handleAddUpcomingItem();
+                          }
+                        }}
                       >
                         Add
                       </button>
