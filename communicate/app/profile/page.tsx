@@ -76,7 +76,7 @@ export default function Profile() {
             queryParams.append('name', name);
             queryParams.append('year', year.toString());
             queryParams.append('major', major);
-            let url = 'https://paxs9gw5e4.execute-api.ca-central-1.amazonaws.com/default/update-profile?' + queryParams.toString()
+            let url = 'https://7r34zgdsn9.execute-api.ca-central-1.amazonaws.com/default/update-profile?' + queryParams.toString()
                 // const response = await fetch(url);
             const response = await fetch(url, {
                 method: 'POST',
@@ -114,7 +114,7 @@ export default function Profile() {
                 const queryParams = new URLSearchParams();
                 queryParams.append('userID', userID);
                 queryParams.append('type', 'get');
-                let url = 'https://paxs9gw5e4.execute-api.ca-central-1.amazonaws.com/default/update-profile?' + queryParams.toString()
+                let url = 'https://7r34zgdsn9.execute-api.ca-central-1.amazonaws.com/default/update-profile?' + queryParams.toString()
                 // const response = await fetch(url);
                 const response = await fetch(url, {
                     method: 'POST',

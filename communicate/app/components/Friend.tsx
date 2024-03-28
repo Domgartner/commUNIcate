@@ -21,7 +21,7 @@ export default function Friend({ id, name, profilePic, major, year, activeFilter
             queryParams.append('userID', userID || '');
             queryParams.append('id', id);
             queryParams.append('type','add')
-            let url = 'https://paxs9gw5e4.execute-api.ca-central-1.amazonaws.com/default/manage-friends?' + queryParams.toString();
+            let url = 'https://7r34zgdsn9.execute-api.ca-central-1.amazonaws.com/default/manage-friends?' + queryParams.toString();
             // const response = await fetch(url);
             const response = await fetch(url, {
                 method: 'POST',
@@ -48,7 +48,7 @@ export default function Friend({ id, name, profilePic, major, year, activeFilter
             queryParams.append('userID', userID || '');
             queryParams.append('id', id);
             queryParams.append('type','remove')
-            let url = 'https://paxs9gw5e4.execute-api.ca-central-1.amazonaws.com/default/manage-friends?' + queryParams.toString();
+            let url = 'https://7r34zgdsn9.execute-api.ca-central-1.amazonaws.com/default/manage-friends?' + queryParams.toString();
             // const response = await fetch(url);
             const response = await fetch(url, {
                 method: 'POST',
