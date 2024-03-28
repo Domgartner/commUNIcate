@@ -206,7 +206,7 @@ export default function Classes() {
 
       // const dateString = selectedDate ? selectedDate.toISOString() : "";
       const queryParams = new URLSearchParams();
-      queryParams.append("userID", userID);
+      queryParams.append("userID", userID || '');
       queryParams.append("id", uniqueID);
       // queryParams.append('date',dateString);
       queryParams.append("itemName", itemInput);
@@ -258,12 +258,12 @@ export default function Classes() {
 
       const dateString = selectedDate ? selectedDate.toISOString() : "";
       const queryParams = new URLSearchParams();
-      queryParams.append('userID', userID || '');
-      queryParams.append('id', uniqueID);
-      queryParams.append('date',dateString);
-      queryParams.append('itemName',itemInput);
-      queryParams.append('className',selectedClass);
-      queryParams.append('type','add');
+      queryParams.append("userID", userID || '');
+      queryParams.append("id", uniqueID);
+      queryParams.append("date", dateString);
+      queryParams.append("itemName", itemInput);
+      queryParams.append("className", selectedClass);
+      queryParams.append("type", "add");
 
 
       let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/manage-class-items?' + queryParams.toString();
@@ -292,8 +292,10 @@ export default function Classes() {
       console.log(userID);
 
       const queryParams = new URLSearchParams();
+
       queryParams.append('userID', userID || '');
       let url = 'https://nw7q5lhwt1.execute-api.ca-central-1.amazonaws.com/default/get-class?' + queryParams.toString();
+
 
       const response = await fetch(url);
       if (!response.ok) {
@@ -403,6 +405,8 @@ export default function Classes() {
   }
 
   async function enroll(className: string) {
+    const userEmail = auth.currentUser ? auth.currentUser.email : null;
+    const userID = auth.currentUser ? auth.currentUser.uid : null;
     try {
         // console.log("ENROLL FUNCTION CALLED");
         // console.log('Enrolling in class:', className);
