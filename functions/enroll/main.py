@@ -11,26 +11,45 @@ def handler(event, context):
         # data = json.loads(event['body'])
         # userID = str(data.get('userID', ''))
         # className = str(data.get('class', ''))
-        userID = event['queryStringParameters']['userID']
+        userID = event['queryStringParameters']['userID'].strip('"')
+        # userID =  'RK5xMhC33MfHkyBKpPGHLxi0RjI2'
         className = event['queryStringParameters']['class']
         
         # response = {
         #             "statusCode": 200,
         #             "body": json.dumps({
         #                 'message': "Class already enrolled",
-        #                 'class': 
+        #                 'class': 'asdas'
         #             })
         #         }
         # return response
         
 
         type = event['queryStringParameters']['type']
+        # response = {
+        #             "statusCode": 200,
+        #             "body": json.dumps({
+        #                 'message': "Class already enrolled",
+        #                 'class': userID,
+        #                 'class2': userID2
+        #             })
+        #         }
+        # return response
         # Query the DynamoDB table to get the user's details
         if type == "enroll":
             user_response = table.query(KeyConditionExpression=Key('userID').eq(userID))
             user_classes_str = user_response['Items'][0].get('classNames', '')
             items = user_response['Items'][0].get('items', [])
             user_classes = user_classes_str.split(',')  # Split the string to get individual classes
+            
+            # response = {
+            #         "statusCode": 200,
+            #         "body": json.dumps({
+            #             'message': "Class already enrolled",
+            #             'class': user_response
+            #         })
+            #     }
+            # return response
 
             # Check if the class is already in the list of classes
             if className in user_classes:
